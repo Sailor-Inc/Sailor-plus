@@ -225,6 +225,8 @@ Sailor+ is an app created to find and share the best places to travel around the
     `GET`    | /characters/paths/:name | gets a character's path with a given name
 
 
+ ********************************
+ 
 Must have app requirements
 
 - [X] Your app has multiple views
@@ -236,4 +238,44 @@ Must have app requirements
 - [ ] Your app uses at least one animation (e.g. fade in/out, e.g. animating a view growing and shrinking)
 - [ ] Your app incorporates at least one external library to add visual polish
 - [X] Your app provides opportunities for you to overcome difficult/ambiguous technical problems (more below)
+ 
+ 
+### 1. User Stories by week (Required and Optional)
+
+**WEEK 1**
+    *Log in
+    - [ ] User can sign in/sign up to an account using Parse
+    - [ ] User is persisted
+    *Map
+    - [ ] User can see a map with pins of the top 20 places
+    - [ ] User can see a list of the top user photos of a selected place inside a modal/new activity
+    - [ ] User can add a photo of his travel location, and a caption
+    *Profile 
+    - [ ] User can click on a button in his profile page to see the settings of his account
+      * Settings screen
+      - [ ] User can log out
+    - [ ] User can change his profile picture
+
+ **WEEK 2**
+    *Map
+     - [ ] User can filter by friends locations
+     - [ ] User can click on the location of the selected post to see a modal/activity of the top posts of that location
+     - [ ] User can double click an image to top a location/post
+    *Profile 
+    - [ ] User can see that account location posts in a grid layout
+    - [ ] User can click on a location post and see details
+    - [ ] User can see the followers of that account
+    - [ ] User can see the people that account follows
+
+ **WEEK 3**
+     *Map
+     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts by location)   
+     *Profile
+     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts)
+     *Feed
+     - [ ] User can see a feed with latest photos and details of the places of the people they follow
+     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts)
+     *Visuals
+     - [ ] The app visuals must be approved by 10 of my friends
+     - [ ] The app visuals must be approved by my manager
 
