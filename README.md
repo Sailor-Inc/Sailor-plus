@@ -242,32 +242,34 @@ Must have app requirements
  
 ### 1. User Stories by week (Required and Optional)
 
-**WEEK 1**
-    * Log in
+* **WEEK 1**
+    * **Visuals**
+    - [ ] User uses fragments to move screen to screen 
+    * **Log in**
     - [ ] User can sign in/sign up to an account using Parse
     - [ ] User is persisted
-    * Map
+    * **Map**
     - [ ] User can see a map with pins of the top 20 places
     - [ ] User can see a list of the top user photos of a selected place inside a modal/new activity
     - [ ] User can add a photo of his travel location, and a caption
-    * Profile 
+    * **Profile** 
     - [ ] User can click on a button in his profile page to see the settings of his account
-      * Settings screen
+      * **Settings screen**
       - [ ] User can log out
     - [ ] User can change his profile picture
 
- **WEEK 2**
+* **WEEK 2**
     * Map
      - [ ] User can filter by friends locations
      - [ ] User can click on the location of the selected post to see a modal/activity of the top posts of that location
      - [ ] User can double click an image to top a location/post
-    *Profile 
+    *Profile (Personal and certain account)
     - [ ] User can see that account location posts in a grid layout
     - [ ] User can click on a location post and see details
     - [ ] User can see the followers of that account
     - [ ] User can see the people that account follows
 
- **WEEK 3**
+ * **WEEK 3**
      * Map
      - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts by location)   
      * Profile
