@@ -263,7 +263,7 @@ Must have app requirements
      - [ ] User can filter by friends locations
      - [ ] User can click on the location of the selected post to see a modal/activity of the top posts of that location
      - [ ] User can double click an image to top a location/post
-    *Profile (Personal and certain account)
+    * Profile (Personal and certain account)
     - [ ] User can see that account location posts in a grid layout
     - [ ] User can click on a location post and see details
     - [ ] User can see the followers of that account
