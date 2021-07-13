@@ -1,4 +1,4 @@
-package com.carlolj.sailor.ui.notifications;
+package com.carlolj.sailor.ui.profile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

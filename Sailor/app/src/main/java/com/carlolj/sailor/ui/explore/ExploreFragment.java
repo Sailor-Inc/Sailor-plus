@@ -1,4 +1,4 @@
-package com.carlolj.sailor.ui.dashboard;
+package com.carlolj.sailor.ui.explore;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,27 +8,22 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.carlolj.sailor.R;
+import com.carlolj.sailor.BuildConfig;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
-import com.carlolj.sailor.databinding.FragmentFeedBinding;
 
 import org.jetbrains.annotations.NotNull;
 
-public class FeedFragment extends Fragment {
+public class ExploreFragment extends Fragment {
 
-    public static final String TAG = "FeedFragment";
-    private FragmentFeedBinding binding;
+    private FragmentExploreBinding binding;
 
-    public FeedFragment() {
-        // Required empty public constructor
+    public ExploreFragment(){
+
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        binding = FragmentFeedBinding.inflate(inflater, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentExploreBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         return root;
     }
@@ -39,4 +34,8 @@ public class FeedFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 }

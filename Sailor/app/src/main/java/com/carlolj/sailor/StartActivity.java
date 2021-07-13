@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.carlolj.sailor.databinding.ActivityLoginBinding;
 import com.carlolj.sailor.databinding.ActivityStartBinding;
 import com.parse.ParseUser;
 

@@ -3,19 +3,15 @@ package com.carlolj.sailor;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.carlolj.sailor.ui.dashboard.FeedFragment;
-import com.carlolj.sailor.ui.home.ExploreFragment;
-import com.carlolj.sailor.ui.notifications.ProfileFragment;
+import com.carlolj.sailor.ui.feed.FeedFragment;
+import com.carlolj.sailor.ui.explore.ExploreFragment;
+import com.carlolj.sailor.ui.profile.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.carlolj.sailor.databinding.ActivityMainBinding;
 import com.parse.ParseUser;
