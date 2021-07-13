@@ -2,22 +2,46 @@ package com.carlolj.sailor;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import com.carlolj.sailor.databinding.ActivityLoginBinding;
 import com.carlolj.sailor.databinding.ActivityStartBinding;
 
 public class StartActivity extends AppCompatActivity {
 
+    Button btnLogIn, btnRegister;
     ActivityStartBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
+
         binding = ActivityStartBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+        
+        btnLogIn = binding.btnLogIn;
+        btnRegister = binding.btnRegister;
+
+        btnLogIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StartActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StartActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 }

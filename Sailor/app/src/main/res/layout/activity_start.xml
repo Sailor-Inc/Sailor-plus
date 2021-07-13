@@ -22,7 +22,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/myImageView"
+                    android:id="@+id/ivStartBackground"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
@@ -30,18 +30,22 @@
                     android:contentDescription="Background"/>
 
                 <TextView
-                    android:id="@+id/myImageViewText"
+                    android:id="@+id/tvSTartTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignStart="@id/myImageView"
-                    android:layout_alignTop="@id/myImageView"
-                    android:layout_alignEnd="@id/myImageView"
-                    android:layout_alignBottom="@id/myImageView"
-                    android:layout_margin="1dp"
+                    android:layout_alignStart="@id/ivStartBackground"
+                    android:layout_alignTop="@id/ivStartBackground"
+                    android:layout_alignEnd="@id/ivStartBackground"
+                    android:layout_alignBottom="@id/ivStartBackground"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginBottom="1dp"
+                    android:fontFamily="@font/comfortaa"
                     android:gravity="center"
                     android:text="@string/sailor"
-                    android:textSize="40sp"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="#FFFFFF"
+                    android:textSize="40sp" />
             </RelativeLayout>
         </LinearLayout>
 
@@ -50,26 +54,31 @@
             android:layout_height="0dp"
             android:layout_weight=".1"
             android:orientation="horizontal">
-            <Button
-                android:text="LOG IN"
-                android:layout_width="0dp"
-                android:layout_weight=".50"
-                android:layout_height="65dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/black"
-                android:layout_gravity="center_vertical"/>
 
             <Button
-                android:text="REGISTER"
-                android:backgroundTint="@color/black"
+                android:id="@+id/btnLogIn"
                 android:layout_width="0dp"
-                android:layout_weight=".50"
                 android:layout_height="65dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_gravity="center_vertical"/>
+                android:layout_weight=".50"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/roboto_bold"
+                android:text="LOG IN"
+                android:textColor="@color/black" />
+
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="0dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight=".50"
+                android:backgroundTint="@color/black"
+                android:fontFamily="@font/roboto_bold"
+                android:text="@string/register" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
