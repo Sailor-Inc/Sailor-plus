@@ -6,6 +6,8 @@ def apikeyPropertiesFile = rootProject.file("apikey.properties")
 def apikeyProperties = new Properties()
 apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
+def googlemapapikey = apikeyProperties.getProperty('gmaps.key')
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -23,6 +25,9 @@ android {
         buildConfigField("String", "BACK4APP_SERVER_URL", apikeyProperties['BACK4APP_SERVER_URL'])
         buildConfigField("String", "BACK4APP_APP_ID", apikeyProperties['BACK4APP_APP_ID'])
         buildConfigField("String", "BACK4APP_CLIENT_KEY", apikeyProperties['BACK4APP_CLIENT_KEY'])
+
+        manifestPlaceholders = [GMAPS_ID: "AIzaSyDpbYkNr4Hk3F00YGdCGmd7S08jeunFU0s"]
+
     }
 
     buildTypes {
@@ -57,4 +62,10 @@ dependencies {
     implementation 'com.github.parse-community.Parse-SDK-Android:parse:1.25.0'
     // for logging API calls to LogCat
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
+
+    //Google maps services
+    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+
+    //Cardview implenentation
+    implementation "androidx.cardview:cardview:1.0.0"
 }
