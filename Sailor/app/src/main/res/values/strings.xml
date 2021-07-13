@@ -6,6 +6,10 @@
     <string name="sailor">SAILOR +</string>
     <string name="register">REGISTER</string>
 
+    <string name="text_home">Home</string>
+    <string name="text_compose">Compose</string>
+    <string name="text_profile">Profile</string>
+
     <string name="back4app_server_url">https://parseapi.back4app.com/</string>
     <string name="back4app_app_id">VFYPbLB3WB3VrN8D2LJEM5JUogdPROZczzaKzkNw</string>
     <string name="back4app_client_key">26bboUcc4iSeCNICTOA4xHhbuTPhXHc4qqXehUZU</string>
