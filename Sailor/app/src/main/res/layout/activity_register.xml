@@ -25,6 +25,7 @@
         android:textColor="@color/black"/>
 
     <EditText
+        android:id="@+id/etUsername"
         android:layout_marginTop="35dp"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -34,6 +35,7 @@
         android:textColor="@color/black"/>
 
     <EditText
+        android:id="@+id/etPassword"
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="60dp"

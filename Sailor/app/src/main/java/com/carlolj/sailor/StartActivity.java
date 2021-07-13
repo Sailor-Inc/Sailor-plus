@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.carlolj.sailor.databinding.ActivityLoginBinding;
 import com.carlolj.sailor.databinding.ActivityStartBinding;
+import com.parse.ParseUser;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -25,6 +26,10 @@ public class StartActivity extends AppCompatActivity {
         
         btnLogIn = binding.btnLogIn;
         btnRegister = binding.btnRegister;
+
+        if (ParseUser.getCurrentUser() != null) {
+            goMainActivity();
+        }
 
         btnLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,5 +48,11 @@ public class StartActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+    
+    private void goMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

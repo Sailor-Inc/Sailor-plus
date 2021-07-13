@@ -4,18 +4,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.carlolj.sailor.databinding.ActivityLoginBinding;
-import com.carlolj.sailor.databinding.ActivityRegisterBinding;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = "LoginActivity";
     ActivityLoginBinding binding;
     Button btnLogIn;
     ImageView ibBack;
+    EditText etUsername;
+    EditText etPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,21 +35,44 @@ public class LoginActivity extends AppCompatActivity {
 
         btnLogIn = binding.btnLogIn;
         ibBack = binding.ibBack;
+        etUsername = binding.etUsername;
+        etPassword = binding.etPassword;
 
-        btnLogIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
+        btnLogIn.setOnClickListener(v -> {
+            loginUser(etUsername.getText().toString(), etPassword.getText().toString());
         });
 
-        ibBack.setOnClickListener(new View.OnClickListener() {
+        ibBack.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, StartActivity.class);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    public void loginUser(String username, String password) {
+        Log.i(TAG, "Attempting to login user " + username);
+        loginInBackground(username, password);
+    }
+
+    public void loginInBackground(String username, String password){
+        ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, StartActivity.class);
-                startActivity(intent);
-                finish();
+            public void done(ParseUser user, ParseException e) {
+                //If the parse exception is null, means that executed correctly
+                if (e!=null) {
+                    Log.e(TAG, "Issue with login", e);
+                    Toast.makeText(LoginActivity.this, "Error signing in, check your connection/credentials", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(LoginActivity.this, "Welcome back! " + username, Toast.LENGTH_SHORT).show();
+                goMainActivity();
             }
         });
+    }
+
+    private void goMainActivity() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
