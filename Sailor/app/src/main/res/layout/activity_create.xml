@@ -49,6 +49,8 @@
         android:layout_height="wrap_content"
         android:hint="Search a google place"
         android:background="@drawable/edit_text_border"
+        android:drawablePadding="16dp"
+        android:drawableLeft="@drawable/ic_new"
         android:padding="10dp"/>
 
     <TextView

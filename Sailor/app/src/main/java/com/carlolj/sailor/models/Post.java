@@ -25,7 +25,7 @@ public class Post extends ParseObject {
     }
 
     public void setAuthor(ParseUser author){
-        put(KEY_AUTHOR,user);
+        put(KEY_AUTHOR,author);
     }
 
     //Getter and setter for location

@@ -26,8 +26,6 @@ android {
         buildConfigField("String", "BACK4APP_APP_ID", apikeyProperties['BACK4APP_APP_ID'])
         buildConfigField("String", "BACK4APP_CLIENT_KEY", apikeyProperties['BACK4APP_CLIENT_KEY'])
 
-        manifestPlaceholders = [GMAPS_ID: "AIzaSyDpbYkNr4Hk3F00YGdCGmd7S08jeunFU0s"]
-
     }
 
     buildTypes {
@@ -54,6 +52,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'
+    implementation 'com.google.android.libraries.places:places:2.4.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
