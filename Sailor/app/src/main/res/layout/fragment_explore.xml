@@ -32,6 +32,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             class="com.google.android.gms.maps.SupportMapFragment"/>
-    </androidx.cardview.widget.CardView>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/add"
+            android:contentDescription="@string/create"
+            android:backgroundTint="@color/blue"
+            android:layout_margin="30dp" />
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>

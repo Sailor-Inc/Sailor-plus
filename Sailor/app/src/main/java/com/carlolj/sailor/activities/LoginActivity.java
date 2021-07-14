@@ -1,4 +1,4 @@
-package com.carlolj.sailor;
+package com.carlolj.sailor.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
