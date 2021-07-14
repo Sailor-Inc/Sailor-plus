@@ -150,7 +150,6 @@ Sailor+ is an app created to find and share the best places to travel around the
    | followers     | List<Pointer to user>| Followers of the user |
    | following     | List<Pointer to user> | People followed by the user |
    | profilePicture| File | User profile picture|
-   | topsPosts     | List<Pointer to user>| List of posts liked by the user |
  
 #### Post
    | Property      | Type     | Description |
@@ -158,18 +157,16 @@ Sailor+ is an app created to find and share the best places to travel around the
    | author        | Pointer to User| Post author |
    | image         | File     | image that user posts |
    | caption       | String   | image caption by author |
-   | topsCount     | Number   | number of tops for the post |
-   | location      | Pointer to location| object location por a post|
+   | toppedBy      | List     | people that have gave a top to that post |
+   | location      | Pointer to location | object location for a post|
    | createdAt     | DateTime | date when post is created (default field) |
    | updatedAt     | DateTime | date when post is last updated (default field) |
  
  #### Location
    | Property      | Type     | Description |
    | ------------- | -------- | ------------|
-   | locationId    | double   | Unique id for location |
-   | name          | String   | Name of the location |
-   | coordinateX   | Long     | X coordinate |
-   | coordinateY   | Long     | Y coordinate |
+   | gmapsid       | String   | Name of the location |
+   | postedBy      | List<Pointer to Post>  | List of Posts of that location |
    | createdAt     | DateTime | date when post is created (default field) |
    | updatedAt     | DateTime | date when post is last updated (default field) |
    
