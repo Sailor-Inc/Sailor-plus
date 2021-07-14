@@ -150,7 +150,6 @@ Sailor+ is an app created to find and share the best places to travel around the
    | followers     | List<Pointer to user>| Followers of the user |
    | following     | List<Pointer to user> | People followed by the user |
    | profilePicture| File | User profile picture|
-   | topsPosts     | List<Pointer to user>| List of posts liked by the user |
  
 #### Post
    | Property      | Type     | Description |
@@ -158,18 +157,16 @@ Sailor+ is an app created to find and share the best places to travel around the
    | author        | Pointer to User| Post author |
    | image         | File     | image that user posts |
    | caption       | String   | image caption by author |
-   | topsCount     | Number   | number of tops for the post |
-   | location      | Pointer to location| object location por a post|
+   | toppedBy      | List     | people that have gave a top to that post |
+   | location      | Pointer to location | object location for a post|
    | createdAt     | DateTime | date when post is created (default field) |
    | updatedAt     | DateTime | date when post is last updated (default field) |
  
  #### Location
    | Property      | Type     | Description |
    | ------------- | -------- | ------------|
-   | locationId    | double   | Unique id for location |
-   | name          | String   | Name of the location |
-   | coordinateX   | Long     | X coordinate |
-   | coordinateY   | Long     | Y coordinate |
+   | gmapsid       | String   | Name of the location |
+   | locationPosts | List<Pointer to Post>  | List of Posts of that location |
    | createdAt     | DateTime | date when post is created (default field) |
    | updatedAt     | DateTime | date when post is last updated (default field) |
    
@@ -250,6 +247,8 @@ Must have app requirements
     - [ ] User is persisted
     * **Map**
     - [ ] User can see a map with pins of the top 20 places
+      - [ ] User can use see a Google map
+      - [ ] The map execute a query to load most popular locations
     - [ ] User can see a list of the top user photos of a selected place inside a modal/new activity
     - [ ] User can add a photo of his travel location, and a caption
     * **Profile** 
@@ -261,9 +260,10 @@ Must have app requirements
 * **WEEK 2**
     * Map
      - [ ] User can filter by friends locations
+       - [ ] The app executes a query that shows the most popular locations of the places your friends have visited
      - [ ] User can click on the location of the selected post to see a modal/activity of the top posts of that location
      - [ ] User can double click an image to top a location/post
-    * Profile (Personal and certain account)
+    * Profile (Personal and specific clicked account)
     - [ ] User can see that account location posts in a grid layout
     - [ ] User can click on a location post and see details
     - [ ] User can see the followers of that account
@@ -271,11 +271,12 @@ Must have app requirements
 
  * **WEEK 3**
      * Map
-     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts by location)   
+     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts by location)  
      * Profile
      - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts)
      * Feed
      - [ ] User can see a feed with latest photos and details of the places of the people they follow
+     - [ ] User can see a feed with the posts your friends gave tops
      - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts)
      * Visuals
      - [ ] The app visuals must be approved by 10 of my friends
