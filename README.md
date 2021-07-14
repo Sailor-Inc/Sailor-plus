@@ -166,7 +166,7 @@ Sailor+ is an app created to find and share the best places to travel around the
    | Property      | Type     | Description |
    | ------------- | -------- | ------------|
    | gmapsid       | String   | Name of the location |
-   | postedBy      | List<Pointer to Post>  | List of Posts of that location |
+   | locationPosts | List<Pointer to Post>  | List of Posts of that location |
    | createdAt     | DateTime | date when post is created (default field) |
    | updatedAt     | DateTime | date when post is last updated (default field) |
    
