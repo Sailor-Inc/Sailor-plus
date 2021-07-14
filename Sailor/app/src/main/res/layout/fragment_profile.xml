@@ -7,12 +7,21 @@
     tools:context=".ui.profile.ProfileFragment"
     android:padding="20dp">
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Profile"
-        android:textSize="32sp"
-        android:fontFamily="@font/comfortaa"
-        android:textColor="@color/black"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_marginTop="40dp"
+                android:id="@+id/tvTitle1"
+                android:layout_width="190dp"
+                android:layout_height="190dp"
+                android:scaleType="centerCrop"
+                tools:src="@tools:sample/avatars"
+                android:background="@drawable/instagram_new_post_outline_24"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

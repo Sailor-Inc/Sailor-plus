@@ -10,6 +10,6 @@
     <string name="text_compose">Compose</string>
     <string name="text_profile">Profile</string>
 
-    <string name="google_maps_api_key">AIzaSyCRbDaB3xd1nTxaCFb2ZjN6wAdreEMHF0U</string>
-
+    <string name="profile">Profile</string>
+    <string name="feed">Feed</string>
 </resources>

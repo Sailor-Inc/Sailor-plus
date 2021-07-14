@@ -84,3 +84,4 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 Sailor/apikey.properties
+Sailor/app/src/main/res/values/secrets.xml
