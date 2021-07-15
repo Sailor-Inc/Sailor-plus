@@ -47,10 +47,9 @@
         android:id="@+id/etGooglePlacesSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search a google place"
+        android:hint="Search"
         android:background="@drawable/edit_text_border"
         android:drawablePadding="16dp"
-        android:drawableLeft="@drawable/ic_new"
         android:padding="10dp"/>
 
     <TextView
@@ -63,9 +62,10 @@
         android:textSize="18sp"/>
 
     <ImageView
+        android:id="@+id/ivPostImage"
         android:layout_marginTop="10dp"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:background="@drawable/ic_new"
         android:scaleType="fitCenter"
         android:layout_gravity="center_horizontal"/>
@@ -75,4 +75,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Add a caption to your photo"/>
+
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="@font/roboto_bold"
+        android:text="NEXT" />
 </LinearLayout>

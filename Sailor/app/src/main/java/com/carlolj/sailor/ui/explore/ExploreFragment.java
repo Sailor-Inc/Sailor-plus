@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class ExploreFragment extends Fragment {
 
+    private GoogleMap map;
+    private SupportMapFragment mapFragment;
+
     FloatingActionButton fabAdd;
     private FragmentExploreBinding binding;
 
@@ -38,28 +42,50 @@ public class ExploreFragment extends Fragment {
         binding = FragmentExploreBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.googleMap);
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.googleMap);
 
-        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull @NotNull GoogleMap googleMap) {
-                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                    @Override
-                    public void onMapClick(@NonNull @NotNull LatLng latLng) {
-                        //When clicked on map
-                        MarkerOptions markerOptions = new MarkerOptions();
-                        markerOptions.position(latLng);
-                        markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-                        googleMap.clear();
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                latLng,10
-                        ));
-                        googleMap.addMarker(markerOptions);
-                    }
-                });
-            }
-        });
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(@NonNull @NotNull GoogleMap googleMap) {
+
+                    googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                    loadMap(googleMap);
+                    googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                        @Override
+                        public void onMapClick(@NonNull @NotNull LatLng latLng) {
+                            //When clicked on map
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.position(latLng);
+                            markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+                            googleMap.clear();
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                    latLng, 10
+                            ));
+                            googleMap.addMarker(markerOptions);
+                        }
+                    });
+                }
+            });
+        } else {
+                Toast.makeText(getContext(), "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
+        }
         return root;
+    }
+
+    protected void loadMap(GoogleMap googleMap) {
+        map = googleMap;
+        if (map != null) {
+            // Map is ready
+            map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                @Override
+                public void onMapLongClick(@NonNull @NotNull LatLng latLng) {
+                    Toast.makeText(getContext(), "LongClick", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(getContext(), "Error - Map was null!!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

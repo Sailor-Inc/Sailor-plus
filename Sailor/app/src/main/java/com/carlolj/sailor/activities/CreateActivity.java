@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.carlolj.sailor.BuildConfig;
@@ -28,6 +29,7 @@ public class CreateActivity extends AppCompatActivity {
 
     ActivityCreateBinding binding;
     EditText etGooglePlacesSearch;
+    ImageView ivPostImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +40,16 @@ public class CreateActivity extends AppCompatActivity {
         setContentView(view);
 
         etGooglePlacesSearch = binding.etGooglePlacesSearch;
+        ivPostImage = binding.ivPostImage;
 
         //Initialize google places
         Places.initialize(getApplicationContext(), BuildConfig.GMAPS_KEY);
+        ivPostImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
         //Set edittext non focusable
         etGooglePlacesSearch.setFocusable(false);
         etGooglePlacesSearch.setOnClickListener(new View.OnClickListener() {
@@ -50,7 +58,7 @@ public class CreateActivity extends AppCompatActivity {
                 //Initialize place field list
                 List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS
                         ,Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ID);
-                //cREATE INTENT
+                //Create intent
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY
                         ,fieldList).build(CreateActivity.this);
                 //Start activity result

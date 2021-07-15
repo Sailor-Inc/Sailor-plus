@@ -2,6 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.carlolj.sailor">
 
+    <queries>
+
+        <!-- Gallery -->
+        <intent>
+            <action android:name="android.intent.action.PICK" />
+        </intent>
+        <!-- Camera -->
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <!-- Gallery -->
+        <intent>
+            <action android:name="android.intent.action.GET_CONTENT" />
+        </intent>
+    </queries>
+
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -16,7 +33,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Sailor">
-        <activity android:name=".activities.CreateActivity"></activity>
+
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/fileprovider" />
+
+        <activity android:name=".activities.CreateActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
