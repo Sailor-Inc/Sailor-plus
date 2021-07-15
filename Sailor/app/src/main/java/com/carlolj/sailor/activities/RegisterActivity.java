@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.carlolj.sailor.BitmapScaler;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.databinding.ActivityRegisterBinding;
@@ -270,7 +272,9 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(RegisterActivity.this, "New profile picture!", Toast.LENGTH_SHORT).show();
             }
         });
-        Glide.with(RegisterActivity.this).load(byteArray).circleCrop().into(ivProfilePicture);
+
+        ivProfilePicture.setBackground(null);
+        Glide.with(RegisterActivity.this).load(byteArray).into(ivProfilePicture);
     }
 
 }

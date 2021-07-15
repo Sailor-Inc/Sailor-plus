@@ -38,6 +38,13 @@ public class ExploreFragment extends Fragment {
 
     }
 
+    /**
+     * When the fragment view is created this method gets called
+     * @param inflater the layout inflater
+     * @param container the ViewGroup container
+     * @param savedInstanceState the bundle of the savedInstanceState
+     * @return the returned view
+     */
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentExploreBinding.inflate(inflater, container, false);
         View root = binding.getRoot();

@@ -30,7 +30,12 @@ public class CreateActivity extends AppCompatActivity {
     ActivityCreateBinding binding;
     EditText etGooglePlacesSearch;
     ImageView ivPostImage;
+    String id;
 
+    /**
+     * When the activity is created we initialize all the components inside
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +72,12 @@ public class CreateActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * When we get an activity result this method gets automatically called
+     * @param requestCode the code we want to receive
+     * @param resultCode the result thrown by the activity result (error or ok)
+     * @param data data of the result
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -74,8 +85,8 @@ public class CreateActivity extends AppCompatActivity {
             //When the result is success
             //Initialize place
             Place place = Autocomplete.getPlaceFromIntent(data);
-            Toast.makeText(getApplicationContext(), "ID: "+ place.getId() + "/n Name: " + place.getName(), Toast.LENGTH_LONG).show();
-
+            id = place.getId();
+            etGooglePlacesSearch.setText(place.getName());
         }else if (resultCode == AutocompleteActivity.RESULT_ERROR){
             //When there is an error
             //Initialize status

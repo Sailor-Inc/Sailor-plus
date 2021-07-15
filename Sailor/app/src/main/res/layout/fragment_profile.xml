@@ -7,21 +7,126 @@
     tools:context=".ui.profile.ProfileFragment"
     android:padding="20dp">
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <ImageView
+            android:layout_marginTop="40dp"
+            android:id="@+id/ivProfilePicture"
+            android:layout_width="190dp"
+            android:layout_height="190dp"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/avatars"
+            android:layout_centerHorizontal="true"/>
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ImageView
-                android:layout_marginTop="40dp"
-                android:id="@+id/tvTitle1"
-                android:layout_width="190dp"
-                android:layout_height="190dp"
-                android:scaleType="centerCrop"
-                tools:src="@tools:sample/avatars"
-                android:background="@drawable/instagram_new_post_outline_24"
-                android:layout_centerHorizontal="true"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/ivProfilePicture"
+            android:layout_alignTop="@+id/ivProfilePicture"
+            android:paddingTop="30dp"
+            android:layout_marginLeft="13dp">
+
+            <TextView
+                android:id="@+id/tvStaticFollowers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Followers"
+                android:textSize="15sp"
+                android:textColor="@android:color/black"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/roboto_bold"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="6sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeStepGranularity="2sp"/>
+
+            <TextView
+                android:id="@+id/tvFollowers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvStaticFollowers"
+                android:text="12300"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/roboto"/>
+
+            <TextView
+                android:id="@+id/tvStaticFollowing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvFollowers"
+                android:layout_marginTop="20dp"
+                android:text="Following"
+                android:textSize="15sp"
+                android:textColor="@android:color/black"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/roboto_bold"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="6sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeStepGranularity="2sp"/>
+
+            <TextView
+                android:id="@+id/tvFollowing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvStaticFollowing"
+                android:text="300"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/roboto"/>
         </RelativeLayout>
-    </ScrollView>
+
+
+        <TextView
+            android:id="@+id/tvUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@android:color/black"
+            android:layout_below="@+id/ivProfilePicture"
+            android:textSize="30sp"
+            android:fontFamily="@font/comfortaa"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"/>
+
+        <RelativeLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_below="@id/tvUsername"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnChangeProfilePic"
+                android:layout_width="150dp"
+                android:layout_height="65dp"
+                android:backgroundTint="@color/black"
+                android:fontFamily="@font/roboto_bold"
+                android:text="@string/change_p_p"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="6sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeStepGranularity="2sp"/>
+
+
+            <Button
+                android:id="@+id/btnLogOut"
+                android:layout_width="150dp"
+                android:layout_height="65dp"
+                android:layout_toRightOf="@+id/btnChangeProfilePic"
+                android:layout_marginLeft="10dp"
+                android:backgroundTint="@color/black"
+                android:fontFamily="@font/roboto_bold"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="6sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeStepGranularity="2sp"
+                android:text="@string/log_out" />
+        </RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>
+
