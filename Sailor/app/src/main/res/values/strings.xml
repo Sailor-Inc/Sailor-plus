@@ -16,4 +16,5 @@
     <string name="choose_camera_option">Choose an option</string>
     <string name="log_out">LOG OUT</string>
     <string name="change_p_p">Change profile picture</string>
+    <string name="error_title">Sorry...</string>
 </resources>

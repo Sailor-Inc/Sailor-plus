@@ -15,7 +15,7 @@ public class Location extends ParseObject {
     public static final String KEY_POSTS = "locationPosts";
     public static final String KEY_NAME = "name";
     public static final String KEY_LAT = "latitude";
-    public static final String KEY_LONG = "latitude";
+    public static final String KEY_LONG = "longitude";
 
     //Getter and setters for google maps id
     public String getMapsId() {
@@ -48,8 +48,12 @@ public class Location extends ParseObject {
         setLocationPostBy(list);
     }
 
-    private void setLocationPostBy(List<String> list) {
+    public void setLocationPostBy(List<String> list) {
         put(KEY_POSTS, list);
+    }
+
+    public List getLocationPostBy() {
+        return getList(KEY_POSTS);
     }
 
     //Getter and setter for name
@@ -62,20 +66,20 @@ public class Location extends ParseObject {
     }
 
     //Getter and setter for latitude
-    public int getLatitude() {
-        return getInt(KEY_LAT);
+    public double getLatitude() {
+        return getDouble(KEY_LAT);
     }
 
-    public void setLatitude(int latitude) {
+    public void setLatitude(double latitude) {
         put(KEY_LAT, latitude);
     }
 
     //Getter and setter for latitude
-    public int getLongitude() {
-        return getInt(KEY_LONG);
+    public double getLongitude() {
+        return getDouble(KEY_LONG);
     }
 
-    public void setLongitude(int longitude) {
+    public void setLongitude(double longitude) {
         put(KEY_LONG, longitude);
     }
 }
