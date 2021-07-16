@@ -8,12 +8,16 @@ import android.gesture.GestureLibraries;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
 import android.media.Image;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,6 +28,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -57,10 +63,9 @@ public class ProfileFragment extends Fragment {
 
     ParseUser currentUser;
     private FragmentProfileBinding binding;
-    ImageView ivProfilePicture;
+    ImageView ivProfilePicture, ivSelectionBox;
     TextView tvUsername;
     Button btnLogOut, btnChangeProfilePic;
-
 
     public ProfileFragment(ParseUser user){
         currentUser = user;
@@ -76,11 +81,36 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         ivProfilePicture = binding.ivProfilePicture;
         tvUsername = binding.tvUsername;
         btnLogOut = binding.btnLogOut;
         btnChangeProfilePic = binding.btnChangeProfilePic;
+        ivSelectionBox = binding.ivSelectionBox;
 
+        ivSelectionBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.choose_menu_option)
+                        .setItems(R.array.menu_options, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case 0:
+                                        chooseProfilePicture();
+                                        dialog.cancel();
+                                        break;
+                                    default:
+                                        onLogout();
+                                        dialog.cancel();
+                                        break;
+                                }
+                            }
+                        });
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
         tvUsername.setText(currentUser.getUsername());
         Glide.with(getContext()).load(currentUser.getParseFile("profilePicture").getUrl()).circleCrop().into(ivProfilePicture);
         if (ParseUser.getCurrentUser().getUsername().equals(currentUser.getUsername())) {

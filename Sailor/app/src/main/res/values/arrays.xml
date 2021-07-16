@@ -6,4 +6,10 @@
         <item
             >Pick a photo from gallery</item>
     </string-array>
+    <string-array name="menu_options">
+        <item
+            >Change profile picture</item>
+        <item
+            >Log out</item>
+    </string-array>
 </resources>

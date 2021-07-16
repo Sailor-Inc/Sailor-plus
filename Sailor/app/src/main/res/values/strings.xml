@@ -17,4 +17,7 @@
     <string name="log_out">LOG OUT</string>
     <string name="change_p_p">Change profile picture</string>
     <string name="error_title">Sorry...</string>
+    <string name="action_logout">Log out</string>
+    <string name="change_profile_picture">Change profile picture</string>
+    <string name="choose_menu_option">Profile menu</string>
 </resources>
