@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.PinActivity"
-    android:padding="20dp">
+    android:paddingTop="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -22,19 +24,12 @@
         app:autoSizeStepGranularity="2sp"
         app:autoSizeTextType="uniform" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_below="@id/tvTitle"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPosts"
+        android:layout_below="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="20dp">
+        android:padding="10dp">
+    </androidx.recyclerview.widget.RecyclerView>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
-
-    </androidx.cardview.widget.CardView>
 </RelativeLayout>
