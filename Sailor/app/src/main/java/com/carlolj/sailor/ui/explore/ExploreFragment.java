@@ -12,26 +12,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.carlolj.sailor.BuildConfig;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.CreateActivity;
 import com.carlolj.sailor.activities.PinActivity;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
 import com.carlolj.sailor.models.Location;
-import com.carlolj.sailor.models.Post;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import org.jetbrains.annotations.NotNull;
@@ -102,16 +97,24 @@ public class ExploreFragment extends Fragment{
         if (map != null) {
             for (int i = 0; i < locations.size(); i++){
                 LatLng markerPosition = new LatLng(locations.get(i).getLatitude(), locations.get(i).getLongitude());
-                map.addMarker(new MarkerOptions().position(markerPosition).title(locations.get(i).getName()));
+                String locationUniqueId = locations.get(i).getObjectId();
+                map.addMarker(new MarkerOptions().
+                        position(markerPosition).
+                        title(locations.get(i).getName()).
+                        snippet(locationUniqueId));
                 map.moveCamera(CameraUpdateFactory.newLatLng(markerPosition));
             }
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
-                    String markerTitle = marker.getTitle();
+                    String locationUniqueId = marker.getSnippet();
+                    marker.setSnippet("");
+                    String locationTitle = marker.getTitle();
                     Log.d("ExploreFragment ", marker.getId());
-                    //Intent i = new Intent(getContext(), PinActivity.class);
-                    //i.putExtra("list", )
+                    Intent i = new Intent(getContext(), PinActivity.class);
+                    i.putExtra("locationUniqueId", locationUniqueId);
+                    i.putExtra("locationTitle", locationTitle);
+                    startActivity(i);
                     return false;
                 }
             });
