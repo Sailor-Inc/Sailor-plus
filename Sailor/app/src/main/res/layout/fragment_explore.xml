@@ -37,7 +37,7 @@
             android:id="@+id/fabAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
+            android:layout_gravity="start|bottom"
             android:src="@drawable/add"
             android:contentDescription="@string/create"
             android:backgroundTint="@color/blue"

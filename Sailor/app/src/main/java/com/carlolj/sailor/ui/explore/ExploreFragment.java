@@ -2,6 +2,7 @@ package com.carlolj.sailor.ui.explore;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,29 +15,41 @@ import androidx.fragment.app.Fragment;
 import com.carlolj.sailor.BuildConfig;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.CreateActivity;
+import com.carlolj.sailor.activities.PinActivity;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
+import com.carlolj.sailor.models.Location;
+import com.carlolj.sailor.models.Post;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ExploreFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
 
+public class ExploreFragment extends Fragment{
+
+    public static final String TAG = "ExploreFragment";
+    private List<Location> locations;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
 
     FloatingActionButton fabAdd;
     private FragmentExploreBinding binding;
 
-    public ExploreFragment(){
-
-    }
+    public ExploreFragment() { }
 
     /**
      * When the fragment view is created this method gets called
@@ -55,44 +68,14 @@ public class ExploreFragment extends Fragment {
             mapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(@NonNull @NotNull GoogleMap googleMap) {
-
                     googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                    loadMap(googleMap);
-                    googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                        @Override
-                        public void onMapClick(@NonNull @NotNull LatLng latLng) {
-                            //When clicked on map
-                            MarkerOptions markerOptions = new MarkerOptions();
-                            markerOptions.position(latLng);
-                            markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-                            googleMap.clear();
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                    latLng, 10
-                            ));
-                            googleMap.addMarker(markerOptions);
-                        }
-                    });
+                    getTopLocations(googleMap);
                 }
             });
         } else {
                 Toast.makeText(getContext(), "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
         return root;
-    }
-
-    protected void loadMap(GoogleMap googleMap) {
-        map = googleMap;
-        if (map != null) {
-            // Map is ready
-            map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-                @Override
-                public void onMapLongClick(@NonNull @NotNull LatLng latLng) {
-                    Toast.makeText(getContext(), "LongClick", Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            Toast.makeText(getContext(), "Error - Map was null!!", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -113,5 +96,49 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    protected void loadMap() {
+        if (map != null) {
+            for (int i = 0; i < locations.size(); i++){
+                LatLng markerPosition = new LatLng(locations.get(i).getLatitude(), locations.get(i).getLongitude());
+                map.addMarker(new MarkerOptions().position(markerPosition).title(locations.get(i).getName()));
+                map.moveCamera(CameraUpdateFactory.newLatLng(markerPosition));
+            }
+            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
+                    String markerTitle = marker.getTitle();
+                    Log.d("ExploreFragment ", marker.getId());
+                    //Intent i = new Intent(getContext(), PinActivity.class);
+                    //i.putExtra("list", )
+                    return false;
+                }
+            });
+        } else {
+            Toast.makeText(getContext(), "Error - Map was null!!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getTopLocations(GoogleMap googleMap) {
+        map = googleMap;
+        ParseQuery<Location> query = ParseQuery.getQuery(Location.class);
+        query.include(Location.KEY_GMAPS_ID);
+        query.setLimit(20);
+        query.findInBackground(new FindCallback<Location>() {
+            @Override
+            public void done(List<Location> receivedLocations, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting locations", e);
+                }
+                if (receivedLocations != null) {
+                    locations = new ArrayList<>();
+                    locations.addAll(receivedLocations);
+                    loadMap();
+                } else {
+                    Toast.makeText(getContext(), "There are no locations! be the first one to add a pin!" , Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
