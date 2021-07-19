@@ -58,7 +58,7 @@ public class PinActivity extends AppCompatActivity {
 
     private void loadPostsOf(String locationUniqueId) {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        query.include(locationUniqueId);
+        query.whereContains("location", locationUniqueId);
         query.setLimit(20);
         query.findInBackground(new FindCallback<Post>() {
             @Override
