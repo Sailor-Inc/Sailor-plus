@@ -265,12 +265,15 @@ Must have app requirements
      - [ ] User can double click an image to top a location/post
     * Profile (Personal and specific clicked account)
     - [ ] User can see that account location posts in a grid layout
+       - [ ] The posts will be displayed from newer to oldest
     - [ ] User can click on a location post and see details
+    - [ ] User can see an animation when a specific post is selected to show details
     - [ ] User can see the followers of that account
     - [ ] User can see the people that account follows
 
  * **WEEK 3**
      * Map
+     - [ ] User can filter by location type
      - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts by location)  
      * Profile
      - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts)
