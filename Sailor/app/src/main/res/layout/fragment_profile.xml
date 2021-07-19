@@ -22,13 +22,13 @@
             android:backgroundTint="@color/black" />
 
         <ImageView
-            android:layout_marginTop="40dp"
             android:id="@+id/ivProfilePicture"
-            android:layout_width="190dp"
-            android:layout_height="190dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
             android:scaleType="centerCrop"
-            tools:src="@tools:sample/avatars"
-            android:layout_centerHorizontal="true"/>
+            tools:src="@tools:sample/avatars" />
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,45 +99,46 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@android:color/black"
             android:layout_below="@+id/ivProfilePicture"
-            android:textSize="30sp"
+            android:textSize="26sp"
             android:fontFamily="@font/comfortaa"
             android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true"/>
 
         <RelativeLayout
+            android:id="@+id/buttons"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="55dp"
             android:layout_below="@id/tvUsername"
             android:gravity="center">
 
             <Button
-                android:id="@+id/btnChangeProfilePic"
-                android:layout_width="150dp"
+                android:id="@+id/btnFollow"
+                android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:backgroundTint="@color/black"
                 android:fontFamily="@font/roboto_bold"
-                android:text="@string/change_p_p"
+                android:text="@string/btn_follow"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
                 app:autoSizeTextType="uniform"
                 app:autoSizeMinTextSize="6sp"
                 app:autoSizeMaxTextSize="14sp"
                 app:autoSizeStepGranularity="2sp"/>
-
-
-            <Button
-                android:id="@+id/btnLogOut"
-                android:layout_width="150dp"
-                android:layout_height="65dp"
-                android:layout_toRightOf="@+id/btnChangeProfilePic"
-                android:layout_marginLeft="10dp"
-                android:backgroundTint="@color/black"
-                android:fontFamily="@font/roboto_bold"
-                app:autoSizeTextType="uniform"
-                app:autoSizeMinTextSize="6sp"
-                app:autoSizeMaxTextSize="14sp"
-                app:autoSizeStepGranularity="2sp"
-                android:text="@string/log_out" />
         </RelativeLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/srlRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/buttons"
+            android:layout_marginTop="10dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/ivProfilePosts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </RelativeLayout>
 </RelativeLayout>
 

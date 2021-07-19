@@ -32,6 +32,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.carlolj.sailor.BitmapScaler;
@@ -40,10 +42,14 @@ import com.carlolj.sailor.activities.LoginActivity;
 import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.activities.RegisterActivity;
 import com.carlolj.sailor.activities.StartActivity;
+import com.carlolj.sailor.adapters.ProfileAdapter;
 import com.carlolj.sailor.controllers.CameraHelper;
 import com.carlolj.sailor.databinding.FragmentProfileBinding;
+import com.carlolj.sailor.models.Post;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -51,6 +57,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
@@ -65,7 +73,11 @@ public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
     ImageView ivProfilePicture, ivSelectionBox;
     TextView tvUsername;
-    Button btnLogOut, btnChangeProfilePic;
+    Button btnFollow;
+    RecyclerView rvProfilePosts;
+
+    protected ProfileAdapter adapter;
+    protected List<Post> allPosts;
 
     public ProfileFragment(ParseUser user){
         currentUser = user;
@@ -84,9 +96,12 @@ public class ProfileFragment extends Fragment {
 
         ivProfilePicture = binding.ivProfilePicture;
         tvUsername = binding.tvUsername;
-        btnLogOut = binding.btnLogOut;
-        btnChangeProfilePic = binding.btnChangeProfilePic;
+        btnFollow = binding.btnFollow;
         ivSelectionBox = binding.ivSelectionBox;
+        rvProfilePosts = binding.ivProfilePosts;
+
+        allPosts = new ArrayList<>();
+        adapter = new ProfileAdapter(getContext(), allPosts);
 
         ivSelectionBox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +110,7 @@ public class ProfileFragment extends Fragment {
                 builder.setTitle(R.string.choose_menu_option)
                         .setItems(R.array.menu_options, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
+                                switch (which) {
                                     case 0:
                                         chooseProfilePicture();
                                         dialog.cancel();
@@ -111,26 +126,49 @@ public class ProfileFragment extends Fragment {
                 alertDialog.show();
             }
         });
+
+        ivProfilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseProfilePicture();
+            }
+        });
+
         tvUsername.setText(currentUser.getUsername());
         Glide.with(getContext()).load(currentUser.getParseFile("profilePicture").getUrl()).circleCrop().into(ivProfilePicture);
-        if (ParseUser.getCurrentUser().getUsername().equals(currentUser.getUsername())) {
-            btnLogOut.setVisibility(View.VISIBLE);
-            btnLogOut.setOnClickListener(new View.OnClickListener() {
+        if (!ParseUser.getCurrentUser().getUsername().equals(currentUser.getUsername())) {
+            btnFollow.setVisibility(View.VISIBLE);
+            btnFollow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onLogout();
-                }
-            });
-            btnChangeProfilePic.setVisibility(View.VISIBLE);
-            btnChangeProfilePic.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    chooseProfilePicture();
+                    //onFollow();
                 }
             });
         } else {
-            btnLogOut.setVisibility(View.INVISIBLE);
+            btnFollow.setVisibility(View.INVISIBLE);
         }
+        rvProfilePosts.setAdapter(adapter);
+        rvProfilePosts.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        queryPosts();
+    }
+
+    protected void queryPosts() {
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        query.include(Post.KEY_AUTHOR);
+        query.whereEqualTo(Post.KEY_AUTHOR, currentUser);
+        query.setLimit(20);
+        query.addDescendingOrder(Post.KEY_CREATED_AT);
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> posts, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting posts", e);
+                    return;
+                }
+                allPosts.addAll(posts);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
