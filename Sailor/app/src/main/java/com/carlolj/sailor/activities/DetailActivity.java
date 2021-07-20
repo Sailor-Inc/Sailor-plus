@@ -42,13 +42,15 @@ public class DetailActivity extends AppCompatActivity {
         ivProfilePicture = findViewById(R.id.ivProfilePicture);
         tvUsername = findViewById(R.id.tvUsername);
         String username = getIntent().getStringExtra("username");
-        Post post = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_POST));
 
-        tvUsername.setText(username);
+        Post post = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_POST));
 
         Glide.with(getApplicationContext())
                 .load(post.getLocationImage().getUrl())
                 .into(ivPostImage);
+
+        tvUsername.setText(username);
+
         try {
             Glide.with(getApplicationContext())
                     .load(post.getAuthor().fetchIfNeeded().getParseFile("profilePicture").getUrl())
@@ -57,5 +59,9 @@ public class DetailActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    public void goBack(View view) {
+        supportFinishAfterTransition();
     }
 }

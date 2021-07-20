@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Parcel;
 import android.util.Log;
@@ -35,6 +36,7 @@ import com.parse.ParseObject;
 import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -198,7 +200,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra(DetailActivity.EXTRA_POST, Parcels.wrap(post));
         intent.putExtra("username", tvUsername.getText().toString());
-        // Pass data object in the bundle and populate details activity.
         Pair<View, String> p1 = Pair.create((View)ivProfilePicture, "profile");
         Pair<View, String> p2 = Pair.create((View)ivPostImage, "image");
         Pair<View, String> p3 = Pair.create((View)tvUsername, "username");
