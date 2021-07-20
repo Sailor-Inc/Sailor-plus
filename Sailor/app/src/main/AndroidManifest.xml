@@ -33,7 +33,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Sailor">
-        <activity android:name=".activities.PinActivity"></activity>
+        <activity android:name=".activities.DetailActivity"></activity>
 
         <meta-data
             android:name="com.google.android.actions"

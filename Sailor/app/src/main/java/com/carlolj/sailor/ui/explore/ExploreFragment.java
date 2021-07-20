@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.CreateActivity;
-import com.carlolj.sailor.activities.PinActivity;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
 import com.carlolj.sailor.models.Location;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -44,10 +43,11 @@ public class ExploreFragment extends Fragment{
     FloatingActionButton fabAdd;
     private FragmentExploreBinding binding;
 
-    public ExploreFragment() { }
+    public ExploreFragment() {
+    }
 
     /**
-     * When the fragment view is created this method gets called
+     * When the fragment view is created this method gets called, this method initializes the google map
      * @param inflater the layout inflater
      * @param container the ViewGroup container
      * @param savedInstanceState the bundle of the savedInstanceState
@@ -73,6 +73,11 @@ public class ExploreFragment extends Fragment{
         return root;
     }
 
+    /**
+     * This method gets called when the fragment view is created
+     * @param view the current view
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -88,33 +93,44 @@ public class ExploreFragment extends Fragment{
         });
     }
 
+    /**
+     * This method is part of the fragment life cycle and gets called to destrow the current view
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
     }
 
+    /**
+     * This method will load all the marker positions and set on click listeners to each marker in the map to open a new fragment to see
+     * a certain place posts
+     */
     protected void loadMap() {
         if (map != null) {
             for (int i = 0; i < locations.size(); i++){
                 LatLng markerPosition = new LatLng(locations.get(i).getLatitude(), locations.get(i).getLongitude());
                 String locationUniqueId = locations.get(i).getObjectId();
-                map.addMarker(new MarkerOptions().
-                        position(markerPosition).
-                        title(locations.get(i).getName()).
-                        snippet(locationUniqueId));
-                map.moveCamera(CameraUpdateFactory.newLatLng(markerPosition));
+                map.addMarker(new MarkerOptions()
+                        .position(markerPosition)
+                        .title(locations.get(i).getName())
+                        .snippet(locationUniqueId));
             }
+            map.getMinZoomLevel();
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
                     String locationUniqueId = marker.getSnippet();
-                    marker.setSnippet("");
                     String locationTitle = marker.getTitle();
-                    Log.d("ExploreFragment ", marker.getId());
-                    Intent i = new Intent(getContext(), PinActivity.class);
-                    i.putExtra("locationUniqueId", locationUniqueId);
-                    i.putExtra("locationTitle", locationTitle);
-                    startActivity(i);
+
+                    Fragment fragment = PinFragment.newInstance(locationUniqueId, locationTitle);
+
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.flContainer, fragment)
+                            .addToBackStack(null)
+                            .commit();
+
+                    Log.d("ExploreFragment ", locationUniqueId);
                     return false;
                 }
             });
@@ -123,6 +139,10 @@ public class ExploreFragment extends Fragment{
         }
     }
 
+    /**
+     * This method returns the top locations registered in the Sailor+ database
+     * @param googleMap a initialized google map.
+     */
     private void getTopLocations(GoogleMap googleMap) {
         map = googleMap;
         ParseQuery<Location> query = ParseQuery.getQuery(Location.class);

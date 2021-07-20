@@ -17,8 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -30,6 +32,7 @@ import com.carlolj.sailor.activities.DetailActivity;
 import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.controllers.PostHelper;
 import com.carlolj.sailor.models.Post;
+import com.carlolj.sailor.ui.profile.ProfileFragment;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 
@@ -116,7 +119,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         }
 
         /**
-         * This method gets called when the item is pressed
+         * This method gets called when the item is pressed to open a detailed view
          * @param v te current view
          */
         @Override
@@ -133,6 +136,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             PostHelper.getTopState(post, ivTops);
             tvTops.setText(Integer.toString(post.getTopsNumber()));
             tvDate.setText(PostHelper.calculateTimeAgo(post.getCreatedAt()));
+
+            ivProfilePicture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AppCompatActivity activity = (AppCompatActivity) context;
+                    Fragment fragment;
+                    fragment = new ProfileFragment(post.getAuthor());
+                    ((AppCompatActivity) context).getSupportFragmentManager();
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
+                }
+            });
 
             //On click listener in the image view of the triangle
             ivTops.setOnClickListener(new View.OnClickListener() {
@@ -196,6 +210,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         }
     }
 
+    /**
+     * This method will open a new detailed activity for a selected post
+     * @param post the post that the user is trying to see
+     * @param ivProfilePicture the profile picture of the author of the post
+     * @param ivPostImage the Image of the post
+     * @param tvUsername the username of the author
+     */
     public void openDetailedView(Post post, ImageView ivProfilePicture, ImageView ivPostImage, TextView tvUsername){
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra(DetailActivity.EXTRA_POST, Parcels.wrap(post));
