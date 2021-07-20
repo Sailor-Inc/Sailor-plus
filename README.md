@@ -26,7 +26,7 @@ Sailor+ is an app created to find and share the best places to travel around the
   * **Log up/in Screen**
     - [ ] User can sign in/sign up to an account using Parse
 
-  * **Map** 
+  * **Map**
     - [ ] User can see a map with the top 20 places
     - [ ] User can see a list of the top user photos of a selected place inside a modal/new activity
     - [ ] User can filter by friends locations
@@ -37,7 +37,7 @@ Sailor+ is an app created to find and share the best places to travel around the
     - [ ] User can click on the image to see a detailed view
     - [ ] User can double click an image to top a location/post
     - [ ] User can click on the location of the selected post to see a modal/activity of the top posts of that location
-    - [ ] User can scroll down with endless scrolling (or until there are no more photos to show) 
+    - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)
 
   * **Profile screen**
     - [ ] User can click on a button to see the settings of his account
@@ -73,7 +73,7 @@ Sailor+ is an app created to find and share the best places to travel around the
 * Log up/in Screen
   * User can sign in/sign up to an account using Parse
 
-* Map 
+* Map
   * User can see a map with the top 20 places
   * User can see a list of the top user photos of a selected place inside a modal/new activity
   * User can filter by friends locations
@@ -83,7 +83,7 @@ Sailor+ is an app created to find and share the best places to travel around the
   * User can see a feed with latest photos and details of the places of the people they follow
   * User can click on the image to see a detailed view
   * User can click on the location of the selected post to see a modal/activity of the top posts of that location
-  * User can scroll down with endless scrolling (or until there are no more photos to show) 
+  * User can scroll down with endless scrolling (or until there are no more photos to show)
 
 * Profile screen
   * User can click on a button to see the settings of his account
@@ -118,9 +118,9 @@ Sailor+ is an app created to find and share the best places to travel around the
 **Flow Navigation** (Screen to Screen)
 
 * Map screen
-   * Location posts 
+   * Location posts
    * Create location
-   * 
+   *
 * [list second screen here]
    * [list screen navigation here]
    * ...
@@ -139,7 +139,7 @@ Sailor+ is an app created to find and share the best places to travel around the
 
 <img src="wireframes/wireframe.gif" width=300>
 
-## Schema 
+## Schema
 ### Models
 #### User
 
@@ -150,7 +150,7 @@ Sailor+ is an app created to find and share the best places to travel around the
    | followers     | List<Pointer to user>| Followers of the user |
    | following     | List<Pointer to user> | People followed by the user |
    | profilePicture| File | User profile picture|
- 
+
 #### Post
    | Property      | Type     | Description |
    | ------------- | -------- | ------------|
@@ -161,7 +161,7 @@ Sailor+ is an app created to find and share the best places to travel around the
    | location      | Pointer to location | object location for a post|
    | createdAt     | DateTime | date when post is created (default field) |
    | updatedAt     | DateTime | date when post is last updated (default field) |
- 
+
  #### Location
    | Property      | Type     | Description |
    | ------------- | -------- | ------------|
@@ -169,7 +169,7 @@ Sailor+ is an app created to find and share the best places to travel around the
    | locationPosts | List<Pointer to Post>  | List of Posts of that location |
    | createdAt     | DateTime | date when post is created (default field) |
    | updatedAt     | DateTime | date when post is last updated (default field) |
-   
+
 ### Networking
 #### List of network requests by screen
    - Home Feed Screen
@@ -179,7 +179,7 @@ Sailor+ is an app created to find and share the best places to travel around the
          query.whereKey("author", equalTo: currentUser)
          query.order(byDescending: "createdAt")
          query.findObjectsInBackground { (posts: [PFObject]?, error: Error?) in
-            if let error = error { 
+            if let error = error {
                print(error.localizedDescription)
             } else if let posts = posts {
                print("Successfully retrieved \(posts.count) posts.")
@@ -196,7 +196,7 @@ Sailor+ is an app created to find and share the best places to travel around the
    - Profile Screen
       - (Read/GET) Query logged in user object
       - (Update/PUT) Update user profile image
-     
+
 #### [OPTIONAL:] Existing API Endpoints
 ##### An API Of Ice And Fire
 - Base URL - [http://www.anapioficeandfire.com/api](http://www.anapioficeandfire.com/api)
@@ -223,48 +223,52 @@ Sailor+ is an app created to find and share the best places to travel around the
 
 
  ********************************
- 
+
 Must have app requirements
 
 - [X] Your app has multiple views
 - [X] Your app interacts with a database (e.g. Parse)
 - [X] You can log in/log out of your app as a user
 - [X] You can sign up with a new user profile
-- [ ] Your app integrates with at least one SDK (e.g. Google Maps SDK, Facebook SDK) or API (that you didn’t learn about in CodePath)
+- [X] Your app integrates with at least one SDK (e.g. Google Maps SDK, Facebook SDK) or API (that you didn’t learn about in CodePath)
 - [X] Your app uses at least one gesture (e.g. double tap to like, e.g. pinch to scale)
-- [ ] Your app uses at least one animation (e.g. fade in/out, e.g. animating a view growing and shrinking)
+- [X] Your app uses at least one animation (e.g. fade in/out, e.g. animating a view growing and shrinking)
 - [ ] Your app incorporates at least one external library to add visual polish
 - [X] Your app provides opportunities for you to overcome difficult/ambiguous technical problems (more below)
- 
- 
+
+
 ### 1. User Stories by week (Required and Optional)
 
 * **WEEK 1**
     * **Visuals**
-    - [ ] User uses fragments to move screen to screen 
+    - [X] User uses fragments to move screen to screen
     * **Log in**
-    - [ ] User can sign in/sign up to an account using Parse
-    - [ ] User is persisted
+    - [X] User can sign in/sign up to an account using Parse
+    - [X] User is persisted
     * **Map**
     - [ ] User can see a map with pins of the top 20 places
-      - [ ] User can use see a Google map
+      - [X] User can use see a Google map
       - [ ] The map execute a query to load most popular locations
     - [ ] User can see a list of the top user photos of a selected place inside a modal/new activity
-    - [ ] User can add a photo of his travel location, and a caption
-    * **Profile** 
-    - [ ] User can click on a button in his profile page to see the settings of his account
+    - [X] User can add a photo of his travel location, and a caption
+    * **Profile**
+    - [X] User can click on a button in his profile page to see the settings of his account
       * **Settings screen**
-      - [ ] User can log out
-    - [ ] User can change his profile picture
+      - [X] User can log out
+    - [X] User can change his profile picture
+
+    ### FIRST SPRINT
+
+   <img src="wireframes/firstsprint.gif" width=300>
 
 * **WEEK 2**
     * Map
      - [ ] User can filter by friends locations
        - [ ] The app executes a query that shows the most popular locations of the places your friends have visited
      - [ ] User can click on the location of the selected post to see a modal/activity of the top posts of that location
-     - [ ] User can double click an image to top a location/post
+     - [X] User can double click an image to top a location/post
     * Profile (Personal and specific clicked account)
-    - [ ] User can see that account location posts in a grid layout
+    - [X] User can see that account location posts in a grid layout
        - [ ] The posts will be displayed from newer to oldest
     - [ ] User can click on a location post and see details
     - [ ] User can see an animation when a specific post is selected to show details
@@ -274,7 +278,7 @@ Must have app requirements
  * **WEEK 3**
      * Map
      - [ ] User can filter by location type
-     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts by location)  
+     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts by location)
      * Profile
      - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts)
      * Feed
@@ -284,4 +288,3 @@ Must have app requirements
      * Visuals
      - [ ] The app visuals must be approved by 10 of my friends
      - [ ] The app visuals must be approved by my manager
-
