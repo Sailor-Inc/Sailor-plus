@@ -22,4 +22,5 @@
     <string name="choose_menu_option">Profile menu</string>
     <string name="btn_follow">FOLLOW</string>
     <string name="username">Username</string>
+    <string name="location">Location</string>
 </resources>

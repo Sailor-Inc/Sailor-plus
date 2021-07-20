@@ -1,7 +1,12 @@
 package com.carlolj.sailor.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
+import android.os.Parcel;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,11 +25,15 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.carlolj.sailor.R;
+import com.carlolj.sailor.activities.DetailActivity;
+import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.controllers.PostHelper;
 import com.carlolj.sailor.models.Post;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 
 import org.jetbrains.annotations.NotNull;
+import org.parceler.Parcels;
 
 import java.util.Date;
 import java.util.List;
@@ -108,7 +119,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
          */
         @Override
         public void onClick(View v) {
-            Toast.makeText(context, "Click for a detailed view", Toast.LENGTH_SHORT).show();
+            openDetailedView(posts.get(getAdapterPosition()), ivProfilePicture, ivPostImage, tvUsername);
         }
 
         /**
@@ -142,7 +153,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                         @Override
                         public void run() {
                             if (i == 1) {
-                                Toast.makeText(context, "One click", Toast.LENGTH_SHORT).show();
+                                openDetailedView(post, ivProfilePicture, ivPostImage, tvUsername);
                             }
                             i = 0;
                         }
@@ -181,5 +192,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                     .apply(mediaOptions)
                     .into(ivPostImage);
         }
+    }
+
+    public void openDetailedView(Post post, ImageView ivProfilePicture, ImageView ivPostImage, TextView tvUsername){
+        Intent intent = new Intent(context, DetailActivity.class);
+        intent.putExtra(DetailActivity.EXTRA_POST, Parcels.wrap(post));
+        intent.putExtra("username", tvUsername.getText().toString());
+        // Pass data object in the bundle and populate details activity.
+        Pair<View, String> p1 = Pair.create((View)ivProfilePicture, "profile");
+        Pair<View, String> p2 = Pair.create((View)ivPostImage, "image");
+        Pair<View, String> p3 = Pair.create((View)tvUsername, "username");
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation((Activity) context, p1, p2, p3);
+        context.startActivity(intent, options.toBundle());
     }
 }

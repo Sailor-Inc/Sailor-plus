@@ -32,7 +32,8 @@
                 android:layout_toEndOf="@id/ivProfilePicture"
                 android:layout_marginStart="20dp"
                 android:textColor="@color/black"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:fontFamily="@font/roboto_bold" />
 
             <ImageView
                 android:id="@+id/ivPostImage"
@@ -40,7 +41,8 @@
                 android:layout_height="200dp"
                 android:layout_below="@+id/ivProfilePicture"
                 android:scaleType="centerCrop"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="20dp"
+                android:transitionName="profile" />
 
             <ImageView
                 android:id="@+id/ivTops"
@@ -50,7 +52,7 @@
                 android:layout_toEndOf="@id/ivProfilePicture"
                 android:layout_below="@id/tvUsername"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp" />
 
             <TextView
                 android:id="@+id/tvTops"

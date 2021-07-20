@@ -63,6 +63,13 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    //Palette implementation, get vibrant colors of image
+    implementation "androidx.palette:palette:1.0.0"
+
+    //PARCELER IMPLEMENTATION
+    implementation 'org.parceler:parceler-api:1.1.12'
+    annotationProcessor 'org.parceler:parceler:1.1.12'
+
     //Be able to use parse server and
     implementation 'com.github.parse-community.Parse-SDK-Android:parse:1.25.0'
     // for logging API calls to LogCat
