@@ -46,6 +46,7 @@ import com.carlolj.sailor.adapters.ProfileAdapter;
 import com.carlolj.sailor.controllers.CameraHelper;
 import com.carlolj.sailor.databinding.FragmentProfileBinding;
 import com.carlolj.sailor.models.Post;
+import com.carlolj.sailor.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -75,6 +76,7 @@ public class ProfileFragment extends Fragment {
     TextView tvUsername;
     Button btnFollow;
     RecyclerView rvProfilePosts;
+    TextView tvFollowers, tvFollowing;
 
     protected ProfileAdapter adapter;
     protected List<Post> allPosts;
@@ -99,11 +101,15 @@ public class ProfileFragment extends Fragment {
         btnFollow = binding.btnFollow;
         ivSelectionBox = binding.ivSelectionBox;
         rvProfilePosts = binding.ivProfilePosts;
+        tvFollowers = binding.tvFollowers;
+        tvFollowing = binding.tvFollowing;
 
         allPosts = new ArrayList<>();
         adapter = new ProfileAdapter(getContext(), allPosts);
 
         tvUsername.setText(currentUser.getUsername());
+        tvFollowers.setText(Integer.toString(currentUser.getList("followers").size()));
+        tvFollowing.setText(Integer.toString(currentUser.getList("following").size()));
         Glide.with(getContext()).load(currentUser.getParseFile("profilePicture").getUrl()).circleCrop().into(ivProfilePicture);
         if (!ParseUser.getCurrentUser().getUsername().equals(currentUser.getUsername())) {
             ivSelectionBox.setVisibility(View.GONE);
