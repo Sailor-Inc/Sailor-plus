@@ -41,7 +41,6 @@ public class DetailActivity extends AppCompatActivity {
         ivPostImage = findViewById(R.id.ivPostImage);
         ivProfilePicture = findViewById(R.id.ivProfilePicture);
         tvUsername = findViewById(R.id.tvUsername);
-        String username = getIntent().getStringExtra("username");
 
         Post post = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_POST));
 
@@ -49,7 +48,7 @@ public class DetailActivity extends AppCompatActivity {
                 .load(post.getLocationImage().getUrl())
                 .into(ivPostImage);
 
-        tvUsername.setText(username);
+        tvUsername.setText(post.getAuthor().getUsername());
 
         try {
             Glide.with(getApplicationContext())

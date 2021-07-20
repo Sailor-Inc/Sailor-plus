@@ -103,41 +103,10 @@ public class ProfileFragment extends Fragment {
         allPosts = new ArrayList<>();
         adapter = new ProfileAdapter(getContext(), allPosts);
 
-        ivSelectionBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.choose_menu_option)
-                        .setItems(R.array.menu_options, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
-                                        chooseProfilePicture();
-                                        dialog.cancel();
-                                        break;
-                                    default:
-                                        onLogout();
-                                        dialog.cancel();
-                                        break;
-                                }
-                            }
-                        });
-                final AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
-        });
-
-        ivProfilePicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseProfilePicture();
-            }
-        });
-
         tvUsername.setText(currentUser.getUsername());
         Glide.with(getContext()).load(currentUser.getParseFile("profilePicture").getUrl()).circleCrop().into(ivProfilePicture);
         if (!ParseUser.getCurrentUser().getUsername().equals(currentUser.getUsername())) {
-            btnFollow.setVisibility(View.VISIBLE);
+            ivSelectionBox.setVisibility(View.GONE);
             btnFollow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -145,7 +114,36 @@ public class ProfileFragment extends Fragment {
                 }
             });
         } else {
-            btnFollow.setVisibility(View.INVISIBLE);
+            btnFollow.setVisibility(View.GONE);
+            ivSelectionBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle(R.string.choose_menu_option)
+                            .setItems(R.array.menu_options, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    switch (which) {
+                                        case 0:
+                                            chooseProfilePicture();
+                                            dialog.cancel();
+                                            break;
+                                        default:
+                                            onLogout();
+                                            dialog.cancel();
+                                            break;
+                                    }
+                                }
+                            });
+                    final AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+            });
+            ivProfilePicture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    chooseProfilePicture();
+                }
+            });
         }
         rvProfilePosts.setAdapter(adapter);
         rvProfilePosts.setLayoutManager(new GridLayoutManager(getContext(), 2));

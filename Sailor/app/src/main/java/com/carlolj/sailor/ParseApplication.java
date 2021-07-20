@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.carlolj.sailor.models.Location;
 import com.carlolj.sailor.models.Post;
+import com.carlolj.sailor.models.User;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -11,6 +12,7 @@ public class ParseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ParseObject.registerSubclass(User.class);
         ParseObject.registerSubclass(Post.class);
         ParseObject.registerSubclass(Location.class);
         Parse.initialize(new Parse.Configuration.Builder(this)

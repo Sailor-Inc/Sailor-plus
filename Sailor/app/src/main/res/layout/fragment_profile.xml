@@ -106,25 +106,25 @@
 
         <RelativeLayout
             android:id="@+id/buttons"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/tvUsername"
+            android:layout_marginTop="10dp"
             android:gravity="center">
 
             <Button
                 android:id="@+id/btnFollow"
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
                 android:backgroundTint="@color/black"
                 android:fontFamily="@font/roboto_bold"
                 android:text="@string/btn_follow"
-                android:layout_marginLeft="40dp"
-                android:layout_marginRight="40dp"
-                app:autoSizeTextType="uniform"
-                app:autoSizeMinTextSize="6sp"
                 app:autoSizeMaxTextSize="14sp"
-                app:autoSizeStepGranularity="2sp"/>
+                app:autoSizeMinTextSize="6sp"
+                app:autoSizeStepGranularity="2sp"
+                app:autoSizeTextType="uniform" />
         </RelativeLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

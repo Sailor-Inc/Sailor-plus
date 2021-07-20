@@ -1,21 +1,28 @@
 package com.carlolj.sailor.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.carlolj.sailor.R;
+import com.carlolj.sailor.activities.DetailActivity;
+import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.models.Post;
 import com.parse.ParseFile;
 
 import org.jetbrains.annotations.NotNull;
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -54,16 +61,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             ivPostImage = itemView.findViewById(R.id.ivPostImage);
-
-            ivPostImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    //Intent ii = new Intent(itemView.getContext(), DetailsActivity.class);
-                    //ii.putExtra("Post", Parcels.wrap(posts.get(position)));
-                    //context.startActivity(ii);
-                }
-            });
         }
 
         public void bind(Post post) {
@@ -73,10 +70,29 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                         .load(image.getUrl())
                         .into(ivPostImage);
             }
+            ivPostImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openDetailedView(post, ivPostImage);
+                }
+            });
         }
     }
     public void clear() {
         posts.clear();
         notifyDataSetChanged();
+    }
+
+    /**
+     * This method will open a new detailed activity for a selected post
+     * @param post the post that the user is trying to see
+     * @param ivPostImage the Image of the post
+     */
+    public void openDetailedView(Post post, ImageView ivPostImage){
+        Intent intent = new Intent(context, DetailActivity.class);
+        intent.putExtra(DetailActivity.EXTRA_POST, Parcels.wrap(post));
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation((Activity) context, (View)ivPostImage, "image");
+        context.startActivity(intent, options.toBundle());
     }
 }
