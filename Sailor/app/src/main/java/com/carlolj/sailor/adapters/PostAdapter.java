@@ -1,11 +1,11 @@
 package com.carlolj.sailor.adapters;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,27 +15,43 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.carlolj.sailor.R;
+import com.carlolj.sailor.controllers.PostHelper;
 import com.carlolj.sailor.models.Post;
 import com.parse.ParseException;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Date;
 import java.util.List;
 
+/**
+ * The Post adapter class allows the recycler view to work as expected and populate the view with the
+ * list of posts
+ */
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
     private Context context;
     private List<Post> posts;
 
+    /**
+     * The constructor of the adapter which creates a new adapter with the specified values
+     * @param context the context where the adapter will run
+     * @param posts the list of posts that the the recycler view will store
+     */
     public PostAdapter(Context context, List<Post> posts) {
         this.context = context;
         this.posts = posts;
     }
 
+    /**
+     * When the ViewHolder is created this method inflates the ViewHolder with a xml layout prebuilt file
+     * @param parent the parent ViewGroup
+     * @param viewType the ViewHolder viewType
+     * @return an inflated view with the specified layout
+     */
     @NonNull
     @NotNull
     @Override
@@ -44,13 +60,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
         return new ViewHolder(view);
     }
 
+    /**
+     * This method executes when the ViewHolder is binded to load a different post
+     * @param holder the current ViewHolder
+     * @param position the current item position
+     */
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
         Post post = posts.get(position);
         holder.bind(post);
     }
 
-
+    /**
+     * This method return the size of the list of posts
+     * @return
+     */
     @Override
     public int getItemCount() {
         return posts.size();
@@ -58,32 +82,90 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        ImageView ivProfilePicture, ivPostImage;
-        TextView tvTops, tvUsername;
+        ImageView ivProfilePicture, ivPostImage, ivTops;
+        TextView tvTops, tvUsername, tvDate;
+        int i = 0;
 
+        /**
+         * This method is called when we create a new ViewHolder
+         * @param itemView the current item in the view
+         */
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             ivProfilePicture = itemView.findViewById(R.id.ivProfilePicture);
             ivPostImage = itemView.findViewById(R.id.ivPostImage);
             tvTops = itemView.findViewById(R.id.tvTops);
             tvUsername = itemView.findViewById(R.id.tvUsername);
+            tvDate = itemView.findViewById(R.id.tvDate);
+            ivTops = itemView.findViewById(R.id.ivTops);
 
             itemView.setOnClickListener(this);
         }
 
+        /**
+         * This method gets called when the item is pressed
+         * @param v te current view
+         */
         @Override
         public void onClick(View v) {
-            Toast.makeText(context, "i was clicked", Toast.LENGTH_SHORT);
+            Toast.makeText(context, "Click for a detailed view", Toast.LENGTH_SHORT).show();
         }
 
+        /**
+         * This method gets called when the onBindViewHolder has a new item to load
+         * @param post the received post object
+         */
         public void bind(Post post) {
+            PostHelper.getTopsCount(post, tvTops);
+            PostHelper.getTopState(post, ivTops);
+            tvTops.setText(Integer.toString(post.getTopsNumber()));
+            tvDate.setText(PostHelper.calculateTimeAgo(post.getCreatedAt()));
+
+            //On click listener in the image view of the triangle
+            ivTops.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PostHelper.TopPost(post, ivTops, tvTops, context);
+                }
+            });
+
+            //On click listener in the post image which has the logic to detect if the user pressed twice in a short amount of time
+            //or pressed a single time
+            ivPostImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (i < 2) {
+                        i++;
+                    }
+                    Handler handler = new Handler();
+                    Runnable runn = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (i == 1) {
+                                Toast.makeText(context, "One click", Toast.LENGTH_SHORT).show();
+                            }
+                            i = 0;
+                        }
+                    };
+                    if (i == 1) {
+                        handler.postDelayed(runn, 200);
+                    } else if (i == 2) {
+                        PostHelper.TopPost(post, ivTops, tvTops, context);
+                    }
+                }
+            });
+
+            int tops = post.getTopsNumber();
+            if (tops != 0) {
+                tvTops.setText(String.valueOf(tops));
+            } else {
+                tvTops.setText("No tops");
+            }
             try {
                 tvUsername.setText(post.getAuthor().fetchIfNeeded().getUsername());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            tvTops.setText(Integer.toString(post.getTopsNumber()));
-
             try {
                 Glide.with(context).load(post.getAuthor().fetchIfNeeded().getParseFile("profilePicture").getUrl())
                         .circleCrop()
@@ -98,7 +180,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                     .load(post.getLocationImage().getUrl())
                     .apply(mediaOptions)
                     .into(ivPostImage);
-
         }
     }
 }

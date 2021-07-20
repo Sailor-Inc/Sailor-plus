@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="30dp"
         android:outlineSpotShadowColor="@color/black"
-        android:backgroundTint="#C4C4C4"
+        android:backgroundTint="#EAEAEA"
         android:elevation="10dp"
         android:layout_marginTop="20dp">
 
@@ -28,9 +28,9 @@
                 android:id="@+id/tvUsername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Username"
-                android:layout_toRightOf="@id/ivProfilePicture"
-                android:layout_marginLeft="20dp"
+                android:text="@string/username"
+                android:layout_toEndOf="@id/ivProfilePicture"
+                android:layout_marginStart="20dp"
                 android:textColor="@color/black"
                 android:textSize="16sp"/>
 
@@ -46,12 +46,10 @@
                 android:id="@+id/ivTops"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/triangle"
                 android:rotation="270"
-                app:tint="#808080"
-                android:layout_toRightOf="@id/ivProfilePicture"
+                android:layout_toEndOf="@id/ivProfilePicture"
                 android:layout_below="@id/tvUsername"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"/>
 
             <TextView
@@ -59,13 +57,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="400 tops"
-                android:layout_toRightOf="@id/ivTops"
+                android:layout_toEndOf="@id/ivTops"
                 android:layout_below="@id/tvUsername"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:textColor="@color/black"
                 android:textSize="14sp"/>
 
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_bold"
+                android:text="16h ago"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/ivPostImage"
+                android:layout_centerHorizontal="true"/>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

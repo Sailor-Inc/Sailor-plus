@@ -60,6 +60,14 @@ public class Post extends ParseObject {
         put(KEY_TOPPED_BY,list);
     }
 
+    public void removeTop(String id){
+        List<String> list = getList(KEY_TOPPED_BY);
+        if (list == null)
+            list = new ArrayList<>();
+        list.remove(id);
+        setToppedBy(list);
+    }
+
     public List getToppedBy(){
         return getList(KEY_TOPPED_BY);
     }
