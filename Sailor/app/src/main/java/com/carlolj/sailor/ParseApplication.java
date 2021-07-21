@@ -2,6 +2,7 @@ package com.carlolj.sailor;
 
 import android.app.Application;
 
+import com.carlolj.sailor.models.Follows;
 import com.carlolj.sailor.models.Location;
 import com.carlolj.sailor.models.Post;
 import com.carlolj.sailor.models.User;
@@ -12,6 +13,7 @@ public class ParseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ParseObject.registerSubclass(Follows.class);
         ParseObject.registerSubclass(User.class);
         ParseObject.registerSubclass(Post.class);
         ParseObject.registerSubclass(Location.class);

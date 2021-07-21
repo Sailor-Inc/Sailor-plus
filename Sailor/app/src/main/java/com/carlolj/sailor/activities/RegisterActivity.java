@@ -29,6 +29,7 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.carlolj.sailor.BitmapScaler;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.databinding.ActivityRegisterBinding;
+import com.carlolj.sailor.models.Follows;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -43,6 +44,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import kotlin.collections.EmptyList;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -119,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
             user.signUpInBackground(new SignUpCallback() {
                 public void done(ParseException e) {
                     if (e == null) {
-                        loginInBackground(username,password);
+                        createFollows(user.getObjectId(), username, password);
                     } else {
                         Log.e(TAG, "Issue registering", e);
                         Toast.makeText(RegisterActivity.this, "Error registering, check your connection/credentials", Toast.LENGTH_SHORT).show();
@@ -129,6 +132,23 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    private void createFollows(String userId, String username, String password){
+        Follows follows = new Follows();
+        List<String> emptyList = new ArrayList<>();
+        follows.setFollowers(emptyList);
+        follows.setFollowing(emptyList);
+        follows.setUserId(userId);
+        follows.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null){
+                    Log.e(TAG, "Issue creating table", e);
+                    return;
+                }
+                loginInBackground(username,password);
+            }
+        });
+    }
 
     private void loginInBackground(String username, String password) {
         ParseUser.logInInBackground(username, password, new LogInCallback() {

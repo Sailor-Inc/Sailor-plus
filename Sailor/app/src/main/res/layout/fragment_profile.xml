@@ -56,11 +56,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvStaticFollowers"
-                android:text="12300"
-                android:textSize="14sp"
-                android:textColor="@android:color/black"
                 android:layout_centerHorizontal="true"
-                android:fontFamily="@font/roboto"/>
+                android:fontFamily="@font/roboto"
+                android:text="..."
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tvStaticFollowing"
@@ -83,11 +83,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvStaticFollowing"
-                android:text="300"
-                android:textSize="14sp"
-                android:textColor="@android:color/black"
                 android:layout_centerHorizontal="true"
-                android:fontFamily="@font/roboto"/>
+                android:fontFamily="@font/roboto"
+                android:text="..."
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
         </RelativeLayout>
 
 

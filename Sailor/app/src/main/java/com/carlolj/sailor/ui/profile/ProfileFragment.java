@@ -4,20 +4,14 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.gesture.GestureLibraries;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
-import android.media.Image;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,8 +22,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -38,15 +30,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.carlolj.sailor.BitmapScaler;
 import com.carlolj.sailor.R;
-import com.carlolj.sailor.activities.LoginActivity;
-import com.carlolj.sailor.activities.MainActivity;
-import com.carlolj.sailor.activities.RegisterActivity;
 import com.carlolj.sailor.activities.StartActivity;
 import com.carlolj.sailor.adapters.ProfileAdapter;
-import com.carlolj.sailor.controllers.CameraHelper;
 import com.carlolj.sailor.databinding.FragmentProfileBinding;
+import com.carlolj.sailor.models.Follows;
 import com.carlolj.sailor.models.Post;
-import com.carlolj.sailor.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -67,6 +55,8 @@ public class ProfileFragment extends Fragment {
     private static final int RESULT_PICK = 1;
     private static final int RESULT_TAKE = 2;
     private static final int ACCEPT_CAMERA = 20;
+    private static final int CODE_REMOVE = 0;
+    private static final int CODE_ADD = 1;
 
     ParseFile newProfileImage;
 
@@ -108,15 +98,17 @@ public class ProfileFragment extends Fragment {
         adapter = new ProfileAdapter(getContext(), allPosts);
 
         tvUsername.setText(currentUser.getUsername());
-        tvFollowers.setText(Integer.toString(currentUser.getList("followers").size()));
-        tvFollowing.setText(Integer.toString(currentUser.getList("following").size()));
+
+        followsUpdate(tvFollowers, tvFollowing, btnFollow, currentUser.getObjectId());
+
         Glide.with(getContext()).load(currentUser.getParseFile("profilePicture").getUrl()).circleCrop().into(ivProfilePicture);
         if (!ParseUser.getCurrentUser().getUsername().equals(currentUser.getUsername())) {
             ivSelectionBox.setVisibility(View.GONE);
             btnFollow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //onFollow();
+                    btnFollow.setClickable(false);
+                    setFollow(currentUser.getObjectId(), tvFollowers, btnFollow);
                 }
             });
         } else {
@@ -154,6 +146,127 @@ public class ProfileFragment extends Fragment {
         rvProfilePosts.setAdapter(adapter);
         rvProfilePosts.setLayoutManager(new GridLayoutManager(getContext(), 2));
         queryPosts();
+    }
+
+    private void setFollow(String userId, TextView tvFollowers, Button btnFollow) {
+        ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
+        query.whereEqualTo(Follows.KEY_USER_ID, userId);
+        query.findInBackground(new FindCallback<Follows>() {
+            @Override
+            public void done(List<Follows> objects, ParseException e) {
+                if (e != null){
+                    Log.e(TAG, "Issue with getting object", e);
+                    btnFollow.setClickable(true);
+                    return;
+                }
+                if (objects.get(0).isFollowed()) {
+                    doFollow(objects.get(0),userId,tvFollowers,btnFollow, CODE_REMOVE);
+                } else {
+                    doFollow(objects.get(0), userId, tvFollowers, btnFollow, CODE_ADD);
+                }
+            }
+        });
+    }
+
+    private void doFollow(Follows follows, String userId, TextView tvFollowers, Button btnFollow, int code) {
+        switch (code) {
+            case CODE_ADD:
+                follows.addFollower(ParseUser.getCurrentUser().getObjectId());
+                break;
+            case CODE_REMOVE:
+                follows.removeFollower(ParseUser.getCurrentUser().getObjectId());
+                break;
+        }
+        follows.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null){
+                    Log.e(TAG, "Issue updating followers", e);
+                    btnFollow.setClickable(true);
+                }
+                switch (code) {
+                    case CODE_ADD:
+                        doFollowing(userId, btnFollow, tvFollowers, follows, CODE_ADD);
+                        break;
+                    case CODE_REMOVE:
+                        doFollowing(userId, btnFollow, tvFollowers, follows, CODE_REMOVE);
+                        break;
+                }
+            }
+        });
+    }
+
+    private void doFollowing(String userId, Button btnFollow, TextView tvFollowers, Follows follows, int code) {
+        ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
+        query.whereEqualTo(Follows.KEY_USER_ID, ParseUser.getCurrentUser().getObjectId());
+        query.findInBackground(new FindCallback<Follows>() {
+            @Override
+            public void done(List<Follows> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting object", e);
+                    btnFollow.setClickable(true);
+                    return;
+                }
+                switch (code) {
+                    case CODE_ADD:
+                        objects.get(0).addFollowing(userId);
+                        break;
+                    case CODE_REMOVE:
+                        objects.get(0).removeFollowing(userId);
+                        break;
+                }
+                objects.get(0).saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "Issue updating object", e);
+                            btnFollow.setClickable(true);
+                            return;
+                        }
+                        switch (code) {
+                            case CODE_ADD:
+                                tvFollowers.setText(String.valueOf(follows.getFollowersNumber()));
+                                btnFollow.setBackgroundColor(getResources().getColor(R.color.white));
+                                btnFollow.setTextColor(getResources().getColor(R.color.black));
+                                btnFollow.setText("Unfollow");
+                                btnFollow.setClickable(true);
+                                Toast.makeText(getContext(), "Followed and following process success", Toast.LENGTH_SHORT).show();
+                                break;
+                            case CODE_REMOVE:
+                                tvFollowers.setText(String.valueOf(follows.getFollowersNumber()));
+                                btnFollow.setBackgroundColor(getResources().getColor(R.color.black));
+                                btnFollow.setTextColor(getResources().getColor(R.color.white));
+                                btnFollow.setText("Follow");
+                                btnFollow.setClickable(true);
+                                Toast.makeText(getContext(), "Remove Followed and following process success", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void followsUpdate(TextView tvFollowers, TextView tvFollowing, Button btnFollow,String userId) {
+        ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
+        query.whereEqualTo(Follows.KEY_USER_ID, userId);
+        query.findInBackground(new FindCallback<Follows>() {
+            @Override
+            public void done(List<Follows> objects, ParseException e) {
+                if (e != null){
+                    Log.e(TAG, "Issue with getting object", e);
+                    return;
+                }
+                if (objects.get(0).isFollowed()) {
+                    btnFollow.setBackgroundColor(getResources().getColor(R.color.white));
+                    btnFollow.setTextColor(getResources().getColor(R.color.black));
+                    btnFollow.setText("Unfollow");
+                }
+                Log.d(TAG, "" + objects.get(0).getUserId() + " " + objects.get(0).getFollowers());
+                tvFollowers.setText(String.valueOf(objects.get(0).getFollowersNumber()));
+                tvFollowing.setText(String.valueOf(objects.get(0).getFollowingNumber()));
+            }
+        });
     }
 
     protected void queryPosts() {
