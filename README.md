@@ -265,17 +265,22 @@ Must have app requirements
     * Map
      - [ ] User can filter by friends locations
        - [ ] The app executes a query that shows the most popular locations of the places your friends have visited
+     - [ ] User can filter by distance radius
+       - [ ] The app executes a query that shows the places at a certain distance radius starting at your postition
      - [ ] User can click on the location of the selected post to see a modal/activity of the top posts of that location
      - [X] User can double click an image to top a location/post
     * Profile (Personal and specific clicked account)
     - [X] User can see that account location posts in a grid layout
        - [ ] The posts will be displayed from newer to oldest
-    - [ ] User can click on a location post and see details
-    - [ ] User can see an animation when a specific post is selected to show details
+    - [X] User can click on a location post and see details
+    - [X] User can see an animation when a specific post is selected to show details
     - [ ] User can see the followers of that account
     - [ ] User can see the people that account follows
 
  * **WEEK 3**
+     * App
+     - [ ] At least one notification
+     - [ ] The app can detect NSFW images and avoid uploading them
      * Map
      - [ ] User can filter by location type
      - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts by location)
@@ -286,5 +291,4 @@ Must have app requirements
      - [ ] User can see a feed with the posts your friends gave tops
      - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts)
      * Visuals
-     - [ ] The app visuals must be approved by 10 of my friends
      - [ ] The app visuals must be approved by my manager
