@@ -140,13 +140,14 @@ public class ExploreFragment extends Fragment{
     }
 
     /**
-     * This method returns the top locations registered in the Sailor+ database
+     * This method returns the top 20 most top-ed locations registered in the Sailor+ database
      * @param googleMap a initialized google map.
      */
     private void getTopLocations(GoogleMap googleMap) {
         map = googleMap;
         ParseQuery<Location> query = ParseQuery.getQuery(Location.class);
         query.include(Location.KEY_GMAPS_ID);
+        query.orderByDescending("topsNumber");
         query.setLimit(20);
         query.findInBackground(new FindCallback<Location>() {
             @Override

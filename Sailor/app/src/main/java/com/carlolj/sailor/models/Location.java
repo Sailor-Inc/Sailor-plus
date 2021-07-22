@@ -16,6 +16,7 @@ public class Location extends ParseObject {
     public static final String KEY_NAME = "name";
     public static final String KEY_LAT = "latitude";
     public static final String KEY_LONG = "longitude";
+    public static final String KEY_TOPS = "topsNumber";
 
     //Getter and setters for google maps id
     public String getMapsId() {
@@ -81,5 +82,9 @@ public class Location extends ParseObject {
 
     public void setLongitude(double longitude) {
         put(KEY_LONG, longitude);
+    }
+
+    public int getTopsNumber() {
+        return getInt(KEY_TOPS);
     }
 }

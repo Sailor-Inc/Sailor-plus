@@ -7,8 +7,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.carlolj.sailor.R;
+import com.carlolj.sailor.models.Location;
 import com.carlolj.sailor.models.Post;
+import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -16,6 +19,8 @@ import java.util.Date;
 
 public class PostHelper {
     public static final String TAG = "PostHelper";
+    public static final int ADD_TOP = 1;
+    public static final int REMOVE_TOP = 2;
 
     /**
      * This method allows the current user to top/untop a post
@@ -38,6 +43,7 @@ public class PostHelper {
                     Log.i(TAG, "Post save was successful!");
                     btnTop.setBackgroundResource(R.drawable.triangle);
                     tvTopsNumber.setText(String.valueOf(post.getTopsNumber()));
+                    setTopsLocationNumber(ADD_TOP, post);
                 }
             });
         } else {
@@ -52,6 +58,7 @@ public class PostHelper {
                     Log.i(TAG, "Post save was successful!");
                     btnTop.setBackgroundResource(R.drawable.triangle_outline);
                     tvTopsNumber.setText(String.valueOf(post.getTopsNumber()));
+                    setTopsLocationNumber(REMOVE_TOP, post);
                 }
             });
         }
@@ -114,5 +121,36 @@ public class PostHelper {
             e.printStackTrace();
         }
         return "";
+    }
+
+    private static void setTopsLocationNumber(int code, Post post) {
+        ParseQuery<Location> query = ParseQuery.getQuery(Location.class);
+        query.whereEqualTo("objectId", post.getLocation().getObjectId());
+        query.getFirstInBackground(new GetCallback<Location>() {
+            @Override
+            public void done(Location object, ParseException e) {
+                if (e != null) {
+                    Log.d(TAG, "Error getting location object : " + e);
+                }
+                int topsNumber = object.getTopsNumber();
+                switch (code) {
+                    case ADD_TOP:
+                        topsNumber += 1;
+                        break;
+                    case REMOVE_TOP:
+                        topsNumber -= 1;
+                        break;
+                }
+                object.put("topsNumber", topsNumber);
+                object.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.d(TAG, "Error updating location object : " + e);
+                        }
+                    }
+                });
+            }
+        });
     }
 }
