@@ -13,6 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.adapters.FollowAdapter;
@@ -39,9 +42,11 @@ public class FollowsFragment extends Fragment {
     public static final String TAG = "FollowsFragment";
     ViewPager viewPager;
     TabLayout tabLayout;
-    String userId;
+    ParseUser userId;
+    ImageButton ibBack;
+    TextView tvUsername;
 
-    public FollowsFragment(String userId) {
+    public FollowsFragment(ParseUser userId) {
         this.userId = userId;
     }
 
@@ -58,8 +63,10 @@ public class FollowsFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ibBack = binding.ibBack;
         viewPager = binding.viewPager;
         tabLayout = binding.tabLayout;
+        tvUsername = binding.tvUsername;
     }
 
     @Override
@@ -84,8 +91,24 @@ public class FollowsFragment extends Fragment {
 
             }
         });
+
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new ProfileFragment(userId);
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flContainer, fragment)
+                        .commit();
+            }
+        });
+        tvUsername.setText(userId.getUsername());
     }
 
+    /**
+     * This method will load the fragments inside the viewPager
+     * @param viewPager a ViewPager object
+     */
     private void setUpViewPager(ViewPager viewPager) {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getChildFragmentManager());
 

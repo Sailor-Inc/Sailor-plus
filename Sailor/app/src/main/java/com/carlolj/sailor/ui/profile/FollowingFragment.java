@@ -1,5 +1,6 @@
 package com.carlolj.sailor.ui.profile;
 
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,11 +13,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
-import com.carlolj.sailor.R;
 import com.carlolj.sailor.adapters.FollowAdapter;
-import com.carlolj.sailor.databinding.FragmentFollowersBinding;
+import com.carlolj.sailor.controllers.FollowsHelper;
 import com.carlolj.sailor.databinding.FragmentFollowingBinding;
 import com.carlolj.sailor.models.Follows;
 import com.parse.FindCallback;
@@ -31,15 +31,16 @@ import java.util.List;
 
 public class FollowingFragment extends Fragment {
 
+    private final static int FOLLOWING_CODE = 1;
     FragmentFollowingBinding binding;
-    protected FollowAdapter followAdapter;
-    protected List<ParseUser> allFollowing;
+    public FollowAdapter followingAdapter;
+    public List<ParseUser> allFollowing;
     public static final String TAG = "FollowingFragment";
 
-    String userId;
+    ParseUser userId;
     RecyclerView rvFollowing;
 
-    public FollowingFragment(String userId) {
+    public FollowingFragment(ParseUser userId) {
         this.userId = userId;
     }
 
@@ -56,44 +57,11 @@ public class FollowingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rvFollowing = binding.rvFollowing;
-
         allFollowing = new ArrayList<>();
-        followAdapter = new FollowAdapter(getContext(), allFollowing);
+        followingAdapter = new FollowAdapter(getContext(), allFollowing);
 
-        rvFollowing.setAdapter(followAdapter);
+        rvFollowing.setAdapter(followingAdapter);
         rvFollowing.setLayoutManager(new LinearLayoutManager(getContext()));
-        queryFollowing();
-    }
-
-    private void queryFollowing(){
-        ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
-        query.include("following");
-        query.whereEqualTo("userId", userId);
-        query.findInBackground(new FindCallback<Follows>() {
-            @Override
-            public void done(List<Follows> objects, ParseException e) {
-                if (e != null){
-                    Log.e(TAG, "Something went wrong catching followers");
-                }
-                for (int i = 0; i < objects.get(0).getFollowers().size(); i++) {
-                    searchFor(objects.get(0).getFollowing().get(i));
-                }
-            }
-        });
-    }
-
-    private void searchFor(String s) {
-        ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
-        query.whereEqualTo("objectId", s);
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if (e != null){
-                    Log.e(TAG, "Something went wrong catching user");
-                }
-                allFollowing.add(objects.get(0));
-                followAdapter.notifyDataSetChanged();
-            }
-        });
+        FollowsHelper.queryFollowers(allFollowing, followingAdapter, userId, TAG, FOLLOWING_CODE);
     }
 }

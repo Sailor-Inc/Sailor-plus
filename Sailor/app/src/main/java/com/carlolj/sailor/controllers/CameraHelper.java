@@ -6,35 +6,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.ImageDecoder;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.bumptech.glide.Glide;
-import com.carlolj.sailor.BitmapScaler;
 import com.carlolj.sailor.R;
-import com.carlolj.sailor.activities.RegisterActivity;
-import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.SaveCallback;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 
 public class CameraHelper extends AppCompatActivity {
 
@@ -83,7 +70,7 @@ public class CameraHelper extends AppCompatActivity {
     public boolean checkAndRequestPermissions() {
         if (Build.VERSION.SDK_INT >= 23) {
             int cameraPermission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);
-            if (cameraPermission == PackageManager.PERMISSION_DENIED){
+            if (cameraPermission == PackageManager.PERMISSION_DENIED) {
                 ActivityCompat.requestPermissions(activity
                         ,new String[]{Manifest.permission.CAMERA}
                         ,ACCEPT_CAMERA);

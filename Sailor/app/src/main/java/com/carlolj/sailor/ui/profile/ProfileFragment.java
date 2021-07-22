@@ -105,7 +105,7 @@ public class ProfileFragment extends Fragment {
         tvFollowers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new FollowsFragment(currentUser.getObjectId());
+                Fragment fragment = new FollowsFragment(currentUser);
 
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
@@ -114,6 +114,19 @@ public class ProfileFragment extends Fragment {
                         .commit();
             }
         });
+
+        tvFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new FollowsFragment(currentUser);
+
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flContainer, fragment)
+                        .commit();
+            }
+        });
+
         Glide.with(getContext()).load(currentUser.getParseFile("profilePicture").getUrl()).circleCrop().into(ivProfilePicture);
         if (!ParseUser.getCurrentUser().getUsername().equals(currentUser.getUsername())) {
             ivSelectionBox.setVisibility(View.GONE);
@@ -161,13 +174,19 @@ public class ProfileFragment extends Fragment {
         queryPosts();
     }
 
+    /**
+     * This method will follow or unfollow a userId
+     * @param userId a String of the userId to see if it's followed
+     * @param tvFollowers the Textview of the number of followers
+     * @param btnFollow a Button that tells if the user is already followed
+     */
     private void setFollow(String userId, TextView tvFollowers, Button btnFollow) {
         ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
         query.whereEqualTo(Follows.KEY_USER_ID, userId);
         query.findInBackground(new FindCallback<Follows>() {
             @Override
             public void done(List<Follows> objects, ParseException e) {
-                if (e != null){
+                if (e != null) {
                     Log.e(TAG, "Issue with getting object", e);
                     btnFollow.setClickable(true);
                     return;
@@ -181,6 +200,15 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    /**
+     * This method will add/remove a follower and execute a query to save it then it will run a method
+     * to update the following list inside the current user following list
+     * @param follows a Follows object
+     * @param userId a String userId of the user to add or remove from following
+     * @param tvFollowers a TextView of the number of followers
+     * @param btnFollow a Button that tells if the user is already followed
+     * @param code an Integer unique code that tells if the user is already following the user
+     */
     private void doFollow(Follows follows, String userId, TextView tvFollowers, Button btnFollow, int code) {
         switch (code) {
             case CODE_ADD:
@@ -193,7 +221,7 @@ public class ProfileFragment extends Fragment {
         follows.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if (e != null){
+                if (e != null) {
                     Log.e(TAG, "Issue updating followers", e);
                     btnFollow.setClickable(true);
                 }
@@ -209,6 +237,16 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    /**
+     * This method will add or remove a following user to the current user account and will update the
+     * button and text inside the selected profile, so the user can see if the selected user is already
+     * followed
+     * @param userId a String of the userId to see if it's followed
+     * @param btnFollow a Button that tells if the user is already followed
+     * @param tvFollowers a TextView of the number of followers
+     * @param follows a Button that tells if the user is already followed
+     * @param code an Integer unique code that tells if the user is already following the user
+     */
     private void doFollowing(String userId, Button btnFollow, TextView tvFollowers, Follows follows, int code) {
         ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
         query.whereEqualTo(Follows.KEY_USER_ID, ParseUser.getCurrentUser().getObjectId());
@@ -260,6 +298,13 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    /**
+     * This method will check if a selected user is already followed by the current user
+     * @param tvFollowers a TextView of the number of followers
+     * @param tvFollowing a TextView of the number of following
+     * @param btnFollow a Button that tells if the user is already followed
+     * @param userId  String of the userId to see if it's followed by the current user
+     */
     private void followsUpdate(TextView tvFollowers, TextView tvFollowing, Button btnFollow,String userId) {
         ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
         query.whereEqualTo(Follows.KEY_USER_ID, userId);
@@ -345,7 +390,7 @@ public class ProfileFragment extends Fragment {
     private boolean checkAndRequestPermissions() {
         if (Build.VERSION.SDK_INT >= 23) {
             int cameraPermission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA);
-            if (cameraPermission == PackageManager.PERMISSION_DENIED){
+            if (cameraPermission == PackageManager.PERMISSION_DENIED) {
                 ActivityCompat.requestPermissions(getActivity()
                         ,new String[]{Manifest.permission.CAMERA}
                         ,ACCEPT_CAMERA);
