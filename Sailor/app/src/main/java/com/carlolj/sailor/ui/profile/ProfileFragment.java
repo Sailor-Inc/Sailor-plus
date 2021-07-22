@@ -35,6 +35,7 @@ import com.carlolj.sailor.adapters.ProfileAdapter;
 import com.carlolj.sailor.databinding.FragmentProfileBinding;
 import com.carlolj.sailor.models.Follows;
 import com.carlolj.sailor.models.Post;
+import com.carlolj.sailor.ui.explore.PinFragment;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -101,6 +102,18 @@ public class ProfileFragment extends Fragment {
 
         followsUpdate(tvFollowers, tvFollowing, btnFollow, currentUser.getObjectId());
 
+        tvFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new FollowsFragment(currentUser.getObjectId());
+
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flContainer, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
         Glide.with(getContext()).load(currentUser.getParseFile("profilePicture").getUrl()).circleCrop().into(ivProfilePicture);
         if (!ParseUser.getCurrentUser().getUsername().equals(currentUser.getUsername())) {
             ivSelectionBox.setVisibility(View.GONE);
