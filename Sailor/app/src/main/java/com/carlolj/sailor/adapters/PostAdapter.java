@@ -217,7 +217,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
      * @param ivPostImage the Image of the post
      * @param tvUsername the username of the author
      */
-    public void openDetailedView(Post post, ImageView ivProfilePicture, ImageView ivPostImage, TextView tvUsername){
+    public void openDetailedView(Post post, ImageView ivProfilePicture, ImageView ivPostImage, TextView tvUsername) {
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra(DetailActivity.EXTRA_POST, Parcels.wrap(post));
         intent.putExtra("username", tvUsername.getText().toString());

@@ -62,7 +62,6 @@ public class FollowsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         ibBack = binding.ibBack;
         viewPager = binding.viewPager;
         tabLayout = binding.tabLayout;
