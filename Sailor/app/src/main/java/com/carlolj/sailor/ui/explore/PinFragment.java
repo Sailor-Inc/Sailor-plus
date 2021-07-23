@@ -97,23 +97,13 @@ public class PinFragment extends Fragment {
                     Log.e("PinActivity", "Issue with getting locations", e);
                 }
                 if (receivedPosts != null) {
-                    HashMap<Post, Integer> map = new HashMap<Post, Integer>();
-                    //Create the hashmap for each post
-                    for (Post receivedPost : receivedPosts) {
-                        map.put(receivedPost, receivedPost.getTopsNumber());
-                    }
-                    //HashMap<Post, Integer> sortedAscendingMap = sortHashMapAscendingNew(map);
-                    HashMap<Post, Integer> sortedDescendingMap = sortHashMapDescending(map);
-                    //List<Post> sortedPostObjects = new ArrayList<>(sortedAscendingMap.keySet());
-                    List<Post> sortedDescendingPostObjects = new ArrayList<>(sortedDescendingMap.keySet());
-
-                    int maxLength = sortedDescendingPostObjects.size();
+                    Collections.sort(receivedPosts, (Post a1, Post a2) -> a1.getTopsNumber()+a2.getTopsNumber());
+                    int maxLength = receivedPosts.size();
                     if (maxLength > 50) {
-                        allPosts.addAll(sortedDescendingPostObjects.subList(0,50));
+                        allPosts.addAll(receivedPosts.subList(0,50));
                     } else {
-                        allPosts.addAll(sortedDescendingPostObjects);
+                        allPosts.addAll(receivedPosts);
                     }
-
                     adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getContext(), "There are no posts, that's weird..." , Toast.LENGTH_SHORT).show();
