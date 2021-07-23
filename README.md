@@ -24,41 +24,40 @@ Sailor+ is an app created to find and share the best places to travel around the
 
 **Required Must-have Stories**
   * **Log up/in Screen**
-    - [ ] User can sign in/sign up to an account using Parse
+    - [X] User can sign in/sign up to an account using Parse
 
   * **Map**
-    - [ ] User can see a map with the top 20 places
+    - [X] User can see a map with the top 20 places
     - [ ] User can see a list of the top user photos of a selected place inside a modal/new activity
     - [ ] User can filter by friends locations
-    - [ ] User can add a photo of his travel location, and a caption
+    - [X] User can add a photo of his travel location, and a caption
 
   * **Discover/Feed screen**
     - [ ] User can see a feed with latest photos and details of the places of the people they follow
-    - [ ] User can click on the image to see a detailed view
-    - [ ] User can double click an image to top a location/post
+    - [X] User can click on the image to see a detailed view
+    - [X] User can double click an image to top a location/post
     - [ ] User can click on the location of the selected post to see a modal/activity of the top posts of that location
     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)
 
   * **Profile screen**
-    - [ ] User can click on a button to see the settings of his account
+    - [X] User can click on a button to see the settings of his account
       * Settings screen
-      - [ ] User can log out
-     - [ ] User can change his profile picture
-     - [ ] User can see the his followers
-     - [ ] User can see the people they follow
+      - [X] User can log out
+     - [X] User can change his profile picture
+     - [X] User can see the his followers
+     - [X] User can see the people they follow
      - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)
-     - [ ] User can see his location posts in a grid layout
-     - [ ] User can click on a location post and see details
+     - [X] User can see his location posts in a grid layout
+     - [X] User can click on a location post and see details
 
   * **Selected profile screen**
-     - [ ] User can see the followers
-     - [ ] User can see the people that account follows
+     - [X] User can see the followers
+     - [X] User can see the people that account follows
      - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)
-     - [ ] User can see that account location posts in a grid layout
-     - [ ] User can click on a location post and see details
+     - [X] User can see that account location posts in a grid layout
+     - [X] User can click on a location post and see details
 
   * **Visuals**
-     - [ ] The app visuals must be approved by 10 of my friends
      - [ ] The app visuals must be approved by my manager
 
  **Optional Nice-to-have Stories**
@@ -169,6 +168,15 @@ Sailor+ is an app created to find and share the best places to travel around the
    | locationPosts | List<Pointer to Post>  | List of Posts of that location |
    | createdAt     | DateTime | date when post is created (default field) |
    | updatedAt     | DateTime | date when post is last updated (default field) |
+ 
+   #### Follows
+   | Property      | Type     | Description |
+   | ------------- | -------- | ------------|
+   | userId        | String   | id of the user |
+   | followers     | List<String>  | List of User objectId |
+   | following     | List<String>  | List of User objectId |
+   | createdat     | DateTime | date when post is created (default field) |
+   | updatedAt     | DateTime | date when post is last updated (default field) |
 
 ### Networking
 #### List of network requests by screen
@@ -233,7 +241,7 @@ Must have app requirements
 - [X] Your app integrates with at least one SDK (e.g. Google Maps SDK, Facebook SDK) or API (that you didn’t learn about in CodePath)
 - [X] Your app uses at least one gesture (e.g. double tap to like, e.g. pinch to scale)
 - [X] Your app uses at least one animation (e.g. fade in/out, e.g. animating a view growing and shrinking)
-- [ ] Your app incorporates at least one external library to add visual polish
+- [X] Your app incorporates at least one external library to add visual polish
 - [X] Your app provides opportunities for you to overcome difficult/ambiguous technical problems (more below)
 
 
@@ -246,10 +254,10 @@ Must have app requirements
     - [X] User can sign in/sign up to an account using Parse
     - [X] User is persisted
     * **Map**
-    - [ ] User can see a map with pins of the top 20 places
+    - [X] User can see a map with pins of the top 20 places
       - [X] User can use see a Google map
-      - [ ] The map execute a query to load most popular locations
-    - [ ] User can see a list of the top user photos of a selected place inside a modal/new activity
+      - [X] The map execute a query to load most popular locations
+    - [X] User can see a list of the top user photos of a selected place inside a modal/new activity
     - [X] User can add a photo of his travel location, and a caption
     * **Profile**
     - [X] User can click on a button in his profile page to see the settings of his account
@@ -271,11 +279,11 @@ Must have app requirements
      - [X] User can double click an image to top a location/post
     * Profile (Personal and specific clicked account)
     - [X] User can see that account location posts in a grid layout
-       - [ ] The posts will be displayed from newer to oldest
+       - [X] The posts will be displayed from newer to oldest
     - [X] User can click on a location post and see details
     - [X] User can see an animation when a specific post is selected to show details
-    - [ ] User can see the followers of that account
-    - [ ] User can see the people that account follows
+    - [X] User can see the followers of that account
+    - [X] User can see the people that account follows
 
  * **WEEK 3**
      * App
