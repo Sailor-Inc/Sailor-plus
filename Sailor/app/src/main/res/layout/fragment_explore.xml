@@ -43,4 +43,12 @@
             android:backgroundTint="@color/blue"
             android:layout_margin="30dp" />
     </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/btnFilterByFriends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/cvMap"
+        android:layout_centerHorizontal="true"
+        android:text="Filter by friends" />
 </RelativeLayout>
