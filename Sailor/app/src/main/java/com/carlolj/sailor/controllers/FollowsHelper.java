@@ -10,6 +10,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class FollowsHelper {
 
@@ -46,16 +48,26 @@ public class FollowsHelper {
                 switch (code) {
                     case FOLLOWING_CODE:
                         if (objects.get(0).getFollowing() != null) {
-                            for (int i = 0; i < objects.get(0).getFollowing().size(); i++) {
-                                searchFor(objects.get(0).getFollowing().get(i) + "", list, adapter, TAG);
-                            }
+                            Optional<ParseUser> matchingObject = objects.get(0).getFollowing().stream().
+                                    filter(p -> p.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())).
+                                    findFirst();
+
+                            matchingObject.ifPresent(user -> user.setUsername("You"));
+
+                            list.addAll(objects.get(0).getFollowing());
+                            adapter.notifyDataSetChanged();
                         }
                         break;
                     case FOLLOWERS_CODE:
                         if (objects.get(0).getFollowers() != null) {
-                            for (int i = 0; i < objects.get(0).getFollowers().size(); i++) {
-                                searchFor(objects.get(0).getFollowers().get(i) + "", list, adapter, TAG);
-                            }
+                            Optional<ParseUser> matchingObject = objects.get(0).getFollowers().stream().
+                                    filter(p -> p.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())).
+                                    findFirst();
+
+                            matchingObject.ifPresent(user -> user.setUsername("You"));
+
+                            list.addAll(objects.get(0).getFollowers());
+                            adapter.notifyDataSetChanged();
                         }
                         break;
                 }
