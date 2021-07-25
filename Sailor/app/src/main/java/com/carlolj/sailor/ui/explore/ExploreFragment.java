@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,7 +18,6 @@ import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.CreateActivity;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
 import com.carlolj.sailor.models.Location;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -39,8 +40,11 @@ public class ExploreFragment extends Fragment{
     private List<Location> locations;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
+    boolean isOpen, isFiltering = false;
 
-    FloatingActionButton fabAdd;
+    FloatingActionButton fabAdd, fabMore, fabFilter, fabFriends, fabTopLocations, fabDistance;
+    Animation fabOpen, fabClose, fabClockwise, fabAntiClockwise, fabOpen2, fabClose2, fabClockwise2, fabAntiClockwise2;
+
     private FragmentExploreBinding binding;
 
     public ExploreFragment() {
@@ -64,7 +68,7 @@ public class ExploreFragment extends Fragment{
                 @Override
                 public void onMapReady(@NonNull @NotNull GoogleMap googleMap) {
                     googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                    getTopLocations(googleMap);
+                    map = googleMap;
                 }
             });
         } else {
@@ -82,13 +86,101 @@ public class ExploreFragment extends Fragment{
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        fabMore = binding.fabMore;
         fabAdd = binding.fabAdd;
+        fabFilter = binding.fabFilter;
+        fabDistance = binding.fabDistance;
+        fabFriends = binding.fabFriends;
+        fabTopLocations = binding.fabTopLocations;
+
+        fabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim);
+        fabClose = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim);
+        fabClockwise = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_clockwise);
+        fabAntiClockwise = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_anticlockwise);
+        fabOpen2 = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim2);
+        fabClose2 = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim2);
+        fabClockwise2 = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_clockwise2);
+        fabAntiClockwise2 = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_anticlockwise2);
+
+
+        fabMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isOpen) {
+                    if (isFiltering) {
+                        fabFilter.startAnimation(fabAntiClockwise2);
+                        fabFriends.startAnimation(fabClose2);
+                        fabTopLocations.startAnimation(fabClose2);
+                        fabDistance.startAnimation(fabClose2);
+
+                        fabFriends.setClickable(false);
+                        fabTopLocations.setClickable(false);
+                        fabDistance.setClickable(false);
+
+                        isFiltering = false;
+                    }
+                    fabMore.startAnimation(fabAntiClockwise);
+                    fabAdd.startAnimation(fabClose);
+                    fabFilter.startAnimation(fabClose);
+
+                    fabAdd.setClickable(false);
+                    fabFilter.setClickable(false);
+                    isOpen = false;
+                } else {
+                    fabMore.startAnimation(fabClockwise);
+                    fabAdd.startAnimation(fabOpen);
+                    fabFilter.startAnimation(fabOpen);
+
+                    fabAdd.setClickable(true);
+                    fabFilter.setClickable(true);
+                    isOpen = true;
+                }
+            }
+        });
+
+        fabFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isOpen && !isFiltering) {
+                    fabFilter.startAnimation(fabClockwise2);
+                    fabFriends.startAnimation(fabOpen2);
+                    fabTopLocations.startAnimation(fabOpen2);
+                    fabDistance.startAnimation(fabOpen2);
+
+                    fabFriends.setClickable(true);
+                    fabTopLocations.setClickable(true);
+                    fabDistance.setClickable(true);
+
+                    isFiltering = true;
+                } else {
+                    if (isOpen && isFiltering) {
+                        fabFilter.startAnimation(fabAntiClockwise2);
+                        fabFriends.startAnimation(fabClose2);
+                        fabTopLocations.startAnimation(fabClose2);
+                        fabDistance.startAnimation(fabClose2);
+
+                        fabFriends.setClickable(false);
+                        fabTopLocations.setClickable(false);
+                        fabDistance.setClickable(false);
+
+                        isFiltering = false;
+                    }
+                }
+            }
+        });
 
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), CreateActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        fabTopLocations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getTopLocations();
             }
         });
     }
@@ -141,10 +233,8 @@ public class ExploreFragment extends Fragment{
 
     /**
      * This method returns the top 20 most top-ed locations registered in the Sailor+ database
-     * @param googleMap a initialized google map.
      */
-    private void getTopLocations(GoogleMap googleMap) {
-        map = googleMap;
+    private void getTopLocations() {
         ParseQuery<Location> query = ParseQuery.getQuery(Location.class);
         query.include(Location.KEY_GMAPS_ID);
         query.orderByDescending("topsNumber");

@@ -16,39 +16,102 @@
         android:fontFamily="@font/comfortaa"
         android:textColor="@color/black"/>
 
-    <androidx.cardview.widget.CardView
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/cvMap"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/tvTitle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardCornerRadius="60dp"
-        app:cardElevation="5dp">
+        android:id="@+id/mapContainer">
 
-        <fragment
-            android:id="@+id/googleMap"
-            android:layout_below="@+id/tvTitle"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvMap"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            class="com.google.android.gms.maps.SupportMapFragment"/>
+            app:cardCornerRadius="60dp"
+            app:cardElevation="5dp">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/googleMap"
+                android:layout_below="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                class="com.google.android.gms.maps.SupportMapFragment"/>
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/blue"
+            android:contentDescription="@string/create"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="30dp"
+            android:src="@drawable/add"
+            app:fabSize="normal" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start|bottom"
-            android:src="@drawable/add"
+            android:layout_below="@+id/fabMore"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="@color/green"
             android:contentDescription="@string/create"
-            android:backgroundTint="@color/blue"
-            android:layout_margin="30dp" />
-    </androidx.cardview.widget.CardView>
+            android:src="@drawable/ic_edit"
+            android:visibility="invisible"
+            app:fabSize="mini" />
 
-    <Button
-        android:id="@+id/btnFilterByFriends"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/cvMap"
-        android:layout_centerHorizontal="true"
-        android:text="Filter by friends" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabFilter"
+            android:layout_below="@+id/fabAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="@color/green"
+            android:contentDescription="@string/create"
+            android:src="@drawable/ic_filter"
+            app:fabSize="mini"
+            android:visibility="invisible"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabTopLocations"
+            android:layout_toRightOf="@+id/fabAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_alignTop="@+id/fabFilter"
+            android:backgroundTint="@color/cardview_light_background"
+            android:contentDescription="@string/create"
+            android:src="@drawable/ic_top"
+            app:fabSize="mini" android:visibility="invisible"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabFriends"
+            android:layout_toRightOf="@+id/fabTopLocations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_alignTop="@+id/fabFilter"
+            android:backgroundTint="@color/cardview_light_background"
+            android:contentDescription="@string/create"
+            android:src="@drawable/ic_friend"
+            android:translationZ="12dp"
+            app:fabSize="mini"
+            android:visibility="invisible"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabDistance"
+            android:layout_toRightOf="@+id/fabFriends"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_alignTop="@+id/fabFilter"
+            android:backgroundTint="@color/cardview_light_background"
+            android:contentDescription="@string/create"
+            android:src="@drawable/ic_location"
+            android:translationZ="12dp"
+            app:fabSize="mini"
+            android:visibility="invisible"/>
+    </RelativeLayout>
 </RelativeLayout>

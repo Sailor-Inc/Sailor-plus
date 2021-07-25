@@ -6,8 +6,6 @@ def apikeyPropertiesFile = rootProject.file("apikey.properties")
 def apikeyProperties = new Properties()
 apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
-def googlemapapikey = apikeyProperties.getProperty('gmaps.key')
-
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -25,7 +23,6 @@ android {
         buildConfigField("String", "BACK4APP_SERVER_URL", apikeyProperties['BACK4APP_SERVER_URL'])
         buildConfigField("String", "BACK4APP_APP_ID", apikeyProperties['BACK4APP_APP_ID'])
         buildConfigField("String", "BACK4APP_CLIENT_KEY", apikeyProperties['BACK4APP_CLIENT_KEY'])
-
     }
 
     buildTypes {
