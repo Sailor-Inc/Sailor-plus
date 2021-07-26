@@ -168,7 +168,7 @@ Sailor+ is an app created to find and share the best places to travel around the
    | locationPosts | List<Pointer to Post>  | List of Posts of that location |
    | createdAt     | DateTime | date when post is created (default field) |
    | updatedAt     | DateTime | date when post is last updated (default field) |
- 
+
    #### Follows
    | Property      | Type     | Description |
    | ------------- | -------- | ------------|
@@ -284,6 +284,8 @@ Must have app requirements
     - [X] User can see an animation when a specific post is selected to show details
     - [X] User can see the followers of that account
     - [X] User can see the people that account follows
+
+  <img src="wireframes/secondsprint.gif" width=300>
 
  * **WEEK 3**
      * App
