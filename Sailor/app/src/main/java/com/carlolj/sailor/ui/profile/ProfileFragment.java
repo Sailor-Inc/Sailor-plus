@@ -134,7 +134,7 @@ public class ProfileFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     btnFollow.setClickable(false);
-                    setFollow(currentUser.getObjectId(), tvFollowers, btnFollow);
+                    setFollow(currentUser, tvFollowers, btnFollow);
                 }
             });
         } else {
@@ -180,9 +180,9 @@ public class ProfileFragment extends Fragment {
      * @param tvFollowers the Textview of the number of followers
      * @param btnFollow a Button that tells if the user is already followed
      */
-    private void setFollow(String userId, TextView tvFollowers, Button btnFollow) {
+    private void setFollow(ParseUser parseUser, TextView tvFollowers, Button btnFollow) {
         ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
-        query.whereEqualTo(Follows.KEY_USER_ID, userId);
+        query.whereEqualTo(Follows.KEY_USER_ID, parseUser.getObjectId());
         query.findInBackground(new FindCallback<Follows>() {
             @Override
             public void done(List<Follows> objects, ParseException e) {
@@ -191,10 +191,12 @@ public class ProfileFragment extends Fragment {
                     btnFollow.setClickable(true);
                     return;
                 }
-                if (objects.get(0).isFollowed()) {
-                    doFollow(objects.get(0),userId,tvFollowers,btnFollow, CODE_REMOVE);
-                } else {
-                    doFollow(objects.get(0), userId, tvFollowers, btnFollow, CODE_ADD);
+                if (objects != null) {
+                    if (objects.get(0).isFollowed()) {
+                        doFollow(objects.get(0),parseUser,tvFollowers,btnFollow, CODE_REMOVE);
+                    } else {
+                        doFollow(objects.get(0), parseUser, tvFollowers, btnFollow, CODE_ADD);
+                    }
                 }
             }
         });
@@ -209,13 +211,13 @@ public class ProfileFragment extends Fragment {
      * @param btnFollow a Button that tells if the user is already followed
      * @param code an Integer unique code that tells if the user is already following the user
      */
-    private void doFollow(Follows follows, String userId, TextView tvFollowers, Button btnFollow, int code) {
+    private void doFollow(Follows follows, ParseUser parseUser, TextView tvFollowers, Button btnFollow, int code) {
         switch (code) {
             case CODE_ADD:
-                follows.addFollower(ParseUser.getCurrentUser().getObjectId());
+                follows.addFollower(ParseUser.getCurrentUser());
                 break;
             case CODE_REMOVE:
-                follows.removeFollower(ParseUser.getCurrentUser().getObjectId());
+                follows.removeFollower(ParseUser.getCurrentUser());
                 break;
         }
         follows.saveInBackground(new SaveCallback() {
@@ -224,13 +226,14 @@ public class ProfileFragment extends Fragment {
                 if (e != null) {
                     Log.e(TAG, "Issue updating followers", e);
                     btnFollow.setClickable(true);
+                    return;
                 }
                 switch (code) {
                     case CODE_ADD:
-                        doFollowing(userId, btnFollow, tvFollowers, follows, CODE_ADD);
+                        doFollowing(parseUser, btnFollow, tvFollowers, follows, CODE_ADD);
                         break;
                     case CODE_REMOVE:
-                        doFollowing(userId, btnFollow, tvFollowers, follows, CODE_REMOVE);
+                        doFollowing(parseUser, btnFollow, tvFollowers, follows, CODE_REMOVE);
                         break;
                 }
             }
@@ -247,7 +250,7 @@ public class ProfileFragment extends Fragment {
      * @param follows a Button that tells if the user is already followed
      * @param code an Integer unique code that tells if the user is already following the user
      */
-    private void doFollowing(String userId, Button btnFollow, TextView tvFollowers, Follows follows, int code) {
+    private void doFollowing(ParseUser parseUser, Button btnFollow, TextView tvFollowers, Follows follows, int code) {
         ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
         query.whereEqualTo(Follows.KEY_USER_ID, ParseUser.getCurrentUser().getObjectId());
         query.findInBackground(new FindCallback<Follows>() {
@@ -260,10 +263,10 @@ public class ProfileFragment extends Fragment {
                 }
                 switch (code) {
                     case CODE_ADD:
-                        objects.get(0).addFollowing(userId);
+                        objects.get(0).addFollowing(parseUser);
                         break;
                     case CODE_REMOVE:
-                        objects.get(0).removeFollowing(userId);
+                        objects.get(0).removeFollowing(parseUser);
                         break;
                 }
                 objects.get(0).saveInBackground(new SaveCallback() {
@@ -289,7 +292,7 @@ public class ProfileFragment extends Fragment {
                                 btnFollow.setTextColor(getResources().getColor(R.color.white));
                                 btnFollow.setText("Follow");
                                 btnFollow.setClickable(true);
-                                Toast.makeText(getContext(), "Remove Followed and following process success", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Remove followed and following process success", Toast.LENGTH_SHORT).show();
                                 break;
                         }
                     }
@@ -306,6 +309,7 @@ public class ProfileFragment extends Fragment {
      * @param userId  String of the userId to see if it's followed by the current user
      */
     private void followsUpdate(TextView tvFollowers, TextView tvFollowing, Button btnFollow,String userId) {
+        btnFollow.setClickable(false);
         ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
         query.whereEqualTo(Follows.KEY_USER_ID, userId);
         query.findInBackground(new FindCallback<Follows>() {
@@ -320,9 +324,9 @@ public class ProfileFragment extends Fragment {
                     btnFollow.setTextColor(getResources().getColor(R.color.black));
                     btnFollow.setText("Unfollow");
                 }
-                Log.d(TAG, "" + objects.get(0).getUserId() + " " + objects.get(0).getFollowers());
                 tvFollowers.setText(String.valueOf(objects.get(0).getFollowersNumber()));
                 tvFollowing.setText(String.valueOf(objects.get(0).getFollowingNumber()));
+                btnFollow.setClickable(true);
             }
         });
     }

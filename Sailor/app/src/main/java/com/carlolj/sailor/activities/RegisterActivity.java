@@ -134,7 +134,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void createFollows(String userId, String username, String password){
         Follows follows = new Follows();
-        List<String> emptyList = new ArrayList<>();
+        List<ParseUser> emptyList = new ArrayList<>();
         follows.setFollowers(emptyList);
         follows.setFollowing(emptyList);
         follows.setUserId(userId);

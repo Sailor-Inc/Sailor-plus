@@ -1,5 +1,7 @@
 package com.carlolj.sailor.models;
 
+import android.util.Log;
+
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -26,7 +28,7 @@ public class Follows extends ParseObject {
     }
 
     //Getter, setter and helpers for followers
-    public List<String> getFollowers() {
+    public List<ParseUser> getFollowers() {
         return getList(KEY_FOLLOWERS);
     }
 
@@ -38,63 +40,78 @@ public class Follows extends ParseObject {
             return 0;
     }
 
-    public void addFollower(String id) {
-        List<String> list = getList(KEY_FOLLOWERS);
+    public void addFollower(ParseUser user) {
+        List<ParseUser> list = getList(KEY_FOLLOWERS);
         if (list == null) {
             list = new ArrayList<>();
         }
-        list.add(id);
+        list.add(user);
         setFollowers(list);
     }
 
-    public void setFollowers(List<String> list) {
+    public void setFollowers(List<ParseUser> list) {
         put(KEY_FOLLOWERS, list);
     }
 
     //Getter, setter and helpers for following
-    public List<String> getFollowing() {
+    public List<ParseUser> getFollowing() {
         return getList(KEY_FOLLOWING);
     }
 
     public int getFollowingNumber() {
-        List<String> list = getList(KEY_FOLLOWING);
+        List<ParseUser> list = getList(KEY_FOLLOWING);
         if (list != null)
             return list.size();
         else
             return 0;
     }
 
-    public void addFollowing(String id) {
-        List<String> list = getList(KEY_FOLLOWING);
+    public void addFollowing(ParseUser user) {
+        List<ParseUser> list = getList(KEY_FOLLOWING);
         if (list == null) {
             list = new ArrayList<>();
         }
-        list.add(id);
+        list.add(user);
         setFollowing(list);
     }
 
-    public void setFollowing(List<String> list) {
+    public void setFollowing(List<ParseUser> list) {
         put(KEY_FOLLOWING, list);
     }
 
     public boolean isFollowed() {
-        List<String> list = getList(KEY_FOLLOWERS);
-        return list != null && list.contains(ParseUser.getCurrentUser().getObjectId());
+        List<ParseUser> list = getList(KEY_FOLLOWERS);
+        return list != null && containsUser(list, ParseUser.getCurrentUser());
     }
 
-    public void removeFollower(String id){
-        List<String> list = getList(KEY_FOLLOWERS);
-        if (list == null)
-            list = new ArrayList<>();
-        list.remove(id);
-        setFollowers(list);
+    private boolean containsUser(List<ParseUser> list, ParseUser user) {
+        for (ParseUser parseUser : list) {
+            if (parseUser.hasSameId(user)) return true;
+        }
+        return false;
     }
 
-    public void removeFollowing(String id){
-        List<String> list = getList(KEY_FOLLOWING);
+    public void removeFollower(ParseUser user){
+        List<ParseUser> list = getList(KEY_FOLLOWERS);
         if (list == null)
             list = new ArrayList<>();
-        list.remove(id);
-        setFollowing(list);
+        for (ParseUser parseUser : list) {
+            if (parseUser.hasSameId(user)) {
+                list.remove(parseUser);
+                setFollowers(list);
+            }
+        }
+    }
+
+    public void removeFollowing(ParseUser user){
+        List<ParseUser> list = getList(KEY_FOLLOWING);
+        if (list == null)
+            list = new ArrayList<>();
+        for (ParseUser parseUser : list) {
+            if (parseUser.hasSameId(user)) {
+                list.remove(parseUser);
+                setFollowing(list);
+            }
+        }
     }
 }

@@ -10,6 +10,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class FollowsHelper {
 
@@ -46,45 +48,29 @@ public class FollowsHelper {
                 switch (code) {
                     case FOLLOWING_CODE:
                         if (objects.get(0).getFollowing() != null) {
-                            for (int i = 0; i < objects.get(0).getFollowing().size(); i++) {
-                                searchFor(objects.get(0).getFollowing().get(i) + "", list, adapter, TAG);
-                            }
+                            Optional<ParseUser> matchingObject = objects.get(0).getFollowing().stream().
+                                    filter(p -> p.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())).
+                                    findFirst();
+
+                            matchingObject.ifPresent(user -> user.setUsername("You"));
+
+                            list.addAll(objects.get(0).getFollowing());
+                            adapter.notifyDataSetChanged();
                         }
                         break;
                     case FOLLOWERS_CODE:
                         if (objects.get(0).getFollowers() != null) {
-                            for (int i = 0; i < objects.get(0).getFollowers().size(); i++) {
-                                searchFor(objects.get(0).getFollowers().get(i) + "", list, adapter, TAG);
-                            }
+                            Optional<ParseUser> matchingObject = objects.get(0).getFollowers().stream().
+                                    filter(p -> p.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())).
+                                    findFirst();
+
+                            matchingObject.ifPresent(user -> user.setUsername("You"));
+
+                            list.addAll(objects.get(0).getFollowers());
+                            adapter.notifyDataSetChanged();
                         }
                         break;
                 }
-            }
-        });
-    }
-
-    /**
-     * The searchFor method will search for the userIds inside the ParseUser class in the database and will
-     * add a ParseUser object inside the received list, then the FollowAdapter will get notified.
-     * @param user the string userId to search in the database
-     * @param list a ParseUser list that the adapter will use to populate the RecyclerView
-     * @param adapter a FollowAdapter that will show each of the users inside the RecyclerView
-     * @param TAG a TAG of the calling Fragment
-     */
-    public static void searchFor(String user, List<ParseUser> list, FollowAdapter adapter, String TAG) {
-        ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
-        query.whereEqualTo("objectId", user);
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Something went wrong catching user");
-                }
-                if (ParseUser.getCurrentUser().getObjectId().equals(user)) {
-                    objects.get(0).setUsername("You");
-                }
-                list.add(0, objects.get(0));
-                adapter.notifyItemInserted(0);
             }
         });
     }
