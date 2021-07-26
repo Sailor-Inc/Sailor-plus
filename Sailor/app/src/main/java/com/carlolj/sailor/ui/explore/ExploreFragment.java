@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.CreateActivity;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
+import com.carlolj.sailor.models.Follows;
 import com.carlolj.sailor.models.Location;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,12 +27,16 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ExploreFragment extends Fragment{
@@ -183,6 +188,13 @@ public class ExploreFragment extends Fragment{
                 getTopLocations();
             }
         });
+
+        fabFriends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFriendsLocations();
+            }
+        });
     }
 
     /**
@@ -197,7 +209,7 @@ public class ExploreFragment extends Fragment{
      * This method will load all the marker positions and set on click listeners to each marker in the map to open a new fragment to see
      * a certain place posts
      */
-    protected void loadMap() {
+    protected void loadMap() throws ParseException {
         if (map != null) {
             for (int i = 0; i < locations.size(); i++){
                 LatLng markerPosition = new LatLng(locations.get(i).getLatitude(), locations.get(i).getLongitude());
@@ -235,6 +247,10 @@ public class ExploreFragment extends Fragment{
      * This method returns the top 20 most top-ed locations registered in the Sailor+ database
      */
     private void getTopLocations() {
+        map.clear();
+        if (locations != null) {
+            locations.clear();
+        }
         ParseQuery<Location> query = ParseQuery.getQuery(Location.class);
         query.include(Location.KEY_GMAPS_ID);
         query.orderByDescending("topsNumber");
@@ -248,9 +264,56 @@ public class ExploreFragment extends Fragment{
                 if (receivedLocations != null) {
                     locations = new ArrayList<>();
                     locations.addAll(receivedLocations);
-                    loadMap();
+                    try {
+                        loadMap();
+                    } catch (ParseException parseException) {
+                        parseException.printStackTrace();
+                    }
                 } else {
                     Toast.makeText(getContext(), "There are no locations! be the first one to add a pin!" , Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void getFriendsLocations() {
+        map.clear();
+        if (locations != null) {
+            locations.clear();
+        }
+        ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
+        query.whereEqualTo(Follows.KEY_USER_ID, ParseUser.getCurrentUser().getObjectId());
+        query.getFirstInBackground(new GetCallback<Follows>() {
+            @Override
+            public void done(Follows object, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting follows object", e);
+                    return;
+                }
+                List<ParseUser> friends = object.getFollowing();
+                if (friends!=null) {
+                    HashMap<Location, Integer> friendsLocations = new HashMap<>();
+                    for (ParseUser friend : friends) {
+                        try {
+                            List<Location> locations = friend.fetchIfNeeded().getList("visitedLocations");
+                            if (locations != null) {
+                                for (Location location : locations) {
+                                    friendsLocations.put(location,1);
+                                }
+                            }
+                        } catch (ParseException parseException) {
+                            parseException.printStackTrace();
+                        }
+                    }
+                    locations = new ArrayList<>();
+                    List<Location> keyList = new ArrayList<Location>(friendsLocations.keySet());
+                    Log.d("Showing friends locations" , keyList+"");
+                    locations.addAll(keyList);
+                    try {
+                        loadMap();
+                    } catch (ParseException parseException) {
+                        parseException.printStackTrace();
+                    }
                 }
             }
         });

@@ -1,6 +1,7 @@
 package com.carlolj.sailor.models;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 
 import java.util.ArrayList;
@@ -53,13 +54,13 @@ public class Location extends ParseObject {
         put(KEY_POSTS, list);
     }
 
-    public List getLocationPostBy() {
-        return getList(KEY_POSTS);
+    public List getLocationPostBy() throws ParseException {
+        return fetchIfNeeded().getList(KEY_POSTS);
     }
 
     //Getter and setter for name
-    public String getName() {
-        return getString(KEY_NAME);
+    public String getName() throws ParseException {
+        return fetchIfNeeded().getString(KEY_NAME);
     }
 
     public void setName(String name) {
@@ -67,8 +68,8 @@ public class Location extends ParseObject {
     }
 
     //Getter and setter for latitude
-    public double getLatitude() {
-        return getDouble(KEY_LAT);
+    public double getLatitude() throws ParseException {
+        return fetchIfNeeded().getDouble(KEY_LAT);
     }
 
     public void setLatitude(double latitude) {
@@ -76,15 +77,15 @@ public class Location extends ParseObject {
     }
 
     //Getter and setter for latitude
-    public double getLongitude() {
-        return getDouble(KEY_LONG);
+    public double getLongitude() throws ParseException {
+        return fetchIfNeeded().getDouble(KEY_LONG);
     }
 
     public void setLongitude(double longitude) {
         put(KEY_LONG, longitude);
     }
 
-    public int getTopsNumber() {
-        return getInt(KEY_TOPS);
+    public int getTopsNumber() throws ParseException {
+        return fetchIfNeeded().getInt(KEY_TOPS);
     }
 }

@@ -132,7 +132,12 @@ public class PostHelper {
                 if (e != null) {
                     Log.d(TAG, "Error getting location object : " + e);
                 }
-                int topsNumber = object.getTopsNumber();
+                int topsNumber = 0;
+                try {
+                    topsNumber = object.getTopsNumber();
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
                 switch (code) {
                     case ADD_TOP:
                         topsNumber += 1;
