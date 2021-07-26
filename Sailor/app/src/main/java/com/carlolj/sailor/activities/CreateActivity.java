@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class is used to create a new post with a location selected via google places api
@@ -153,6 +154,47 @@ public class CreateActivity extends AppCompatActivity {
                 } else {
                     createNewLocationAndPost();
                 }
+            }
+        });
+    }
+
+    /**
+     * This method searches for a repeated google map id to add a visitedLocation inside the current user
+     * @param locationCheck a Location object that we want to compare inside the curret user visitedLocations
+     * @throws ParseException a Parse Exception
+     */
+    private void checkVisitedLocations(Location locationCheck) throws ParseException {
+        List<Location> visitedLocations = ParseUser.getCurrentUser().getList("visitedLocations");
+        if (visitedLocations != null) {
+            int count = 0;
+            boolean found = false;
+            while (count<visitedLocations.size() && !found) {
+                if (visitedLocations.get(count).fetchIfNeeded().get("gmapsId").equals(locationCheck.getMapsId())) {
+                    found = true;
+                }
+                count++;
+            }
+            if (!found) {
+                addUserNewLocation(locationCheck);
+            }
+        } else {
+            addUserNewLocation(locationCheck);
+        }
+    }
+
+    /**
+     * This method adds a location object inside current user visitedLocations field
+     * @param location the location object to be inserted
+     */
+    private void addUserNewLocation(Location location) {
+        ParseUser.getCurrentUser().add("visitedLocations", location);
+        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.d(TAG, "Location was not added to visitedLocations");
+                }
+                Log.d(TAG, "Location added to visitedLocations");
             }
         });
     }
@@ -394,7 +436,12 @@ public class CreateActivity extends AppCompatActivity {
                             Toast.makeText(CreateActivity.this, "Repeated location not refreshed!", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        List list = location.getLocationPostBy();
+                        List list = null;
+                        try {
+                            list = location.getLocationPostBy();
+                        } catch (ParseException parseException) {
+                            parseException.printStackTrace();
+                        }
                         list.add(post.getObjectId());
                         location.setLocationPostBy(list);
                         location.saveInBackground(new SaveCallback() {
@@ -402,6 +449,11 @@ public class CreateActivity extends AppCompatActivity {
                             public void done(ParseException e) {
                                 if (e != null) {
                                     Toast.makeText(CreateActivity.this, "Failed to insert post", Toast.LENGTH_SHORT).show();
+                                }
+                                try {
+                                    checkVisitedLocations(location);
+                                } catch (ParseException parseException) {
+                                    parseException.printStackTrace();
                                 }
                                 Toast.makeText(CreateActivity.this, "Your post was added to the location", Toast.LENGTH_SHORT).show();
                             }
