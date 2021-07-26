@@ -74,30 +74,4 @@ public class FollowsHelper {
             }
         });
     }
-
-    /**
-     * The searchFor method will search for the userIds inside the ParseUser class in the database and will
-     * add a ParseUser object inside the received list, then the FollowAdapter will get notified.
-     * @param user the string userId to search in the database
-     * @param list a ParseUser list that the adapter will use to populate the RecyclerView
-     * @param adapter a FollowAdapter that will show each of the users inside the RecyclerView
-     * @param TAG a TAG of the calling Fragment
-     */
-    public static void searchFor(String user, List<ParseUser> list, FollowAdapter adapter, String TAG) {
-        ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
-        query.whereEqualTo("objectId", user);
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Something went wrong catching user");
-                }
-                if (ParseUser.getCurrentUser().getObjectId().equals(user)) {
-                    objects.get(0).setUsername("You");
-                }
-                list.add(0, objects.get(0));
-                adapter.notifyItemInserted(0);
-            }
-        });
-    }
 }

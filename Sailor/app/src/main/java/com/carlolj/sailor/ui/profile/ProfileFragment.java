@@ -226,6 +226,7 @@ public class ProfileFragment extends Fragment {
                 if (e != null) {
                     Log.e(TAG, "Issue updating followers", e);
                     btnFollow.setClickable(true);
+                    return;
                 }
                 switch (code) {
                     case CODE_ADD:
@@ -291,7 +292,7 @@ public class ProfileFragment extends Fragment {
                                 btnFollow.setTextColor(getResources().getColor(R.color.white));
                                 btnFollow.setText("Follow");
                                 btnFollow.setClickable(true);
-                                Toast.makeText(getContext(), "Remove Followed and following process success", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Remove followed and following process success", Toast.LENGTH_SHORT).show();
                                 break;
                         }
                     }
@@ -308,6 +309,7 @@ public class ProfileFragment extends Fragment {
      * @param userId  String of the userId to see if it's followed by the current user
      */
     private void followsUpdate(TextView tvFollowers, TextView tvFollowing, Button btnFollow,String userId) {
+        btnFollow.setClickable(false);
         ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
         query.whereEqualTo(Follows.KEY_USER_ID, userId);
         query.findInBackground(new FindCallback<Follows>() {
@@ -324,6 +326,7 @@ public class ProfileFragment extends Fragment {
                 }
                 tvFollowers.setText(String.valueOf(objects.get(0).getFollowersNumber()));
                 tvFollowing.setText(String.valueOf(objects.get(0).getFollowingNumber()));
+                btnFollow.setClickable(true);
             }
         });
     }
