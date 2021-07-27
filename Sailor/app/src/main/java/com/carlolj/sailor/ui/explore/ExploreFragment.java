@@ -279,15 +279,15 @@ public class ExploreFragment extends Fragment {
             public void onClick(DialogInterface dialog, int id) {
                 map.clear();
                 int radius = Integer.parseInt(userinput.getText().toString());
-                if (radius > 100000) {
-                    radius = 100000;
+                if (radius > 10000) {
+                    radius = 10000;
                     Toast.makeText(getContext(),
-                            "Your radius is bigger than allowed, making it 10,000km",
+                            "Your radius is bigger than allowed, making it 100,000km",
                             Toast.LENGTH_SHORT).show();
                 }
                 CircleOptions circleOptions = new CircleOptions();
                 circleOptions.center(latLng);
-                circleOptions.radius(radius*100);
+                circleOptions.radius(radius*1000);
                 circleOptions.strokeColor(Color.BLACK);
                 circleOptions.fillColor(0x30ff0000);
                 circleOptions.strokeWidth(2);
@@ -442,7 +442,6 @@ public class ExploreFragment extends Fragment {
                 if (receivedLocations != null) {
                     locations = new ArrayList<>();
                     for (Location location : receivedLocations) {
-                        Log.d("Distance:", locations + " : " + radius);
                         LatLng locationLatLng = new LatLng(0,0);
                         try {
                             locationLatLng = new LatLng(location.getLatitude(),location.getLongitude());
@@ -468,8 +467,7 @@ public class ExploreFragment extends Fragment {
     private boolean isInRadius(LatLng latLngUser, LatLng locationLatLng, int radius) {
         if (latLngUser != null && locationLatLng != null) {
             int distance = (int) SphericalUtil.computeDistanceBetween(latLngUser,locationLatLng);
-            Log.d("Distance:", distance + " : " + radius);
-            return distance/100<=radius;
+            return distance/1000<=radius;
         }
         return false;
     }
