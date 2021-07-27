@@ -290,15 +290,11 @@ Must have app requirements
  * **WEEK 3**
      * App
      - [ ] At least one notification
-     - [ ] The app can detect NSFW images and avoid uploading them
      * Map
      - [ ] User can filter by location type
-     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts by location)
-     * Profile
-     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts)
+       - [ ] The user can see a multiple item view to filter in the map
      * Feed
      - [ ] User can see a feed with latest photos and details of the places of the people they follow
      - [ ] User can see a feed with the posts your friends gave tops
-     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)(posts)
      * Visuals
      - [ ] The app visuals must be approved by my manager
