@@ -289,8 +289,8 @@ Must have app requirements
      * App
      - [ ] At least one notification
      * Map
-     - [ ] User can filter by distance radius
-       - [ ] The app executes a query that shows the places at a certain distance radius starting at your postition
+     - [X] User can filter by distance radius
+       - [X] The app executes a query that shows the places at a certain distance radius starting at your postition
      - [ ] User can filter by location type
        - [ ] The user can see a multiple item view to filter in the map
      * Feed
