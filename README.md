@@ -273,8 +273,6 @@ Must have app requirements
     * Map
      - [X] User can filter by friends locations
        - [X] The app executes a query that shows the most popular locations of the places your friends have visited
-     - [ ] User can filter by distance radius
-       - [ ] The app executes a query that shows the places at a certain distance radius starting at your postition
      - [ ] User can click on the location of the selected post to see a modal/activity of the top posts of that location
      - [X] User can double click an image to top a location/post
     * Profile (Personal and specific clicked account)
@@ -291,6 +289,8 @@ Must have app requirements
      * App
      - [ ] At least one notification
      * Map
+     - [ ] User can filter by distance radius
+       - [ ] The app executes a query that shows the places at a certain distance radius starting at your postition
      - [ ] User can filter by location type
        - [ ] The user can see a multiple item view to filter in the map
      * Feed
