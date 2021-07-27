@@ -1,6 +1,9 @@
 package com.carlolj.sailor.ui.explore;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,19 +15,29 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.CreateActivity;
+import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
 import com.carlolj.sailor.models.Follows;
 import com.carlolj.sailor.models.Location;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -39,13 +52,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ExploreFragment extends Fragment{
+import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+
+public class ExploreFragment extends Fragment {
 
     public static final String TAG = "ExploreFragment";
     private List<Location> locations;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
-    boolean isOpen, isFiltering = false;
+    boolean isPermissionGranted, isOpen, isFiltering = false;
+    private FusedLocationProviderClient mLocationClient;
 
     FloatingActionButton fabAdd, fabMore, fabFilter, fabFriends, fabTopLocations, fabDistance;
     Animation fabOpen, fabClose, fabClockwise, fabAntiClockwise, fabOpen2, fabClose2, fabClockwise2, fabAntiClockwise2;
@@ -77,10 +93,11 @@ public class ExploreFragment extends Fragment{
                 }
             });
         } else {
-                Toast.makeText(getContext(), "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
         }
         return root;
     }
+
 
     /**
      * This method gets called when the fragment view is created
@@ -107,6 +124,7 @@ public class ExploreFragment extends Fragment{
         fabClockwise2 = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_clockwise2);
         fabAntiClockwise2 = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_anticlockwise2);
 
+        mLocationClient = new FusedLocationProviderClient(getActivity());
 
         fabMore.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,6 +213,46 @@ public class ExploreFragment extends Fragment{
                 getFriendsLocations();
             }
         });
+
+        fabDistance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (locationCheckPermission()) {
+                    getCurrentLocation();
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},44);
+                }
+            }
+        });
+    }
+
+    private void getCurrentLocation() {
+        Task<android.location.Location> task = mLocationClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<android.location.Location>() {
+            @Override
+            public void onSuccess(android.location.Location location) {
+                if (location != null) {
+                    goToLocation(location.getLatitude(), location.getLongitude());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 44) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation();
+            }
+        }
+    }
+
+    private void goToLocation(double latitude, double longitude) {
+        LatLng latLng = new LatLng(latitude,longitude);
+        Log.d("Hello", "I'm here'");
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+        map.moveCamera(cameraUpdate);
     }
 
     /**
@@ -317,5 +375,13 @@ public class ExploreFragment extends Fragment{
                 }
             }
         });
+    }
+
+    private boolean locationCheckPermission() {
+        if (ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        return false;
     }
 }
