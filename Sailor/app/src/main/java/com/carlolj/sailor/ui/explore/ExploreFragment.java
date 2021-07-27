@@ -2,8 +2,10 @@ package com.carlolj.sailor.ui.explore;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,11 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.carlolj.sailor.R;
@@ -32,6 +37,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -39,6 +45,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.maps.android.SphericalUtil;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.Parse;
@@ -73,8 +80,9 @@ public class ExploreFragment extends Fragment {
 
     /**
      * When the fragment view is created this method gets called, this method initializes the google map
-     * @param inflater the layout inflater
-     * @param container the ViewGroup container
+     *
+     * @param inflater           the layout inflater
+     * @param container          the ViewGroup container
      * @param savedInstanceState the bundle of the savedInstanceState
      * @return the returned view
      */
@@ -101,7 +109,8 @@ public class ExploreFragment extends Fragment {
 
     /**
      * This method gets called when the fragment view is created
-     * @param view the current view
+     *
+     * @param view               the current view
      * @param savedInstanceState the saved instance state
      */
     @Override
@@ -220,13 +229,18 @@ public class ExploreFragment extends Fragment {
                 if (locationCheckPermission()) {
                     getCurrentLocation();
                 } else {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},44);
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
                 }
             }
         });
     }
 
     private void getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
         Task<android.location.Location> task = mLocationClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<android.location.Location>() {
             @Override
@@ -249,10 +263,46 @@ public class ExploreFragment extends Fragment {
     }
 
     private void goToLocation(double latitude, double longitude) {
-        LatLng latLng = new LatLng(latitude,longitude);
-        Log.d("Hello", "I'm here'");
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+        LatLng latLng = new LatLng(latitude, longitude);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 4);
         map.moveCamera(cameraUpdate);
+
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        final View textenter = inflater.inflate(R.layout.dialog_add, null);
+        final EditText userinput = (EditText) textenter.findViewById(R.id.etRadius);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setView(textenter)
+                .setTitle("Filter by radius");
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                map.clear();
+                int radius = Integer.parseInt(userinput.getText().toString());
+                if (radius > 100000) {
+                    radius = 100000;
+                    Toast.makeText(getContext(),
+                            "Your radius is bigger than allowed, making it 10,000km",
+                            Toast.LENGTH_SHORT).show();
+                }
+                CircleOptions circleOptions = new CircleOptions();
+                circleOptions.center(latLng);
+                circleOptions.radius(radius*100);
+                circleOptions.strokeColor(Color.BLACK);
+                circleOptions.fillColor(0x30ff0000);
+                circleOptions.strokeWidth(2);
+                map.addCircle(circleOptions);
+
+                getRadiusLocations(latLng, radius);
+            }
+        })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        builder.show();
     }
 
     /**
@@ -375,6 +425,53 @@ public class ExploreFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void getRadiusLocations(LatLng latLngUser, int radius) {
+        if (locations != null) {
+            locations.clear();
+        }
+        ParseQuery<Location> query = ParseQuery.getQuery(Location.class);
+        query.include(Location.KEY_GMAPS_ID);
+        query.findInBackground(new FindCallback<Location>() {
+            @Override
+            public void done(List<Location> receivedLocations, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting locations", e);
+                }
+                if (receivedLocations != null) {
+                    locations = new ArrayList<>();
+                    for (Location location : receivedLocations) {
+                        Log.d("Distance:", locations + " : " + radius);
+                        LatLng locationLatLng = new LatLng(0,0);
+                        try {
+                            locationLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+                        } catch (ParseException parseException) {
+                            parseException.printStackTrace();
+                        }
+                        if (isInRadius(latLngUser, locationLatLng, radius)) {
+                            locations.add(location);
+                        }
+                    }
+                    try {
+                        loadMap();
+                    } catch (ParseException parseException) {
+                        parseException.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "There are no locations! be the first one to add a pin!" , Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private boolean isInRadius(LatLng latLngUser, LatLng locationLatLng, int radius) {
+        if (latLngUser != null && locationLatLng != null) {
+            int distance = (int) SphericalUtil.computeDistanceBetween(latLngUser,locationLatLng);
+            Log.d("Distance:", distance + " : " + radius);
+            return distance/100<=radius;
+        }
+        return false;
     }
 
     private boolean locationCheckPermission() {
