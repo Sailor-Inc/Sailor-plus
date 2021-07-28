@@ -10,8 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,6 +21,7 @@ import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.DetailActivity;
 import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.models.Post;
+import com.carlolj.sailor.ui.feed.DetailFragment;
 import com.parse.ParseFile;
 
 import org.jetbrains.annotations.NotNull;
@@ -89,10 +92,20 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
      * @param ivPostImage the Image of the post
      */
     public void openDetailedView(Post post, ImageView ivPostImage){
-        Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra(DetailActivity.EXTRA_POST, Parcels.wrap(post));
-        ActivityOptionsCompat options = ActivityOptionsCompat.
-                makeSceneTransitionAnimation((Activity) context, (View)ivPostImage, "image");
-        context.startActivity(intent, options.toBundle());
+        AppCompatActivity activity = (AppCompatActivity) context;
+
+        Fragment fragment = new DetailFragment(post);
+
+        ((AppCompatActivity) context).getSupportFragmentManager();
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.flContainer, fragment)
+                .commit();
+
+        //Intent intent = new Intent(context, DetailActivity.class);
+        //intent.putExtra(DetailActivity.EXTRA_POST, Parcels.wrap(post));
+        //ActivityOptionsCompat options = ActivityOptionsCompat.
+        //        makeSceneTransitionAnimation((Activity) context, (View)ivPostImage, "image");
+        //context.startActivity(intent, options.toBundle());
     }
 }

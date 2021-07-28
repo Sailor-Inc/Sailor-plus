@@ -11,7 +11,7 @@
         android:id="@+id/action_compose"
         android:enabled="true"
         android:icon="@drawable/ic_new"
-        android:title="@string/text_compose"
+        android:title="@string/text_explore"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_profile"

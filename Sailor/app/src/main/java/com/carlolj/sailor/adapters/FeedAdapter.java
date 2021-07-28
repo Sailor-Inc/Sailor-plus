@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,7 @@ import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.DetailActivity;
 import com.carlolj.sailor.controllers.PostHelper;
 import com.carlolj.sailor.models.Post;
+import com.carlolj.sailor.ui.feed.DetailFragment;
 import com.carlolj.sailor.ui.profile.ProfileFragment;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -79,7 +81,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             tvDate = itemView.findViewById(R.id.tvDate);
             ivTops = itemView.findViewById(R.id.ivTops);
             ivProfilePicture = itemView.findViewById(R.id.ivProfilePicture);
-
         }
 
         public void bind(Post post) {
@@ -169,14 +170,24 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
      * @param tvUsername the username of the author
      */
     public void openDetailedView(Post post, ImageView ivProfilePicture, ImageView ivPostImage, TextView tvUsername) {
-        Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra(DetailActivity.EXTRA_POST, Parcels.wrap(post));
-        intent.putExtra("username", tvUsername.getText().toString());
-        Pair<View, String> p1 = Pair.create((View)ivProfilePicture, "profile");
-        Pair<View, String> p2 = Pair.create((View)ivPostImage, "image");
-        Pair<View, String> p3 = Pair.create((View)tvUsername, "username");
-        ActivityOptionsCompat options = ActivityOptionsCompat.
-                makeSceneTransitionAnimation((Activity) context, p1, p2, p3);
-        context.startActivity(intent, options.toBundle());
+        AppCompatActivity activity = (AppCompatActivity) context;
+
+        Fragment fragment = new DetailFragment(post);
+
+        ((AppCompatActivity) context).getSupportFragmentManager();
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                //.addSharedElement(tvUsername, "1")
+                .replace(R.id.flContainer, fragment)
+                .commit();
+        //Intent intent = new Intent(context, DetailActivity.class);
+        //intent.putExtra(DetailActivity.EXTRA_POST, Parcels.wrap(post));
+        //intent.putExtra("username", tvUsername.getText().toString());
+        //Pair<View, String> p1 = Pair.create((View)ivProfilePicture, "profile");
+        //Pair<View, String> p2 = Pair.create((View)ivPostImage, "image");
+        //Pair<View, String> p3 = Pair.create((View)tvUsername, "username");
+        //ActivityOptionsCompat options = ActivityOptionsCompat.
+        //        makeSceneTransitionAnimation((Activity) context, p1, p2, p3);
+        //context.startActivity(intent, options.toBundle());
     }
 }
