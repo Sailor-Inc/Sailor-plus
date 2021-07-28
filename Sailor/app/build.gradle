@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
 }
 
+apply plugin: 'com.google.gms.google-services'
+
 def apikeyPropertiesFile = rootProject.file("apikey.properties")
 def apikeyProperties = new Properties()
 apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
@@ -88,4 +90,13 @@ dependencies {
 
     //Swipe to refresh layout
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
+    implementation platform('com.google.firebase:firebase-bom:28.3.0')
+
+    //Firebase
+    implementation 'com.google.firebase:firebase-core:19.0.0'
+    implementation 'com.google.firebase:firebase-messaging:22.0.0'
+    //Parse Notifications
+    implementation "com.github.parse-community.Parse-SDK-Android:fcm:1.26.0"
+    implementation "com.github.parse-community.Parse-SDK-Android:bolts-tasks:1.26.0"
 }

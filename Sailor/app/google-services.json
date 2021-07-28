@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "433345465046",
+    "project_id": "sailor-10019",
+    "storage_bucket": "sailor-10019.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433345465046:android:127826941e19e1ed7b1777",
+        "android_client_info": {
+          "package_name": "com.carlolj.sailor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "433345465046-dibl3h40rfr8p8mcushhau21f600tm20.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD45n48hnSM2lXrnUUJq0MIbHDfUKw2rs8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "433345465046-dibl3h40rfr8p8mcushhau21f600tm20.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

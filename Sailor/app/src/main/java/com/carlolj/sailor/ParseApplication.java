@@ -7,6 +7,7 @@ import com.carlolj.sailor.models.Location;
 import com.carlolj.sailor.models.Post;
 import com.carlolj.sailor.models.User;
 import com.parse.Parse;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 
 public class ParseApplication extends Application {
@@ -22,5 +23,9 @@ public class ParseApplication extends Application {
                 .clientKey(BuildConfig.BACK4APP_CLIENT_KEY)
                 .server(BuildConfig.BACK4APP_SERVER_URL)
                 .build());
+
+        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+        installation.put("GCMSenderId", R.string.sender_key);
+        installation.saveInBackground();
     }
 }
