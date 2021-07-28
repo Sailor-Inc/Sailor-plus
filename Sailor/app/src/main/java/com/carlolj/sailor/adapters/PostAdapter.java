@@ -1,25 +1,16 @@
 package com.carlolj.sailor.adapters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
-import android.os.Parcel;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,21 +19,15 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.carlolj.sailor.R;
-import com.carlolj.sailor.activities.DetailActivity;
-import com.carlolj.sailor.activities.MainActivity;
+import com.carlolj.sailor.controllers.DetailsHelper;
 import com.carlolj.sailor.controllers.PostHelper;
 import com.carlolj.sailor.models.Post;
 import com.carlolj.sailor.ui.explore.PinFragment;
-import com.carlolj.sailor.ui.feed.DetailFragment;
 import com.carlolj.sailor.ui.profile.ProfileFragment;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 
 import org.jetbrains.annotations.NotNull;
-import org.parceler.Parcels;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,16 +38,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
     private Context context;
     private List<Post> posts;
-    int LAUNCH_SECOND_ACTIVITY = 1;
+    private PinFragment fragment;
 
     /**
      * The constructor of the adapter which creates a new adapter with the specified values
      * @param context the context where the adapter will run
      * @param posts the list of posts that the the recycler view will store
      */
-    public PostAdapter(Context context, List<Post> posts) {
+    public PostAdapter(Context context, List<Post> posts, PinFragment fragment) {
         this.context = context;
         this.posts = posts;
+        this.fragment = fragment;
     }
 
     /**
@@ -87,6 +73,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
         Post post = posts.get(position);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.ivPostImage.setTransitionName("transition" + position);
+        }
+
         holder.bind(post);
     }
 
@@ -127,7 +118,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
          */
         @Override
         public void onClick(View v) {
-            openDetailedView(posts.get(getAdapterPosition()), ivProfilePicture, ivPostImage, tvUsername);
+            DetailsHelper.openPostDetailFragment(getAdapterPosition(), v.findViewById(R.id.ivPostImage), posts.get(getAdapterPosition()), fragment);
         }
 
         /**
@@ -172,7 +163,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                         @Override
                         public void run() {
                             if (i == 1) {
-                                openDetailedView(post, ivProfilePicture, ivPostImage, tvUsername);
+                                DetailsHelper.openPostDetailFragment(getAdapterPosition(), v.findViewById(R.id.ivPostImage), post, fragment);
                             }
                             i = 0;
                         }
@@ -211,34 +202,5 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                     .apply(mediaOptions)
                     .into(ivPostImage);
         }
-    }
-
-    /**
-     * This method will open a new detailed activity for a selected post
-     * @param post the post that the user is trying to see
-     * @param ivProfilePicture the profile picture of the author of the post
-     * @param ivPostImage the Image of the post
-     * @param tvUsername the username of the author
-     */
-    public void openDetailedView(Post post, ImageView ivProfilePicture, ImageView ivPostImage, TextView tvUsername) {
-        AppCompatActivity activity = (AppCompatActivity) context;
-
-        Fragment fragment = new DetailFragment(post);
-
-        ((AppCompatActivity) context).getSupportFragmentManager();
-        activity.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.flContainer, fragment)
-                .commit();
-
-        //Intent intent = new Intent(context, DetailActivity.class);
-        //intent.putExtra(DetailActivity.EXTRA_POST, Parcels.wrap(post));
-        //intent.putExtra("username", tvUsername.getText().toString());
-        //Pair<View, String> p1 = Pair.create((View)ivProfilePicture, "profile");
-        //Pair<View, String> p2 = Pair.create((View)ivPostImage, "image");
-        //Pair<View, String> p3 = Pair.create((View)tvUsername, "username");
-        //ActivityOptionsCompat options = ActivityOptionsCompat.
-        //        makeSceneTransitionAnimation((Activity) context, p1, p2, p3);
-        //((Activity) context).startActivityForResult(intent, LAUNCH_SECOND_ACTIVITY, options.toBundle());
     }
 }

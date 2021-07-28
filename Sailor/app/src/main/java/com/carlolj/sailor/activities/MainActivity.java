@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -24,6 +25,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.transition.TransitionInflater;
 
 import com.carlolj.sailor.databinding.ActivityMainBinding;
 import com.parse.ParseUser;
@@ -95,5 +98,28 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Sorry your device does not support google play services", Toast.LENGTH_SHORT).show();
         }
         return false;
+    }
+
+    /**
+     * function to show the fragment
+     *
+     * @param current current visible fragment
+     * @param tag     fragment tag
+     */
+    public void showFragmentWithTransition(Fragment current, Fragment newFragment, View sharedView, String sharedElementName) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        // check if the fragment is in back stack
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            current.setSharedElementReturnTransition(TransitionInflater.from(this).inflateTransition(R.transition.move));
+            current.setExitTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.no_transition));
+
+            newFragment.setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(R.transition.move));
+            newFragment.setEnterTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.no_transition));
+        }
+        fragmentManager.beginTransaction()
+                .replace(R.id.flContainer, newFragment)
+                .addToBackStack(null)
+                .addSharedElement(sharedView, sharedElementName)
+                .commit();
     }
 }

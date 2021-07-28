@@ -13,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.adapters.PostAdapter;
 import com.carlolj.sailor.databinding.FragmentPinBinding;
 import com.carlolj.sailor.models.Post;
+import com.carlolj.sailor.ui.feed.DetailFragment;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -73,7 +75,7 @@ public class PinFragment extends Fragment {
         View root = binding.getRoot();
 
         allPosts = new ArrayList<>();
-        adapter = new PostAdapter(getContext(), allPosts);
+        adapter = new PostAdapter(getContext(), allPosts, this);
 
         tvTitle = binding.tvTitle;
         rvPosts = binding.rvPosts;
@@ -115,5 +117,20 @@ public class PinFragment extends Fragment {
                 }
             }
         });
+    }
+
+    /**
+     * function to open the Feed detail fragment
+     * @param position Movie list position
+     */
+    public void openMovieDetailFragment(int position, View view, Post post) {
+        if (getActivity() instanceof MainActivity) {
+            DetailFragment detailFragment = new DetailFragment(post);
+            Bundle bundle = new Bundle();
+            bundle.putString("transitionName", "transition" + position);
+
+            detailFragment.setArguments(bundle);
+            ((MainActivity) getActivity()).showFragmentWithTransition(this, detailFragment, view, "transition" + position);
+        }
     }
 }

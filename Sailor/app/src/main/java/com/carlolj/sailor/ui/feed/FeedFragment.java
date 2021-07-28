@@ -1,5 +1,7 @@
 package com.carlolj.sailor.ui.feed;
 
+import android.graphics.Movie;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +14,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.TransitionInflater;
 
+import com.carlolj.sailor.R;
+import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.adapters.FeedAdapter;
 import com.carlolj.sailor.adapters.PostAdapter;
 import com.carlolj.sailor.databinding.FragmentFeedBinding;
@@ -48,7 +53,7 @@ public class FeedFragment extends Fragment {
         View root = binding.getRoot();
 
         allPosts = new ArrayList<>();
-        adapter = new FeedAdapter(getContext(), allPosts);
+        adapter = new FeedAdapter(getContext(), allPosts, this);
 
         rvPosts = binding.rvPosts;
 
@@ -78,4 +83,18 @@ public class FeedFragment extends Fragment {
         });
     }
 
+    /**
+     * function to open the Feed detail fragment
+     * @param position Movie list position
+     */
+    public void openMovieDetailFragment(int position, View view, Post post) {
+        if (getActivity() instanceof MainActivity) {
+            DetailFragment detailFragment = new DetailFragment(post);
+            Bundle bundle = new Bundle();
+            bundle.putString("transitionName", "transition" + position);
+
+            detailFragment.setArguments(bundle);
+            ((MainActivity) getActivity()).showFragmentWithTransition(this, detailFragment, view, "transition" + position);
+        }
+    }
 }

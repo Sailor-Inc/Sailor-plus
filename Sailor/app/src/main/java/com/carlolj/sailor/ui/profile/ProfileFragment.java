@@ -96,7 +96,7 @@ public class ProfileFragment extends Fragment {
         tvFollowing = binding.tvFollowing;
 
         allPosts = new ArrayList<>();
-        adapter = new ProfileAdapter(getContext(), allPosts);
+        adapter = new ProfileAdapter(getContext(), allPosts, this);
 
         tvUsername.setText(currentUser.getUsername());
 

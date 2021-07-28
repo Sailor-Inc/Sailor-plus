@@ -1,31 +1,26 @@
 package com.carlolj.sailor.adapters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.carlolj.sailor.R;
-import com.carlolj.sailor.activities.DetailActivity;
-import com.carlolj.sailor.activities.MainActivity;
+import com.carlolj.sailor.controllers.DetailsHelper;
 import com.carlolj.sailor.models.Post;
 import com.carlolj.sailor.ui.feed.DetailFragment;
+import com.carlolj.sailor.ui.profile.ProfileFragment;
 import com.parse.ParseFile;
 
 import org.jetbrains.annotations.NotNull;
-import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -33,10 +28,12 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
     private Context context;
     private List<Post> posts;
+    ProfileFragment fragment;
 
-    public ProfileAdapter(Context context, List<Post> posts) {
+    public ProfileAdapter(Context context, List<Post> posts, ProfileFragment fragment) {
         this.context = context;
         this.posts = posts;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -50,6 +47,11 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
         Post post = posts.get(position);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.ivPostImage.setTransitionName("transition" + position);
+        }
+
         holder.bind(post);
     }
 
@@ -76,7 +78,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             ivPostImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openDetailedView(post, ivPostImage);
+                    DetailsHelper.openPostDetailFragment(getAdapterPosition(), v.findViewById(R.id.ivPostImage), post, fragment);
                 }
             });
         }

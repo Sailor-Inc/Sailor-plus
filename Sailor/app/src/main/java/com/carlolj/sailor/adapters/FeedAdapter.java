@@ -1,8 +1,7 @@
 package com.carlolj.sailor.adapters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.util.Pair;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,28 +19,27 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.carlolj.sailor.R;
-import com.carlolj.sailor.activities.DetailActivity;
+import com.carlolj.sailor.controllers.DetailsHelper;
 import com.carlolj.sailor.controllers.PostHelper;
 import com.carlolj.sailor.models.Post;
-import com.carlolj.sailor.ui.feed.DetailFragment;
+import com.carlolj.sailor.ui.feed.FeedFragment;
 import com.carlolj.sailor.ui.profile.ProfileFragment;
 import com.parse.ParseException;
-import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
-import org.parceler.Parcels;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     List<Post> posts;
     Context context;
+    private FeedFragment fragment;
 
-    public FeedAdapter(Context context, List<Post> posts) {
+    public FeedAdapter(Context context, List<Post> posts, FeedFragment fragment) {
         this.context = context;
         this.posts = posts;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -58,6 +53,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
         Post post = posts.get(position);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.ivPostImage.setTransitionName("transition" + position);
+        }
+
         holder.bind(post);
     }
 
@@ -121,7 +121,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                         @Override
                         public void run() {
                             if (i == 1) {
-                                openDetailedView(post, ivProfilePicture, ivPostImage, tvUsername);
+                                DetailsHelper.openPostDetailFragment(getAdapterPosition(), v.findViewById(R.id.ivPostImage), post, fragment);
                             }
                             i = 0;
                         }
@@ -160,34 +160,5 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                     .apply(mediaOptions)
                     .into(ivPostImage);
         }
-    }
-
-    /**
-     * This method will open a new detailed activity for a selected post
-     * @param post the post that the user is trying to see
-     * @param ivProfilePicture the profile picture of the author of the post
-     * @param ivPostImage the Image of the post
-     * @param tvUsername the username of the author
-     */
-    public void openDetailedView(Post post, ImageView ivProfilePicture, ImageView ivPostImage, TextView tvUsername) {
-        AppCompatActivity activity = (AppCompatActivity) context;
-
-        Fragment fragment = new DetailFragment(post);
-
-        ((AppCompatActivity) context).getSupportFragmentManager();
-        activity.getSupportFragmentManager()
-                .beginTransaction()
-                //.addSharedElement(tvUsername, "1")
-                .replace(R.id.flContainer, fragment)
-                .commit();
-        //Intent intent = new Intent(context, DetailActivity.class);
-        //intent.putExtra(DetailActivity.EXTRA_POST, Parcels.wrap(post));
-        //intent.putExtra("username", tvUsername.getText().toString());
-        //Pair<View, String> p1 = Pair.create((View)ivProfilePicture, "profile");
-        //Pair<View, String> p2 = Pair.create((View)ivPostImage, "image");
-        //Pair<View, String> p3 = Pair.create((View)tvUsername, "username");
-        //ActivityOptionsCompat options = ActivityOptionsCompat.
-        //        makeSceneTransitionAnimation((Activity) context, p1, p2, p3);
-        //context.startActivity(intent, options.toBundle());
     }
 }
