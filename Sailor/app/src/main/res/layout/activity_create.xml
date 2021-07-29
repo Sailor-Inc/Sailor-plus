@@ -8,21 +8,28 @@
     android:orientation="vertical"
     android:padding="20dp">
 
-    <ImageButton
-        android:id="@+id/ibBack"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/ic_back"/>
-
-    <TextView
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="34sp"
-        android:fontFamily="@font/comfortaa"
-        android:text="Create"
-        android:textColor="@color/black"/>
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/ibBack"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/ic_back"/>
+
+        <TextView
+            android:id="@+id/tvUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/comfortaa"
+            android:text="Create"
+            android:textColor="@color/black"
+            android:textSize="34sp" />
+    </LinearLayout>
 
     <androidx.cardview.widget.CardView
         android:layout_marginTop="10dp"
@@ -30,8 +37,7 @@
         android:id="@+id/cvMap"
         android:layout_below="@+id/tvTitle"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:cardCornerRadius="60dp"
+        android:layout_height="100dp"
         app:cardElevation="5dp">
 
         <fragment
@@ -41,6 +47,23 @@
             android:layout_height="match_parent"
             class="com.google.android.gms.maps.SupportMapFragment"/>
     </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:hint="Post categories"
+        app:startIconDrawable="@drawable/ic_location2">
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Select a post category"
+            android:inputType="none"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <EditText
         android:layout_marginTop="10dp"
@@ -64,8 +87,8 @@
     <ImageView
         android:id="@+id/ivPostImage"
         android:layout_marginTop="10dp"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:background="@drawable/ic_new"
         android:scaleType="fitCenter"
         android:layout_gravity="center_horizontal"/>

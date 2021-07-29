@@ -93,7 +93,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView ivProfilePicture, ivPostImage, ivTops;
-        TextView tvTops, tvUsername, tvDate;
+        TextView tvTops, tvUsername, tvDate, tvCaption, tvCategory;
         int i = 0;
 
         /**
@@ -108,6 +108,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             tvUsername = itemView.findViewById(R.id.tvUsername);
             tvDate = itemView.findViewById(R.id.tvDate);
             ivTops = itemView.findViewById(R.id.ivTops);
+            tvCaption = itemView.findViewById(R.id.tvCaption);
+            tvCategory = itemView.findViewById(R.id.tvCategory);
 
             itemView.setOnClickListener(this);
         }
@@ -130,7 +132,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             PostHelper.getTopState(post, ivTops);
             tvTops.setText(Integer.toString(post.getTopsNumber()));
             tvDate.setText(PostHelper.calculateTimeAgo(post.getCreatedAt()));
-
+            tvCaption.setText(post.getCaption());
+            tvCategory.setText("Category: " + post.getPostType());
             ivProfilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -202,5 +205,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                     .apply(mediaOptions)
                     .into(ivPostImage);
         }
+    }
+
+    public void clear(){
+        posts.clear();
+        notifyDataSetChanged();
     }
 }

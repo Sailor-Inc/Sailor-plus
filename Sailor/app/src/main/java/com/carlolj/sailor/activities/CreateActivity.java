@@ -18,6 +18,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -73,7 +75,16 @@ public class CreateActivity extends AppCompatActivity {
     ImageView ivPostImage;
     Button btnNext;
     String id;
+    AutoCompleteTextView autoCompleteTextView;
     double latitude = 0,longitude = 0;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String[] locationTypes = getResources().getStringArray(R.array.location_types);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getApplicationContext(), R.layout.drop_down_item, locationTypes);
+        binding.autoCompleteTextView.setAdapter(arrayAdapter);
+    }
 
     /**
      * When the activity is created we initialize all the components inside and the onClick methods
@@ -91,11 +102,14 @@ public class CreateActivity extends AppCompatActivity {
         ivPostImage = binding.ivPostImage;
         btnNext = binding.btnNext;
         etCaption = binding.etCaption;
+        autoCompleteTextView = binding.autoCompleteTextView;
 
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (latitude != 0 && longitude != 0 && id != null && newProfileImage != null && !etCaption.getText().toString().equals("")){
+                if (latitude != 0 && longitude != 0 && id != null && newProfileImage != null && !etCaption.getText().toString().equals("")
+                        && !autoCompleteTextView.getText().toString().equals("Select a location type")){
+                    Toast.makeText(getApplicationContext(), ""+autoCompleteTextView.getText().toString(), Toast.LENGTH_SHORT).show();
                     onSubmit();
                 } else {
                     Toast.makeText(getApplicationContext(), "Please fill all the post fields", Toast.LENGTH_SHORT).show();
@@ -420,6 +434,7 @@ public class CreateActivity extends AppCompatActivity {
         post.setAuthor(ParseUser.getCurrentUser());
         post.setLocation(location);
         post.setLocationImage(newProfileImage);
+        post.setPostType(autoCompleteTextView.getText().toString());
         post.setCaption(etCaption.getText().toString());
         post.setToppedBy(emptyList);
         post.saveInBackground(new SaveCallback() {
@@ -456,6 +471,7 @@ public class CreateActivity extends AppCompatActivity {
                                     parseException.printStackTrace();
                                 }
                                 Toast.makeText(CreateActivity.this, "Your post was added to the location", Toast.LENGTH_SHORT).show();
+                                finish();
                             }
                         });
                     }

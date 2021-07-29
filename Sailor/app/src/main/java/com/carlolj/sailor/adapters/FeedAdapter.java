@@ -69,7 +69,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView ivProfilePicture, ivPostImage, ivTops;
-        TextView tvTops, tvUsername, tvDate;
+        TextView tvTops, tvUsername, tvDate, tvCaption, tvCategory;
         int i = 0;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
@@ -81,6 +81,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             tvDate = itemView.findViewById(R.id.tvDate);
             ivTops = itemView.findViewById(R.id.ivTops);
             ivProfilePicture = itemView.findViewById(R.id.ivProfilePicture);
+            tvCaption = itemView.findViewById(R.id.tvCaption);
+            tvCategory = itemView.findViewById(R.id.tvCategory);
         }
 
         public void bind(Post post) {
@@ -88,6 +90,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             PostHelper.getTopState(post, ivTops);
             tvTops.setText(Integer.toString(post.getTopsNumber()));
             tvDate.setText(PostHelper.calculateTimeAgo(post.getCreatedAt()));
+            tvCaption.setText(post.getCaption());
+            tvCategory.setText("Category: " + post.getPostType());
 
             ivProfilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override

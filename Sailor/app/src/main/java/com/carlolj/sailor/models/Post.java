@@ -18,6 +18,7 @@ public class Post extends ParseObject {
     public static final String KEY_LOCATION_IMAGE = "locationImage";
     public static final String KEY_CAPTION = "caption";
     public static final String KEY_TOPPED_BY = "toppedBy";
+    public static final String KEY_POST_TYPE = "postType";
 
     //Getter and setter for author
     public ParseUser getAuthor(){
@@ -92,5 +93,14 @@ public class Post extends ParseObject {
             return list.size();
         else
             return 0;
+    }
+
+    //Getter and setters for location type
+    public String getPostType() {
+        return getString(KEY_POST_TYPE);
+    }
+
+    public void setPostType(String postType) {
+        put(KEY_POST_TYPE, postType);
     }
 }

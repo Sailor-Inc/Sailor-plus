@@ -12,4 +12,21 @@
         <item
             >Log out</item>
     </string-array>
+
+    <string-array name="location_types">
+        <item>Landscape</item>
+        <item>Mountain</item>
+        <item>Protected nature reserve</item>
+        <item>Nature</item>
+        <item>Must visit</item>
+        <item>Museum</item>
+        <item>Amusement Park</item>
+        <item>Attraction</item>
+        <item>Beach</item>
+        <item>Restaurant</item>
+        <item>Country</item>
+        <item>State</item>
+        <item>Island</item>
+    </string-array>
+
 </resources>
