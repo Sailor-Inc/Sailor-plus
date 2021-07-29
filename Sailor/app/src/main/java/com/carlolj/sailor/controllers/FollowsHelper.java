@@ -45,31 +45,24 @@ public class FollowsHelper {
                 if (e != null) {
                     Log.e(TAG, "Something went wrong catching followers");
                 }
+                List<ParseUser> follows = null;
                 switch (code) {
                     case FOLLOWING_CODE:
-                        if (objects.get(0).getFollowing() != null) {
-                            Optional<ParseUser> matchingObject = objects.get(0).getFollowing().stream().
-                                    filter(p -> p.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())).
-                                    findFirst();
-
-                            matchingObject.ifPresent(user -> user.setUsername("You"));
-
-                            list.addAll(objects.get(0).getFollowing());
-                            adapter.notifyDataSetChanged();
-                        }
+                        follows = objects.get(0).getFollowing();
                         break;
                     case FOLLOWERS_CODE:
-                        if (objects.get(0).getFollowers() != null) {
-                            Optional<ParseUser> matchingObject = objects.get(0).getFollowers().stream().
-                                    filter(p -> p.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())).
-                                    findFirst();
-
-                            matchingObject.ifPresent(user -> user.setUsername("You"));
-
-                            list.addAll(objects.get(0).getFollowers());
-                            adapter.notifyDataSetChanged();
-                        }
+                        follows = objects.get(0).getFollowers();
                         break;
+                }
+                if (follows != null) {
+                    Optional<ParseUser> matchingObject = follows.stream().
+                            filter(p -> p.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())).
+                            findFirst();
+
+                    matchingObject.ifPresent(user -> user.setUsername("You"));
+
+                    list.addAll(follows);
+                    adapter.notifyDataSetChanged();
                 }
             }
         });

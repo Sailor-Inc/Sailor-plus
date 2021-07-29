@@ -64,6 +64,7 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class ExploreFragment extends Fragment {
 
     public static final String TAG = "ExploreFragment";
+    public static final int LOCATION_REQUEST_CODE = 1;
     private List<Location> locations;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
@@ -229,7 +230,7 @@ public class ExploreFragment extends Fragment {
                 if (locationCheckPermission()) {
                     getCurrentLocation();
                 } else {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
                 }
             }
         });
@@ -239,7 +240,7 @@ public class ExploreFragment extends Fragment {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         }
         Task<android.location.Location> task = mLocationClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<android.location.Location>() {
@@ -255,7 +256,7 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 44) {
+        if (requestCode == LOCATION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCurrentLocation();
             }

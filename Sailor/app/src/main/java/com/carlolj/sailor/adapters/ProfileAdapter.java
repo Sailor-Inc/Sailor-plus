@@ -103,11 +103,5 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
                 .beginTransaction()
                 .replace(R.id.flContainer, fragment)
                 .commit();
-
-        //Intent intent = new Intent(context, DetailActivity.class);
-        //intent.putExtra(DetailActivity.EXTRA_POST, Parcels.wrap(post));
-        //ActivityOptionsCompat options = ActivityOptionsCompat.
-        //        makeSceneTransitionAnimation((Activity) context, (View)ivPostImage, "image");
-        //context.startActivity(intent, options.toBundle());
     }
 }
