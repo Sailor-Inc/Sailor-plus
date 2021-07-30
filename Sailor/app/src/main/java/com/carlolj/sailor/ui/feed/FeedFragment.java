@@ -136,11 +136,6 @@ public class FeedFragment extends Fragment {
                 }
                 Log.d(TAG, ""+receivedPosts);
                 if (receivedPosts != null) {
-                    // Before Java 8, sorting a collection would involve creating an anonymous inner class for the
-                    // Comparator used in the sort, with the introduction of lambdas, we can bypass the
-                    // anonymous inner class and achieve the same result with simple, functional semantics,
-                    // and we can further simplify the expression by not specifying the type definitions
-                    // – the compiler is capable of inferring these on its own (see a1 and a2 objects doesn't have a type):
                     int maxLength = receivedPosts.size();
                     if (maxLength > 50) {
                         allPosts.addAll(receivedPosts.subList(0,50));
