@@ -64,7 +64,31 @@ public class PushNotifications {
         }
         sendFinishedPush(push);
     }
-    
+
+    /**
+     * This method finds a user and fills the required data to send a top notification about a post if the top is not from the current user
+     * @param post the post that the current user has started/stopped top
+     * @param code the int code that tells if a user has top/untop
+     */
+    public static void sendNewLikeNotification(Post post, int code) {
+        if (!post.getAuthor().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
+            ParsePush push = new ParsePush();
+            push.setQuery(findUserPushQuery(post.getAuthor()));
+            String originUser = ParseUser.getCurrentUser().getUsername();
+            switch (code) {
+                case CODE_NEW_TOP:
+                    push.setMessage(originUser+" has liked your post with category: " + post.getPostType()
+                            + " and now has: " + post.getTopsNumber() + " tops!. Keep sharing photos!");
+                    break;
+                case CODE_DELETED_TOP:
+                    push.setMessage(originUser+" has deleted the like in your post with category: " + post.getPostType()
+                            + " and now has: " + post.getTopsNumber() + " tops.");
+                    break;
+            }
+            sendFinishedPush(push);
+        }
+    }
+
     /**
      * Run this method when the push is ready to be sent
      * @param push a Parsepush object with all the data filled

@@ -21,7 +21,8 @@ public class PostHelper {
     public static final String TAG = "PostHelper";
     public static final int ADD_TOP = 1;
     public static final int REMOVE_TOP = 2;
-
+    public static final int CODE_NEW_TOP = 3;
+    public static final int CODE_DELETED_TOP = 4;
     /**
      * This method allows the current user to top/untop a post
      * @param post the post object top check
@@ -152,6 +153,14 @@ public class PostHelper {
                     public void done(ParseException e) {
                         if (e != null) {
                             Log.d(TAG, "Error updating location object : " + e);
+                        }
+                        switch (code) {
+                            case ADD_TOP:
+                                PushNotifications.sendNewLikeNotification(post, PushNotifications.CODE_NEW_TOP);
+                                break;
+                            case REMOVE_TOP:
+                                PushNotifications.sendNewLikeNotification(post, PushNotifications.CODE_DELETED_TOP);
+                                break;
                         }
                     }
                 });
