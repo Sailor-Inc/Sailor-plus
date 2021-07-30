@@ -22,10 +22,9 @@ public class ParseApplication extends Application {
                 .applicationId(BuildConfig.BACK4APP_APP_ID)
                 .clientKey(BuildConfig.BACK4APP_CLIENT_KEY)
                 .server(BuildConfig.BACK4APP_SERVER_URL)
+                .enableLocalDataStore()
                 .build());
 
-        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-        installation.put("GCMSenderId", R.string.sender_key);
-        installation.saveInBackground();
+        Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);
     }
 }

@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.carlolj.sailor.R;
+import com.carlolj.sailor.controllers.PushNotifications;
 import com.carlolj.sailor.ui.feed.FeedFragment;
 import com.carlolj.sailor.ui.explore.ExploreFragment;
 import com.carlolj.sailor.ui.profile.ProfileFragment;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PushNotifications.startPushService();
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

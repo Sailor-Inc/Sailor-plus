@@ -32,6 +32,7 @@ import com.carlolj.sailor.BitmapScaler;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.StartActivity;
 import com.carlolj.sailor.adapters.ProfileAdapter;
+import com.carlolj.sailor.controllers.PushNotifications;
 import com.carlolj.sailor.databinding.FragmentProfileBinding;
 import com.carlolj.sailor.models.Follows;
 import com.carlolj.sailor.models.Post;
@@ -58,6 +59,8 @@ public class ProfileFragment extends Fragment {
     private static final int ACCEPT_CAMERA = 20;
     private static final int CODE_REMOVE = 0;
     private static final int CODE_ADD = 1;
+    public static final int CODE_STARTED = 1;
+    public static final int CODE_STOPPED = 2;
 
     ParseFile newProfileImage;
 
@@ -176,7 +179,6 @@ public class ProfileFragment extends Fragment {
 
     /**
      * This method will follow or unfollow a userId
-     * @param userId a String of the userId to see if it's followed
      * @param tvFollowers the Textview of the number of followers
      * @param btnFollow a Button that tells if the user is already followed
      */
@@ -206,7 +208,6 @@ public class ProfileFragment extends Fragment {
      * This method will add/remove a follower and execute a query to save it then it will run a method
      * to update the following list inside the current user following list
      * @param follows a Follows object
-     * @param userId a String userId of the user to add or remove from following
      * @param tvFollowers a TextView of the number of followers
      * @param btnFollow a Button that tells if the user is already followed
      * @param code an Integer unique code that tells if the user is already following the user
@@ -244,7 +245,6 @@ public class ProfileFragment extends Fragment {
      * This method will add or remove a following user to the current user account and will update the
      * button and text inside the selected profile, so the user can see if the selected user is already
      * followed
-     * @param userId a String of the userId to see if it's followed
      * @param btnFollow a Button that tells if the user is already followed
      * @param tvFollowers a TextView of the number of followers
      * @param follows a Button that tells if the user is already followed
@@ -279,6 +279,7 @@ public class ProfileFragment extends Fragment {
                         }
                         switch (code) {
                             case CODE_ADD:
+                                PushNotifications.sendNewFollowsNotification(parseUser, CODE_STARTED);
                                 tvFollowers.setText(String.valueOf(follows.getFollowersNumber()));
                                 btnFollow.setBackgroundColor(getResources().getColor(R.color.white));
                                 btnFollow.setTextColor(getResources().getColor(R.color.black));
@@ -287,6 +288,7 @@ public class ProfileFragment extends Fragment {
                                 Toast.makeText(getContext(), "Followed and following process success", Toast.LENGTH_SHORT).show();
                                 break;
                             case CODE_REMOVE:
+                                PushNotifications.sendNewFollowsNotification(parseUser, CODE_STOPPED);
                                 tvFollowers.setText(String.valueOf(follows.getFollowersNumber()));
                                 btnFollow.setBackgroundColor(getResources().getColor(R.color.black));
                                 btnFollow.setTextColor(getResources().getColor(R.color.white));
