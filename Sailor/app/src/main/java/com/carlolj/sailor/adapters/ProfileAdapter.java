@@ -87,21 +87,4 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         posts.clear();
         notifyDataSetChanged();
     }
-
-    /**
-     * This method will open a new detailed activity for a selected post
-     * @param post the post that the user is trying to see
-     * @param ivPostImage the Image of the post
-     */
-    public void openDetailedView(Post post, ImageView ivPostImage){
-        AppCompatActivity activity = (AppCompatActivity) context;
-
-        Fragment fragment = new DetailFragment(post);
-
-        ((AppCompatActivity) context).getSupportFragmentManager();
-        activity.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.flContainer, fragment)
-                .commit();
-    }
 }
