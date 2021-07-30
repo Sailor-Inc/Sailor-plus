@@ -87,6 +87,20 @@ Must have app requirements
      * Visuals
      - [ ] The app visuals must be approved by my manager
 
+ * **WEEK 4 / WEEK 5**
+     * App
+     - [ ] User can swipe down to refresh (feed screen, pin screen, profile screen)
+     - [ ] User can scroll until there are no more posts to load (feed, pin activity)
+     - [ ] User can edit posts
+     - [ ] User can delete posts
+     - [ ] User can edit his/her profile data 
+     - [ ] User can filter by Country
+     - [ ] User can filter by State
+     - [ ] App has color scheme
+     * Visuals
+     - [ ] Update item_feed layout visuals 
+     - [ ] Update pin activity layout visuals
+     - [ ] Update post_item layout visuals
 
  **Optional Nice-to-have Stories**
  * User can see an intelligent recommendation of locations in the feed
