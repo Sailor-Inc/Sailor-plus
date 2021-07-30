@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,10 +22,14 @@ import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.adapters.FeedAdapter;
 import com.carlolj.sailor.adapters.PostAdapter;
 import com.carlolj.sailor.databinding.FragmentFeedBinding;
+import com.carlolj.sailor.models.Follows;
 import com.carlolj.sailor.models.Post;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +45,7 @@ public class FeedFragment extends Fragment {
 
     RecyclerView rvPosts;
     FeedAdapter adapter;
+    TextView tvNoFriends;
 
 
     public FeedFragment() {
@@ -55,12 +61,13 @@ public class FeedFragment extends Fragment {
         allPosts = new ArrayList<>();
         adapter = new FeedAdapter(getContext(), allPosts, this);
 
+        tvNoFriends = binding.tvNoFriends;
         rvPosts = binding.rvPosts;
 
         rvPosts.setAdapter(adapter);
         rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        loadPostsOf();
+        loadPostsOfFollowing();
         return root;
     }
 
@@ -75,6 +82,71 @@ public class FeedFragment extends Fragment {
                 }
                 if (receivedPosts != null) {
                     allPosts.addAll(receivedPosts);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getContext(), "There are no posts, that's weird..." , Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void loadPostsOfFollowing() {
+        ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
+        query.whereEqualTo("userId", ParseUser.getCurrentUser().getObjectId());
+        query.getFirstInBackground(new GetCallback<Follows>() {
+            @Override
+            public void done(Follows object, ParseException e) {
+                if (e != null) {
+                    Log.d(TAG, "error getting followers of current user account");
+                }
+                if (object != null) {
+                    List<ParseUser> friends = new ArrayList<>();
+                    friends = object.getFollowing();
+                    if (friends != null && friends.size()>0) {
+                        tvNoFriends.setVisibility(View.GONE);
+                        List<String> friendsIds = new ArrayList<>();
+                        for (ParseUser friend : friends) {
+                            friendsIds.add(friend.getObjectId());
+                        }
+                        loadFriendsPosts(friendsIds);
+                    } else {
+                        tvNoFriends.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Get the posts with specified query filtering
+     */
+    private void loadFriendsPosts(List<String> friendsIds) {
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        query.include(Post.KEY_AUTHOR);
+        if (!friendsIds.isEmpty()) {
+            query.whereContainedIn(Post.KEY_AUTHOR, friendsIds);
+            Log.d(TAG, ""+friendsIds);
+        }
+        query.orderByDescending(Post.KEY_CREATED_AT);
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> receivedPosts, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting friends posts", e);
+                }
+                Log.d(TAG, ""+receivedPosts);
+                if (receivedPosts != null) {
+                    // Before Java 8, sorting a collection would involve creating an anonymous inner class for the
+                    // Comparator used in the sort, with the introduction of lambdas, we can bypass the
+                    // anonymous inner class and achieve the same result with simple, functional semantics,
+                    // and we can further simplify the expression by not specifying the type definitions
+                    // – the compiler is capable of inferring these on its own (see a1 and a2 objects doesn't have a type):
+                    int maxLength = receivedPosts.size();
+                    if (maxLength > 50) {
+                        allPosts.addAll(receivedPosts.subList(0,50));
+                    } else {
+                        allPosts.addAll(receivedPosts);
+                    }
                     adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getContext(), "There are no posts, that's weird..." , Toast.LENGTH_SHORT).show();
