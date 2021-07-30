@@ -20,45 +20,73 @@ Sailor+ is an app created to find and share the best places to travel around the
 
 ## Product Spec
 
+Must have app requirements
+
+- [X] Your app has multiple views
+- [X] Your app interacts with a database (e.g. Parse)
+- [X] You can log in/log out of your app as a user
+- [X] You can sign up with a new user profile
+- [X] Your app integrates with at least one SDK (e.g. Google Maps SDK, Facebook SDK) or API (that you didn’t learn about in CodePath)
+- [X] Your app uses at least one gesture (e.g. double tap to like, e.g. pinch to scale)
+- [X] Your app uses at least one animation (e.g. fade in/out, e.g. animating a view growing and shrinking)
+- [X] Your app incorporates at least one external library to add visual polish
+- [X] Your app provides opportunities for you to overcome difficult/ambiguous technical problems.
+
 ### 1. User Stories (Required and Optional)
 
 **Required Must-have Stories**
-  * **Log up/in Screen**
+  * **WEEK 1**
+    * **Visuals**
+    - [X] User uses fragments to move screen to screen
+    * **Log in**
     - [X] User can sign in/sign up to an account using Parse
-
-  * **Map**
-    - [X] User can see a map with the top 20 places
-    - [ ] User can see a list of the top user photos of a selected place inside a modal/new activity
-    - [ ] User can filter by friends locations
+    - [X] User is persisted
+    * **Map**
+    - [X] User can see a map with pins of the top 20 places
+      - [X] User can use see a Google map
+      - [X] The map execute a query to load most popular locations
+    - [X] User can see a list of the top user photos of a selected place inside a modal/new activity
     - [X] User can add a photo of his travel location, and a caption
-
-  * **Discover/Feed screen**
-    - [ ] User can see a feed with latest photos and details of the places of the people they follow
-    - [X] User can click on the image to see a detailed view
-    - [X] User can double click an image to top a location/post
-    - [ ] User can click on the location of the selected post to see a modal/activity of the top posts of that location
-    - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)
-
-  * **Profile screen**
-    - [X] User can click on a button to see the settings of his account
-      * Settings screen
+    * **Profile**
+    - [X] User can click on a button in his profile page to see the settings of his account
+      * **Settings screen**
       - [X] User can log out
-     - [X] User can change his profile picture
-     - [X] User can see the his followers
-     - [X] User can see the people they follow
-     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)
-     - [X] User can see his location posts in a grid layout
-     - [X] User can click on a location post and see details
+    - [X] User can change his profile picture
 
-  * **Selected profile screen**
-     - [X] User can see the followers
-     - [X] User can see the people that account follows
-     - [ ] User can scroll down with endless scrolling (or until there are no more photos to show)
-     - [X] User can see that account location posts in a grid layout
-     - [X] User can click on a location post and see details
+    ### FIRST SPRINT
 
-  * **Visuals**
+   <img src="wireframes/firstsprint.gif" width=300>
+
+* **WEEK 2**
+    * Map
+     - [X] User can filter by friends locations
+       - [X] The app executes a query that shows the most popular locations of the places your friends have visited
+     - [X] User can click on the location of the selected post to see a modal/activity of the top posts of that location
+     - [X] User can double click an image to top a location/post
+    * Profile (Personal and specific clicked account)
+    - [X] User can see that account location posts in a grid layout
+       - [X] The posts will be displayed from newer to oldest
+    - [X] User can click on a location post and see details
+    - [X] User can see an animation when a specific post is selected to show details
+    - [X] User can see the followers of that account
+    - [X] User can see the people that account follows
+
+  <img src="wireframes/secondsprint.gif" width=300>
+
+ * **WEEK 3**
+     * App
+     - [X] At least one notification
+     * Map
+     - [X] User can filter by distance radius
+       - [X] The app executes a query that shows the places at a certain distance radius starting at your postition
+     - [X] User can filter by location type
+       - [X] The user can see a multiple item view to filter in the map
+     * Feed
+     - [X] User can see a feed with latest photos and details of the places of the people they follow
+     - [ ] User can see a feed with the posts your friends gave tops
+     * Visuals
      - [ ] The app visuals must be approved by my manager
+
 
  **Optional Nice-to-have Stories**
  * User can see an intelligent recommendation of locations in the feed
@@ -180,121 +208,32 @@ Sailor+ is an app created to find and share the best places to travel around the
 
 ### Networking
 #### List of network requests by screen
+   - Register screen
+      - (Create/POST) Create a new profile picture
+      - (Create/POST) Create a new user
    - Home Feed Screen
-      - (Read/GET) Query all posts where user is author
-         ```swift
-         let query = PFQuery(className:"Post")
-         query.whereKey("author", equalTo: currentUser)
-         query.order(byDescending: "createdAt")
-         query.findObjectsInBackground { (posts: [PFObject]?, error: Error?) in
-            if let error = error {
-               print(error.localizedDescription)
-            } else if let posts = posts {
-               print("Successfully retrieved \(posts.count) posts.")
-           // TODO: Do something with posts...
-            }
-         }
-         ```
+      - (Read/GET) Query all posts where friends are authors
+      - (Read/GET) Query all posts where friends gave tops
       - (Create/POST) Create a new like on a post
       - (Delete) Delete existing like
-      - (Create/POST) Create a new comment on a post
-      - (Delete) Delete existing comment
-   - Create Post Screen
-      - (Create/POST) Create a new post object
+   - Explore Screen
+      - (Read/GET) Query the 20 most liked locations
+      - (Read/GET) Query the locations your friends have visited
+      - (Read/GET) Query the locations around you at a specified radius
+   - Pin Screen
+      - (Read/GET) Query all posts inside a location and sort them in descending order
+      with the number of tops
+      - (Read/GET) Query all posts with specified category
+      - (Create/POST) Create a new like on a post
+      - (Delete) Delete existing like
+   - Create Post/Location Screen
+      - (Create/POST) Create a new post and in case the selected location is not in the database create a location and assign that post to that new location
    - Profile Screen
-      - (Read/GET) Query logged in user object
+      - (Read/GET) Query all posts of user in descending order
       - (Update/PUT) Update user profile image
-
-#### [OPTIONAL:] Existing API Endpoints
-##### An API Of Ice And Fire
-- Base URL - [http://www.anapioficeandfire.com/api](http://www.anapioficeandfire.com/api)
-
-   HTTP Verb | Endpoint | Description
-   ----------|----------|------------
-    `GET`    | /characters | get all characters
-    `GET`    | /characters/?name=name | return specific character by name
-    `GET`    | /houses   | get all houses
-    `GET`    | /houses/?name=name | return specific house by name
-
-##### Game of Thrones API
-- Base URL - [https://api.got.show/api](https://api.got.show/api)
-
-   HTTP Verb | Endpoint | Description
-   ----------|----------|------------
-    `GET`    | /cities | gets all cities
-    `GET`    | /cities/byId/:id | gets specific city by :id
-    `GET`    | /continents | gets all continents
-    `GET`    | /continents/byId/:id | gets specific continent by :id
-    `GET`    | /regions | gets all regions
-    `GET`    | /regions/byId/:id | gets specific region by :id
-    `GET`    | /characters/paths/:name | gets a character's path with a given name
-
-
+      - (Read/GET) Query all posts where user is author
+      - (Create/POST) Start following
+      - (Delete) Delete following
+      - (Read/GET) Get followers
+      - (Read/GET) Get Following
  ********************************
-
-Must have app requirements
-
-- [X] Your app has multiple views
-- [X] Your app interacts with a database (e.g. Parse)
-- [X] You can log in/log out of your app as a user
-- [X] You can sign up with a new user profile
-- [X] Your app integrates with at least one SDK (e.g. Google Maps SDK, Facebook SDK) or API (that you didn’t learn about in CodePath)
-- [X] Your app uses at least one gesture (e.g. double tap to like, e.g. pinch to scale)
-- [X] Your app uses at least one animation (e.g. fade in/out, e.g. animating a view growing and shrinking)
-- [X] Your app incorporates at least one external library to add visual polish
-- [X] Your app provides opportunities for you to overcome difficult/ambiguous technical problems (more below)
-
-
-### 1. User Stories by week (Required and Optional)
-
-* **WEEK 1**
-    * **Visuals**
-    - [X] User uses fragments to move screen to screen
-    * **Log in**
-    - [X] User can sign in/sign up to an account using Parse
-    - [X] User is persisted
-    * **Map**
-    - [X] User can see a map with pins of the top 20 places
-      - [X] User can use see a Google map
-      - [X] The map execute a query to load most popular locations
-    - [X] User can see a list of the top user photos of a selected place inside a modal/new activity
-    - [X] User can add a photo of his travel location, and a caption
-    * **Profile**
-    - [X] User can click on a button in his profile page to see the settings of his account
-      * **Settings screen**
-      - [X] User can log out
-    - [X] User can change his profile picture
-
-    ### FIRST SPRINT
-
-   <img src="wireframes/firstsprint.gif" width=300>
-
-* **WEEK 2**
-    * Map
-     - [X] User can filter by friends locations
-       - [X] The app executes a query that shows the most popular locations of the places your friends have visited
-     - [ ] User can click on the location of the selected post to see a modal/activity of the top posts of that location
-     - [X] User can double click an image to top a location/post
-    * Profile (Personal and specific clicked account)
-    - [X] User can see that account location posts in a grid layout
-       - [X] The posts will be displayed from newer to oldest
-    - [X] User can click on a location post and see details
-    - [X] User can see an animation when a specific post is selected to show details
-    - [X] User can see the followers of that account
-    - [X] User can see the people that account follows
-
-  <img src="wireframes/secondsprint.gif" width=300>
-
- * **WEEK 3**
-     * App
-     - [ ] At least one notification
-     * Map
-     - [X] User can filter by distance radius
-       - [X] The app executes a query that shows the places at a certain distance radius starting at your postition
-     - [ ] User can filter by location type
-       - [ ] The user can see a multiple item view to filter in the map
-     * Feed
-     - [ ] User can see a feed with latest photos and details of the places of the people they follow
-     - [ ] User can see a feed with the posts your friends gave tops
-     * Visuals
-     - [ ] The app visuals must be approved by my manager
