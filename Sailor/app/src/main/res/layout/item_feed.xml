@@ -94,6 +94,18 @@
                 android:layout_marginTop="10dp"
                 android:layout_below="@id/ivPostImage"
                 android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:id="@+id/tvRecommendation"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/tvDate"
+                android:textColor="@color/black"
+                android:textSize="8sp"
+                android:fontFamily="@font/roboto_bold" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

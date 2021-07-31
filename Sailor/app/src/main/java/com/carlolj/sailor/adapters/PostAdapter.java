@@ -132,7 +132,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             PostHelper.getTopState(post, ivTops);
             tvTops.setText(Integer.toString(post.getTopsNumber()));
             tvDate.setText(PostHelper.calculateTimeAgo(post.getCreatedAt()));
-            tvCaption.setText(post.getCaption());
+            try {
+                tvCaption.setText(post.getCaption());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             tvCategory.setText("Category: " + post.getPostType());
             ivProfilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override

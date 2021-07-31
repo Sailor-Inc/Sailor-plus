@@ -1,6 +1,7 @@
 package com.carlolj.sailor.models;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -19,6 +20,16 @@ public class Post extends ParseObject {
     public static final String KEY_CAPTION = "caption";
     public static final String KEY_TOPPED_BY = "toppedBy";
     public static final String KEY_POST_TYPE = "postType";
+
+    public int typeOfRecommendation = 0; //1 recommended by your friends , 2 your friend gave a like to this post
+
+    public int getTypeOfRecommendation() {
+        return typeOfRecommendation;
+    }
+
+    public void setTypeOfRecommendation(int typeOfRecommendation) {
+        this.typeOfRecommendation = typeOfRecommendation;
+    }
 
     //Getter and setter for author
     public ParseUser getAuthor(){
@@ -52,8 +63,8 @@ public class Post extends ParseObject {
         put(KEY_CAPTION,description);
     }
 
-    public String getCaption(){
-        return getString(KEY_CAPTION);
+    public String getCaption() throws ParseException {
+        return fetchIfNeeded().getString(KEY_CAPTION);
     }
 
     //Getter, setter and helpers for toppedBy
@@ -69,7 +80,7 @@ public class Post extends ParseObject {
         setToppedBy(list);
     }
 
-    public List getToppedBy(){
+    public List<String> getToppedBy(){
         return getList(KEY_TOPPED_BY);
     }
 

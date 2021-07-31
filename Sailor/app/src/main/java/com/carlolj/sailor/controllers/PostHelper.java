@@ -10,12 +10,15 @@ import com.carlolj.sailor.R;
 import com.carlolj.sailor.models.Location;
 import com.carlolj.sailor.models.Post;
 import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class PostHelper {
     public static final String TAG = "PostHelper";
@@ -157,11 +160,39 @@ public class PostHelper {
                         switch (code) {
                             case ADD_TOP:
                                 PushNotifications.sendNewLikeNotification(post, PushNotifications.CODE_NEW_TOP);
+                                try {
+                                    List<Post> toppedPosts = ParseUser.getCurrentUser().fetchIfNeeded().getList("toppedPosts");
+                                    if (toppedPosts == null) {
+                                        toppedPosts = new ArrayList<>();
+                                    }
+                                    toppedPosts.add(post);
+                                    ParseUser.getCurrentUser().put("toppedPosts", toppedPosts);
+                                } catch (ParseException parseException) {
+                                    parseException.printStackTrace();
+                                }
                                 break;
                             case REMOVE_TOP:
                                 PushNotifications.sendNewLikeNotification(post, PushNotifications.CODE_DELETED_TOP);
+                                try {
+                                    List<Post> toppedPosts = ParseUser.getCurrentUser().fetchIfNeeded().getList("toppedPosts");
+                                    if (toppedPosts == null) {
+                                        toppedPosts = new ArrayList<>();
+                                    }
+                                    toppedPosts.remove(post);
+                                    ParseUser.getCurrentUser().put("toppedPosts", toppedPosts);
+                                } catch (ParseException parseException) {
+                                    parseException.printStackTrace();
+                                }
                                 break;
                         }
+                        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e != null) {
+                                    Log.e(TAG, "Error adding to toppedPosts list");
+                                }
+                            }
+                        });
                     }
                 });
             }

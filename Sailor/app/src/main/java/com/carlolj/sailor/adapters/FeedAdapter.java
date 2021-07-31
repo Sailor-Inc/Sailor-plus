@@ -35,6 +35,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     List<Post> posts;
     Context context;
     private FeedFragment fragment;
+    public static final int KEY_FRIEND_POST = 0;
+    public static final int KEY_RECOMMENDED_POST = 2;
+
 
     public FeedAdapter(Context context, List<Post> posts, FeedFragment fragment) {
         this.context = context;
@@ -69,7 +72,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView ivProfilePicture, ivPostImage, ivTops;
-        TextView tvTops, tvUsername, tvDate, tvCaption, tvCategory;
+        TextView tvTops, tvUsername, tvDate, tvCaption, tvCategory, tvRecommendation;
         int i = 0;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
@@ -83,6 +86,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             ivProfilePicture = itemView.findViewById(R.id.ivProfilePicture);
             tvCaption = itemView.findViewById(R.id.tvCaption);
             tvCategory = itemView.findViewById(R.id.tvCategory);
+            tvRecommendation = itemView.findViewById(R.id.tvRecommendation);
         }
 
         public void bind(Post post) {
@@ -90,8 +94,26 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             PostHelper.getTopState(post, ivTops);
             tvTops.setText(Integer.toString(post.getTopsNumber()));
             tvDate.setText(PostHelper.calculateTimeAgo(post.getCreatedAt()));
-            tvCaption.setText(post.getCaption());
+            try {
+                tvCaption.setText(post.getCaption());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             tvCategory.setText("Category: " + post.getPostType());
+
+            switch (post.getTypeOfRecommendation()) {
+                case KEY_RECOMMENDED_POST:
+                    tvRecommendation.setVisibility(View.VISIBLE);
+                    tvRecommendation.setText("One of your friends gave a like to this post");
+                    break;
+                case KEY_FRIEND_POST:
+                    tvRecommendation.setVisibility(View.VISIBLE);
+                    tvRecommendation.setText("One of your friends posted this");
+                    break;
+            }
+            if (post.getTypeOfRecommendation() == 2) {
+
+            }
 
             ivProfilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override

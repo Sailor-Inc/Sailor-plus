@@ -35,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class FeedFragment extends Fragment {
@@ -46,7 +47,6 @@ public class FeedFragment extends Fragment {
     RecyclerView rvPosts;
     FeedAdapter adapter;
     TextView tvNoFriends;
-
 
     public FeedFragment() {
         // Required empty public constructor
@@ -108,6 +108,7 @@ public class FeedFragment extends Fragment {
                         for (ParseUser friend : friends) {
                             friendsIds.add(friend.getObjectId());
                         }
+                        loadPostsToppedByFriends(friends);
                         loadFriendsPosts(friendsIds);
                     } else {
                         tvNoFriends.setVisibility(View.VISIBLE);
@@ -115,6 +116,27 @@ public class FeedFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void loadPostsToppedByFriends(List<ParseUser> friends) {
+        HashMap<String, Post> nonRepeatedPosts = new HashMap<String, Post>();
+        for (ParseUser friend : friends) {
+            try {
+                List<Post> friendToppedPosts = friend.fetchIfNeeded().getList("toppedPosts");
+                if (friendToppedPosts != null) {
+                    for (Post post : friendToppedPosts) {
+                        Log.d("This friend likes the post of: ", " : " + friend.getUsername()+"");
+                        nonRepeatedPosts.put(post.getObjectId(), post);
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        for (Post post : nonRepeatedPosts.values()) {
+            post.setTypeOfRecommendation(2);
+            allPosts.add(post);
+        }
     }
 
     /**
@@ -125,7 +147,6 @@ public class FeedFragment extends Fragment {
         query.include(Post.KEY_AUTHOR);
         if (!friendsIds.isEmpty()) {
             query.whereContainedIn(Post.KEY_AUTHOR, friendsIds);
-            Log.d(TAG, ""+friendsIds);
         }
         query.orderByDescending(Post.KEY_CREATED_AT);
         query.findInBackground(new FindCallback<Post>() {
@@ -134,7 +155,6 @@ public class FeedFragment extends Fragment {
                 if (e != null) {
                     Log.e(TAG, "Issue with getting friends posts", e);
                 }
-                Log.d(TAG, ""+receivedPosts);
                 if (receivedPosts != null) {
                     int maxLength = receivedPosts.size();
                     if (maxLength > 50) {
