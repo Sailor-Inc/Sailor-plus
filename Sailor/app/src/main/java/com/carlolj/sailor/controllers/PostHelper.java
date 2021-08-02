@@ -157,34 +157,26 @@ public class PostHelper {
                         if (e != null) {
                             Log.d(TAG, "Error updating location object : " + e);
                         }
+                        List<Post> toppedPosts = null;
+                        try {
+                            toppedPosts = ParseUser.getCurrentUser().fetchIfNeeded().getList("toppedPosts");
+                        } catch (ParseException parseException) {
+                            parseException.printStackTrace();
+                        }
+                        if (toppedPosts == null) {
+                            toppedPosts = new ArrayList<>();
+                        }
                         switch (code) {
                             case ADD_TOP:
                                 PushNotifications.sendNewLikeNotification(post, PushNotifications.CODE_NEW_TOP);
-                                try {
-                                    List<Post> toppedPosts = ParseUser.getCurrentUser().fetchIfNeeded().getList("toppedPosts");
-                                    if (toppedPosts == null) {
-                                        toppedPosts = new ArrayList<>();
-                                    }
-                                    toppedPosts.add(post);
-                                    ParseUser.getCurrentUser().put("toppedPosts", toppedPosts);
-                                } catch (ParseException parseException) {
-                                    parseException.printStackTrace();
-                                }
+                                toppedPosts.add(post);
                                 break;
                             case REMOVE_TOP:
                                 PushNotifications.sendNewLikeNotification(post, PushNotifications.CODE_DELETED_TOP);
-                                try {
-                                    List<Post> toppedPosts = ParseUser.getCurrentUser().fetchIfNeeded().getList("toppedPosts");
-                                    if (toppedPosts == null) {
-                                        toppedPosts = new ArrayList<>();
-                                    }
-                                    toppedPosts.remove(post);
-                                    ParseUser.getCurrentUser().put("toppedPosts", toppedPosts);
-                                } catch (ParseException parseException) {
-                                    parseException.printStackTrace();
-                                }
+                                toppedPosts.remove(post);
                                 break;
                         }
+                        ParseUser.getCurrentUser().put("toppedPosts", toppedPosts);
                         ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
