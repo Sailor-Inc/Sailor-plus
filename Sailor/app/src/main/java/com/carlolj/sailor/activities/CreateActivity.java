@@ -29,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.carlolj.sailor.BitmapScaler;
 import com.carlolj.sailor.BuildConfig;
 import com.carlolj.sailor.R;
+import com.carlolj.sailor.controllers.AlertDialogHelper;
 import com.carlolj.sailor.databinding.ActivityCreateBinding;
 import com.carlolj.sailor.databinding.ActivityLoginBinding;
 import com.carlolj.sailor.models.Location;
@@ -58,6 +59,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * This class is used to create a new post with a location selected via google places api
@@ -112,7 +115,11 @@ public class CreateActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), ""+autoCompleteTextView.getText().toString(), Toast.LENGTH_SHORT).show();
                     onSubmit();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Please fill all the post fields", Toast.LENGTH_SHORT).show();
+                    AlertDialogHelper.alertTitleAndDescription(
+                            CreateActivity.this,
+                            "Oops...",
+                            "Please fill all the post fields!",
+                            AlertDialogHelper.ERROR_TYPE);
                 }
             }
         });
@@ -324,7 +331,11 @@ public class CreateActivity extends AppCompatActivity {
         if (requestCode == ACCEPT_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             takePictureFromCamera();
         } else {
-            Toast.makeText(CreateActivity.this, "Permission not granted", Toast.LENGTH_SHORT).show();
+            AlertDialogHelper.alertTitleAndDescription(
+                    CreateActivity.this,
+                    "Oops...",
+                    "You need to accept the permissions to start taking pictures",
+                    AlertDialogHelper.ERROR_TYPE);
         }
     }
 
@@ -390,7 +401,11 @@ public class CreateActivity extends AppCompatActivity {
             @Override
             public void done(ParseException e) {
                 if (e != null) {
-                    Log.e(TAG, "Post image wasn't updated", e);
+                    AlertDialogHelper.alertTitleAndDescription(
+                            CreateActivity.this,
+                            "Oops...",
+                            "Post image wasn't updated",
+                            AlertDialogHelper.ERROR_TYPE);
                     return;
                 }
             }
@@ -416,7 +431,11 @@ public class CreateActivity extends AppCompatActivity {
             @Override
             public void done(ParseException e) {
                 if (e != null){
-                    Toast.makeText(CreateActivity.this, "Location was not created!" + e, Toast.LENGTH_SHORT).show();
+                    AlertDialogHelper.alertTitleAndDescription(
+                            CreateActivity.this,
+                            "Oops...",
+                            "The system failed when creating the location",
+                            AlertDialogHelper.ERROR_TYPE);
                     return;
                 }
                 setPostAndUpdateLocation(location);
@@ -441,14 +460,22 @@ public class CreateActivity extends AppCompatActivity {
             @Override
             public void done(ParseException e) {
                 if (e != null) {
-                    Toast.makeText(CreateActivity.this, "Post wasn't created!", Toast.LENGTH_SHORT).show();
+                    AlertDialogHelper.alertTitleAndDescription(
+                            CreateActivity.this,
+                            "Oops...",
+                            "The system failed when creating your post",
+                            AlertDialogHelper.ERROR_TYPE);
                     return;
                 }
                 location.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
                         if (e != null) {
-                            Toast.makeText(CreateActivity.this, "Repeated location not refreshed!", Toast.LENGTH_SHORT).show();
+                            AlertDialogHelper.alertTitleAndDescription(
+                                    CreateActivity.this,
+                                    "Oops...",
+                                    "Repeated location not refreshed!",
+                                    AlertDialogHelper.ERROR_TYPE);
                             return;
                         }
                         List list = null;
@@ -463,15 +490,28 @@ public class CreateActivity extends AppCompatActivity {
                             @Override
                             public void done(ParseException e) {
                                 if (e != null) {
-                                    Toast.makeText(CreateActivity.this, "Failed to insert post", Toast.LENGTH_SHORT).show();
+                                    AlertDialogHelper.alertTitleAndDescription(
+                                            CreateActivity.this,
+                                            "Oops...",
+                                            "Failed to insert post!",
+                                            AlertDialogHelper.ERROR_TYPE);
                                 }
                                 try {
                                     checkVisitedLocations(location);
                                 } catch (ParseException parseException) {
                                     parseException.printStackTrace();
                                 }
-                                Toast.makeText(CreateActivity.this, "Your post was added to the location", Toast.LENGTH_SHORT).show();
-                                finish();
+                                new SweetAlertDialog(CreateActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                                        .setTitleText("Your post was added successfully")
+                                        .setConfirmText("OK")
+                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                            @Override
+                                            public void onClick(SweetAlertDialog sDialog) {
+                                                sDialog.dismissWithAnimation();
+                                                CreateActivity.this.finish();
+                                            }
+                                        })
+                                        .show();
                             }
                         });
                     }

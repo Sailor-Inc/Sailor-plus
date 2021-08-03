@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.carlolj.sailor.R;
+import com.carlolj.sailor.controllers.AlertDialogHelper;
 import com.carlolj.sailor.controllers.PushNotifications;
 import com.carlolj.sailor.ui.feed.FeedFragment;
 import com.carlolj.sailor.ui.explore.ExploreFragment;
@@ -53,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        AlertDialogHelper.alertOnlyTitle(
+                MainActivity.this,
+                "Welcome " + ParseUser.getCurrentUser().getUsername() +  "!",
+                AlertDialogHelper.SUCCESS_TYPE);
 
         bottomNavigation = findViewById(R.id.bottomNavigation);
         if (isServicesOK()) {
@@ -107,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
      * function to show the fragment
      *
      * @param current current visible fragment
-     * @param tag     fragment tag
      */
     public void showFragmentWithTransition(Fragment current, Fragment newFragment, View sharedView, String sharedElementName) {
         FragmentManager fragmentManager = getSupportFragmentManager();

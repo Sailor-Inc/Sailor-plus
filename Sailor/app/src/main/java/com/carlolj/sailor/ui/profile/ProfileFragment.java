@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ServiceWorkerWebSettings;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +34,7 @@ import com.carlolj.sailor.BitmapScaler;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.StartActivity;
 import com.carlolj.sailor.adapters.ProfileAdapter;
+import com.carlolj.sailor.controllers.AlertDialogHelper;
 import com.carlolj.sailor.controllers.PushNotifications;
 import com.carlolj.sailor.databinding.FragmentProfileBinding;
 import com.carlolj.sailor.models.Follows;
@@ -50,6 +53,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ProfileFragment extends Fragment {
 
@@ -183,6 +188,7 @@ public class ProfileFragment extends Fragment {
      * @param btnFollow a Button that tells if the user is already followed
      */
     private void setFollow(ParseUser parseUser, TextView tvFollowers, Button btnFollow) {
+        final SweetAlertDialog pDialog = AlertDialogHelper.alertStartSpin(getContext());
         ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
         query.whereEqualTo(Follows.KEY_USER_ID, parseUser.getObjectId());
         query.findInBackground(new FindCallback<Follows>() {
@@ -195,9 +201,9 @@ public class ProfileFragment extends Fragment {
                 }
                 if (objects != null) {
                     if (objects.get(0).isFollowed()) {
-                        doFollow(objects.get(0),parseUser,tvFollowers,btnFollow, CODE_REMOVE);
+                        doFollow(objects.get(0),parseUser,tvFollowers,btnFollow, CODE_REMOVE, pDialog);
                     } else {
-                        doFollow(objects.get(0), parseUser, tvFollowers, btnFollow, CODE_ADD);
+                        doFollow(objects.get(0), parseUser, tvFollowers, btnFollow, CODE_ADD, pDialog);
                     }
                 }
             }
@@ -212,7 +218,7 @@ public class ProfileFragment extends Fragment {
      * @param btnFollow a Button that tells if the user is already followed
      * @param code an Integer unique code that tells if the user is already following the user
      */
-    private void doFollow(Follows follows, ParseUser parseUser, TextView tvFollowers, Button btnFollow, int code) {
+    private void doFollow(Follows follows, ParseUser parseUser, TextView tvFollowers, Button btnFollow, int code, SweetAlertDialog pDialog) {
         switch (code) {
             case CODE_ADD:
                 follows.addFollower(ParseUser.getCurrentUser());
@@ -231,10 +237,10 @@ public class ProfileFragment extends Fragment {
                 }
                 switch (code) {
                     case CODE_ADD:
-                        doFollowing(parseUser, btnFollow, tvFollowers, follows, CODE_ADD);
+                        doFollowing(parseUser, btnFollow, tvFollowers, follows, CODE_ADD, pDialog);
                         break;
                     case CODE_REMOVE:
-                        doFollowing(parseUser, btnFollow, tvFollowers, follows, CODE_REMOVE);
+                        doFollowing(parseUser, btnFollow, tvFollowers, follows, CODE_REMOVE, pDialog);
                         break;
                 }
             }
@@ -250,7 +256,7 @@ public class ProfileFragment extends Fragment {
      * @param follows a Button that tells if the user is already followed
      * @param code an Integer unique code that tells if the user is already following the user
      */
-    private void doFollowing(ParseUser parseUser, Button btnFollow, TextView tvFollowers, Follows follows, int code) {
+    private void doFollowing(ParseUser parseUser, Button btnFollow, TextView tvFollowers, Follows follows, int code, SweetAlertDialog pDialog) {
         ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
         query.whereEqualTo(Follows.KEY_USER_ID, ParseUser.getCurrentUser().getObjectId());
         query.findInBackground(new FindCallback<Follows>() {
@@ -285,7 +291,11 @@ public class ProfileFragment extends Fragment {
                                 btnFollow.setTextColor(getResources().getColor(R.color.black));
                                 btnFollow.setText("Unfollow");
                                 btnFollow.setClickable(true);
-                                Toast.makeText(getContext(), "Followed and following process success", Toast.LENGTH_SHORT).show();
+                                AlertDialogHelper.alertStopSpin(pDialog);
+                                AlertDialogHelper.alertOnlyTitle(
+                                        getContext(),
+                                        "Following progress success!",
+                                        AlertDialogHelper.SUCCESS_TYPE);
                                 break;
                             case CODE_REMOVE:
                                 PushNotifications.sendNewFollowsNotification(parseUser, CODE_STOPPED);
@@ -294,7 +304,11 @@ public class ProfileFragment extends Fragment {
                                 btnFollow.setTextColor(getResources().getColor(R.color.white));
                                 btnFollow.setText("Follow");
                                 btnFollow.setClickable(true);
-                                Toast.makeText(getContext(), "Remove followed and following process success", Toast.LENGTH_SHORT).show();
+                                AlertDialogHelper.alertStopSpin(pDialog);
+                                AlertDialogHelper.alertOnlyTitle(
+                                        getContext(),
+                                        "Unfollowing progress success!",
+                                        AlertDialogHelper.SUCCESS_TYPE);
                                 break;
                         }
                     }

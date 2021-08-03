@@ -28,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.carlolj.sailor.BitmapScaler;
 import com.carlolj.sailor.R;
+import com.carlolj.sailor.controllers.AlertDialogHelper;
 import com.carlolj.sailor.databinding.ActivityRegisterBinding;
 import com.carlolj.sailor.models.Follows;
 import com.parse.LogInCallback;
@@ -44,8 +45,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import kotlin.collections.EmptyList;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -92,10 +91,18 @@ public class RegisterActivity extends AppCompatActivity {
                     if(!etUsername.getText().toString().equals("") && !etPassword.getText().toString().equals("")) {
                         logUpUser(etUsername.getText().toString(), etPassword.getText().toString());
                     }else{
-                        Toast.makeText(RegisterActivity.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+                        AlertDialogHelper.alertTitleAndDescription(
+                                RegisterActivity.this,
+                                "Sorry",
+                                "Please fill all the fields",
+                                AlertDialogHelper.ERROR_TYPE);
                     }
                 } else {
-                    Toast.makeText(RegisterActivity.this, "Please upload a profile picture", Toast.LENGTH_SHORT).show();
+                    AlertDialogHelper.alertTitleAndDescription(
+                            RegisterActivity.this,
+                            "Sorry",
+                            "Please upload a profile picture",
+                            AlertDialogHelper.ERROR_TYPE);
                 }
             }
         });
@@ -121,12 +128,15 @@ public class RegisterActivity extends AppCompatActivity {
             user.put("profilePicture", newProfileImage);
             user.signUpInBackground(new SignUpCallback() {
                 public void done(ParseException e) {
-                    if (e == null) {
-                        createFollows(user.getObjectId(), username, password);
-                    } else {
-                        Log.e(TAG, "Issue registering", e);
-                        Toast.makeText(RegisterActivity.this, "Error registering, check your connection/credentials", Toast.LENGTH_SHORT).show();
+                    if (e != null) {
+                        AlertDialogHelper.alertTitleAndDescription(
+                                RegisterActivity.this,
+                                "Oops...",
+                                "Error registering, check your connection/credentials",
+                                AlertDialogHelper.ERROR_TYPE);
+
                     }
+                    createFollows(user.getObjectId(), username, password);
                 }
             });
         }
@@ -156,10 +166,13 @@ public class RegisterActivity extends AppCompatActivity {
             public void done(ParseUser user, ParseException e) {
                 //If the parse exception is null, means that executed correctly
                 if (e!=null) {
-                    Log.e(TAG, "Issue with login", e);
+                    AlertDialogHelper.alertTitleAndDescription(
+                            RegisterActivity.this,
+                            "Oops...",
+                            "Issue loging in, check your connection/credentials",
+                            AlertDialogHelper.ERROR_TYPE);
                     return;
                 }
-                Toast.makeText(RegisterActivity.this, "Welcome! " + username, Toast.LENGTH_SHORT).show();
                 goMainActivity();
             }
         });
