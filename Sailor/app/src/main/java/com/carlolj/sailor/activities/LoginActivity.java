@@ -16,6 +16,8 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
@@ -61,10 +63,12 @@ public class LoginActivity extends AppCompatActivity {
                 //If the parse exception is null, means that executed correctly
                 if (e!=null) {
                     Log.e(TAG, "Issue with login", e);
-                    Toast.makeText(LoginActivity.this, "Error signing in, check your connection/credentials", Toast.LENGTH_SHORT).show();
+                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Oops...")
+                            .setContentText("Error signing in, check your connection/credentials")
+                            .show();
                     return;
                 }
-                Toast.makeText(LoginActivity.this, "Welcome back! " + username, Toast.LENGTH_SHORT).show();
                 goMainActivity();
             }
         });

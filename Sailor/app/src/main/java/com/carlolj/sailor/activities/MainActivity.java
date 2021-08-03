@@ -28,6 +28,8 @@ import androidx.fragment.app.FragmentManager;
 import com.carlolj.sailor.databinding.ActivityMainBinding;
 import com.parse.ParseUser;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -47,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        new SweetAlertDialog(MainActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("Welcome back " + ParseUser.getCurrentUser().getUsername()+"!")
+                .show();
 
         bottomNavigation = findViewById(R.id.bottomNavigation);
         if (isServicesOK()) {
@@ -96,4 +102,29 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+<<<<<<< Updated upstream
+=======
+
+    /**
+     * function to show the fragment
+     *
+     * @param current current visible fragment
+     */
+    public void showFragmentWithTransition(Fragment current, Fragment newFragment, View sharedView, String sharedElementName) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        // check if the fragment is in back stack
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            current.setSharedElementReturnTransition(TransitionInflater.from(this).inflateTransition(R.transition.move));
+            current.setExitTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.no_transition));
+
+            newFragment.setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(R.transition.move));
+            newFragment.setEnterTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.no_transition));
+        }
+        fragmentManager.beginTransaction()
+                .replace(R.id.flContainer, newFragment)
+                .addToBackStack(null)
+                .addSharedElement(sharedView, sharedElementName)
+                .commit();
+    }
+>>>>>>> Stashed changes
 }

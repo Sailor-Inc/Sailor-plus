@@ -28,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.carlolj.sailor.BitmapScaler;
 import com.carlolj.sailor.R;
+import com.carlolj.sailor.controllers.AlertDialogHelper;
 import com.carlolj.sailor.databinding.ActivityRegisterBinding;
 import com.carlolj.sailor.models.Follows;
 import com.parse.LogInCallback;
@@ -45,7 +46,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import kotlin.collections.EmptyList;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -115,18 +116,23 @@ public class RegisterActivity extends AppCompatActivity {
         if (newProfileImage != null) {
             user.setUsername(username);
             user.setPassword(password);
-            List list = new ArrayList();
-            user.put("followers", list);
-            user.put("following", list);
             user.put("profilePicture", newProfileImage);
             user.signUpInBackground(new SignUpCallback() {
                 public void done(ParseException e) {
-                    if (e == null) {
-                        createFollows(user.getObjectId(), username, password);
-                    } else {
+                    if (e != null) {
                         Log.e(TAG, "Issue registering", e);
-                        Toast.makeText(RegisterActivity.this, "Error registering, check your connection/credentials", Toast.LENGTH_SHORT).show();
+                        AlertDialogHelper.alertTitleAndDescription(
+                                RegisterActivity.this,
+                                "Oops..." ,
+                                "Error registering, check your connection/credentials",
+                                AlertDialogHelper.ERROR_TYPE);
+
+                        return;
                     }
+                    createFollows(user.getObjectId(), username, password);
+                    new SweetAlertDialog(RegisterActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("Succesfully created your Sailor account!")
+                            .show();
                 }
             });
         }
@@ -159,7 +165,6 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.e(TAG, "Issue with login", e);
                     return;
                 }
-                Toast.makeText(RegisterActivity.this, "Welcome! " + username, Toast.LENGTH_SHORT).show();
                 goMainActivity();
             }
         });
