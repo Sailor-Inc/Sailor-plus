@@ -26,12 +26,17 @@ import androidx.fragment.app.Fragment;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.CreateActivity;
 import com.carlolj.sailor.activities.MainActivity;
+import com.carlolj.sailor.controllers.AlertDialogHelper;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
 import com.carlolj.sailor.models.Follows;
 import com.carlolj.sailor.models.Location;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -58,6 +63,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
@@ -134,6 +141,7 @@ public class ExploreFragment extends Fragment {
         fabClockwise2 = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_clockwise2);
         fabAntiClockwise2 = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_anticlockwise2);
 
+        startLocationClient();
         mLocationClient = new FusedLocationProviderClient(getActivity());
 
         fabMore.setOnClickListener(new View.OnClickListener() {
@@ -236,12 +244,42 @@ public class ExploreFragment extends Fragment {
         });
     }
 
+    /**
+     * This method creates a
+     */
+    private void startLocationClient() {
+        LocationRequest mLocationRequest = LocationRequest.create();
+        mLocationRequest.setInterval(60000*5);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationCallback mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                AlertDialogHelper.alertOnlyTitleDismiss(
+                        getContext(),
+                        "Your location has been updated!",
+                        AlertDialogHelper.SUCCESS_TYPE,
+                        1200);
+            }
+        };
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+            return;
+        }
+        LocationServices.getFusedLocationProviderClient(getContext()).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+    }
+
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         }
+        mLocationClient = new FusedLocationProviderClient(getActivity());
         Task<android.location.Location> task = mLocationClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<android.location.Location>() {
             @Override
@@ -259,36 +297,61 @@ public class ExploreFragment extends Fragment {
         if (requestCode == LOCATION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCurrentLocation();
+            } else {
+                AlertDialogHelper.alertOnlyTitle(
+                        getContext(),
+                        "Location permission not accepted!",
+                        AlertDialogHelper.ERROR_TYPE);
             }
         }
     }
 
     private void goToLocation(double latitude, double longitude) {
         LatLng latLng = new LatLng(latitude, longitude);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 4);
-        map.moveCamera(cameraUpdate);
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
         final View textenter = inflater.inflate(R.layout.dialog_add, null);
         final EditText userinput = (EditText) textenter.findViewById(R.id.etRadius);
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setView(textenter)
-                .setTitle("Filter by radius");
+                .setTitle("Filter by radius (1 = 1mi)");
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 map.clear();
                 int radius = Integer.parseInt(userinput.getText().toString());
-                if (radius > 10000) {
-                    radius = 10000;
+                float zoom = 10;
+                if (radius >= 2000) {
+                    zoom = 3;
+                } else {
+                    float calculation = 0;
+                    if (radius >= 5000) {
+                        zoom = 1;
+                    } else {
+                        calculation = radius/25;
+                        if (calculation >= 4) {
+                            calculation = 3+radius/200;
+                            if (calculation >= 7) {
+                                calculation = (float) (5 + radius/800);
+                            }
+                        }
+                    }
+                    zoom = zoom - calculation;
+                    Log.d("Zoom" , zoom+"");
+                }
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
+                map.moveCamera(cameraUpdate);
+
+                if (radius > 7500) {
+                    radius = 7500;
                     Toast.makeText(getContext(),
-                            "Your radius is bigger than allowed, making it 100,000km",
+                            "Your radius is bigger than allowed, making it 7500miles",
                             Toast.LENGTH_SHORT).show();
                 }
                 CircleOptions circleOptions = new CircleOptions();
                 circleOptions.center(latLng);
-                circleOptions.radius(radius*1000);
+                circleOptions.radius(radius*1609);
                 circleOptions.strokeColor(Color.BLACK);
                 circleOptions.fillColor(0x30ff0000);
                 circleOptions.strokeWidth(2);
@@ -356,6 +419,7 @@ public class ExploreFragment extends Fragment {
      * This method returns the top 20 most top-ed locations registered in the Sailor+ database
      */
     private void getTopLocations() {
+        final SweetAlertDialog pDialog = AlertDialogHelper.alertStartSpin(getContext());
         map.clear();
         if (locations != null) {
             locations.clear();
@@ -375,6 +439,7 @@ public class ExploreFragment extends Fragment {
                     locations.addAll(receivedLocations);
                     try {
                         loadMap();
+                        AlertDialogHelper.alertStopSpin(pDialog);
                     } catch (ParseException parseException) {
                         parseException.printStackTrace();
                     }
@@ -386,6 +451,7 @@ public class ExploreFragment extends Fragment {
     }
 
     private void getFriendsLocations() {
+        final SweetAlertDialog pDialog = AlertDialogHelper.alertStartSpin(getContext());
         map.clear();
         if (locations != null) {
             locations.clear();
@@ -420,6 +486,7 @@ public class ExploreFragment extends Fragment {
                     locations.addAll(keyList);
                     try {
                         loadMap();
+                        AlertDialogHelper.alertStopSpin(pDialog);
                     } catch (ParseException parseException) {
                         parseException.printStackTrace();
                     }
@@ -468,7 +535,8 @@ public class ExploreFragment extends Fragment {
     private boolean isInRadius(LatLng latLngUser, LatLng locationLatLng, int radius) {
         if (latLngUser != null && locationLatLng != null) {
             int distance = (int) SphericalUtil.computeDistanceBetween(latLngUser,locationLatLng);
-            return distance/1000<=radius;
+            Log.d("Distance " , distance/1609 + " : " + radius);
+            return distance/1609<=radius;
         }
         return false;
     }
