@@ -30,6 +30,7 @@ import com.carlolj.sailor.controllers.AlertDialogHelper;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
 import com.carlolj.sailor.models.Follows;
 import com.carlolj.sailor.models.Location;
+import com.github.rongi.rotate_layout.layout.RotateLayout;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -78,6 +79,7 @@ public class ExploreFragment extends Fragment {
     boolean isPermissionGranted, isOpen, isFiltering = false;
     private FusedLocationProviderClient mLocationClient;
 
+    RotateLayout rlTopLocations, rlDistance, rlFriends;
     FloatingActionButton fabAdd, fabMore, fabFilter, fabFriends, fabTopLocations, fabDistance;
     Animation fabOpen, fabClose, fabClockwise, fabAntiClockwise, fabOpen2, fabClose2, fabClockwise2, fabAntiClockwise2;
 
@@ -131,6 +133,9 @@ public class ExploreFragment extends Fragment {
         fabDistance = binding.fabDistance;
         fabFriends = binding.fabFriends;
         fabTopLocations = binding.fabTopLocations;
+        rlTopLocations = binding.rlTopLocations;
+        rlDistance = binding.rlDistance;
+        rlFriends = binding.rlFriends;
 
         fabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim);
         fabClose = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim);
@@ -153,6 +158,9 @@ public class ExploreFragment extends Fragment {
                         fabFriends.startAnimation(fabClose2);
                         fabTopLocations.startAnimation(fabClose2);
                         fabDistance.startAnimation(fabClose2);
+                        rlDistance.startAnimation(fabClose2);
+                        rlFriends.startAnimation(fabClose2);
+                        rlTopLocations.startAnimation(fabClose2);
 
                         fabFriends.setClickable(false);
                         fabTopLocations.setClickable(false);
@@ -187,6 +195,9 @@ public class ExploreFragment extends Fragment {
                     fabFriends.startAnimation(fabOpen2);
                     fabTopLocations.startAnimation(fabOpen2);
                     fabDistance.startAnimation(fabOpen2);
+                    rlDistance.startAnimation(fabOpen2);
+                    rlFriends.startAnimation(fabOpen2);
+                    rlTopLocations.startAnimation(fabOpen2);
 
                     fabFriends.setClickable(true);
                     fabTopLocations.setClickable(true);
@@ -199,6 +210,9 @@ public class ExploreFragment extends Fragment {
                         fabFriends.startAnimation(fabClose2);
                         fabTopLocations.startAnimation(fabClose2);
                         fabDistance.startAnimation(fabClose2);
+                        rlDistance.startAnimation(fabClose2);
+                        rlFriends.startAnimation(fabClose2);
+                        rlTopLocations.startAnimation(fabClose2);
 
                         fabFriends.setClickable(false);
                         fabTopLocations.setClickable(false);

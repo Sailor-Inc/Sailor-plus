@@ -101,4 +101,7 @@ dependencies {
     implementation "com.github.parse-community.Parse-SDK-Android:bolts-tasks:1.26.0"
 
     implementation 'com.github.f0ris.sweetalert:library:1.6.2'
+
+    //Allow rotation
+    implementation 'rongi.rotate-layout:rotate-layout:3.0.0'
 }

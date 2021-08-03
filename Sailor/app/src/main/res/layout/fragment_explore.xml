@@ -11,19 +11,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/mapContainer">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cvMap"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/googleMap"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:cardElevation="5dp">
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/googleMap"
-                android:layout_below="@+id/tvTitle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                class="com.google.android.gms.maps.SupportMapFragment"/>
-        </androidx.cardview.widget.CardView>
+            class="com.google.android.gms.maps.SupportMapFragment"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabMore"
@@ -34,7 +26,7 @@
             android:layout_marginTop="30dp"
             android:layout_marginStart="30dp"
             android:src="@drawable/add"
-            app:fabSize="normal" />
+            app:fabSize="normal"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabAdd"
@@ -45,7 +37,7 @@
             android:layout_marginTop="15dp"
             android:backgroundTint="@color/green"
             android:contentDescription="@string/create"
-            android:src="@drawable/ic_edit"
+            android:src="@drawable/ic_add_post"
             android:visibility="invisible"
             app:fabSize="mini" />
 
@@ -72,7 +64,30 @@
             android:backgroundTint="@color/cardview_light_background"
             android:contentDescription="@string/create"
             android:src="@drawable/ic_top"
-            app:fabSize="mini" android:visibility="invisible"/>
+            app:fabSize="mini"
+            android:visibility="invisible"/>
+
+        <com.github.rongi.rotate_layout.layout.RotateLayout
+            android:visibility="invisible"
+            android:id="@+id/rlTopLocations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:angle="90"
+            android:layout_above="@+id/fabTopLocations"
+            android:layout_alignLeft="@+id/fabTopLocations"
+            android:layout_marginLeft="7dp">	<!-- Specify rotate angle here -->
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="World's top locations"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                android:padding="5dp"/>
+        </com.github.rongi.rotate_layout.layout.RotateLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabFriends"
@@ -88,6 +103,28 @@
             app:fabSize="mini"
             android:visibility="invisible"/>
 
+        <com.github.rongi.rotate_layout.layout.RotateLayout
+            android:visibility="invisible"
+            android:id="@+id/rlFriends"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:angle="90"
+            android:layout_above="@+id/fabFriends"
+            android:layout_alignLeft="@+id/fabFriends"
+            android:layout_marginLeft="7dp">	<!-- Specify rotate angle here -->
+
+            <TextView
+                android:id="@+id/tvStaticFriends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Places your friends have visited"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white"
+                android:padding="5dp"
+                android:textSize="9sp"/>
+        </com.github.rongi.rotate_layout.layout.RotateLayout>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabDistance"
             android:layout_toRightOf="@+id/fabFriends"
@@ -101,5 +138,27 @@
             android:translationZ="12dp"
             app:fabSize="mini"
             android:visibility="invisible"/>
+
+        <com.github.rongi.rotate_layout.layout.RotateLayout
+            android:visibility="invisible"
+            android:id="@+id/rlDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:angle="90"
+            android:layout_above="@+id/fabDistance"
+            android:layout_alignLeft="@+id/fabDistance"
+            android:layout_marginLeft="7dp">	<!-- Specify rotate angle here -->
+
+            <TextView
+                android:id="@+id/tvStaticRadius"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filter by radius around you"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white"
+                android:padding="5dp"
+                android:textSize="9sp"/>
+        </com.github.rongi.rotate_layout.layout.RotateLayout>
     </RelativeLayout>
 </RelativeLayout>
