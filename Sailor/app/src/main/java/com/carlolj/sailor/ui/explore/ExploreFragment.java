@@ -259,7 +259,7 @@ public class ExploreFragment extends Fragment {
     }
 
     /**
-     * This method creates a
+     * This method continuously updates the current user location to be capable of using filter by raidus functionalities
      */
     private void startLocationClient() {
         LocationRequest mLocationRequest = LocationRequest.create();
@@ -271,11 +271,6 @@ public class ExploreFragment extends Fragment {
                 if (locationResult == null) {
                     return;
                 }
-                AlertDialogHelper.alertOnlyTitleDismiss(
-                        getContext(),
-                        "Your location has been updated!",
-                        AlertDialogHelper.SUCCESS_TYPE,
-                        1200);
             }
         };
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -287,6 +282,9 @@ public class ExploreFragment extends Fragment {
         LocationServices.getFusedLocationProviderClient(getContext()).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
     }
 
+    /**
+     * Call this method to update the current location
+     */
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
@@ -305,6 +303,12 @@ public class ExploreFragment extends Fragment {
         });
     }
 
+    /**
+     * This method gets automatically called when the permissions get accepted/rejected
+     * @param requestCode an integer representing the expected code to receive
+     * @param permissions the string of permissions
+     * @param grantResults the integer telling the grantResults of the operation
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -320,6 +324,11 @@ public class ExploreFragment extends Fragment {
         }
     }
 
+    /**
+     * This method starts an alertDialog to start filtering by radius using the current location ia two parameters: latitude and longitude
+     * @param latitude a double representing latitude
+     * @param longitude a double representing longitude
+     */
     private void goToLocation(double latitude, double longitude) {
         LatLng latLng = new LatLng(latitude, longitude);
 
