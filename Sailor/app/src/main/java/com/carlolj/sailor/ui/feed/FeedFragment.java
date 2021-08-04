@@ -35,9 +35,13 @@ import com.parse.ParseUser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+
+import static java.util.stream.Collectors.toCollection;
 
 public class FeedFragment extends Fragment {
 
@@ -49,6 +53,8 @@ public class FeedFragment extends Fragment {
     FeedAdapter adapter;
     TextView tvNoFriends;
     SwipeRefreshLayout swipeContainer;
+    HashMap<String, Post> nonRepeatedPosts = new HashMap<String, Post>();
+    int count = 0, friendCount = 0;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -92,9 +98,17 @@ public class FeedFragment extends Fragment {
                 android.R.color.holo_red_light);
     }
 
+    /**
+     * Call this function to get the feed that shows the posts of the people you're following +
+     * give recommendation of posts based on the likes your friends have given, the method gets
+     * all of the current friends user ids, and then searches foe each of their toppedPosts
+     */
     private void loadPostsOfFollowing() {
         allPosts.clear();
         adapter.notifyDataSetChanged();
+        count = 0;
+        friendCount = 0;
+        nonRepeatedPosts.clear();
         ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
         query.whereEqualTo("userId", ParseUser.getCurrentUser().getObjectId());
         query.getFirstInBackground(new GetCallback<Follows>() {
@@ -114,8 +128,7 @@ public class FeedFragment extends Fragment {
                         for (ParseUser friend : friends) {
                             friendsIds.add(friend.getObjectId());
                         }
-                        loadPostsToppedByFriends(friends);
-                        loadFriendsPosts(friendsIds);
+                        loadPostsToppedByFriends(friends, friendsIds);
                     } else {
                         tvNoFriends.setVisibility(View.VISIBLE);
                     }
@@ -124,35 +137,66 @@ public class FeedFragment extends Fragment {
         });
     }
 
-    private void loadPostsToppedByFriends(List<ParseUser> friends) {
-        HashMap<String, Post> nonRepeatedPosts = new HashMap<String, Post>();
+    /**
+     * This method gives recommendation of posts based on the likes your friends have given and then calls the function
+     * @param friends A ParseUser list of the users the current user is following call -getFolllowing()- of the Follows object of the current user
+     * @param friendsIds a String list containing all of the friendsIds to load their posts
+     */
+    private void loadPostsToppedByFriends(List<ParseUser> friends, List<String> friendsIds) {
         for (ParseUser friend : friends) {
             try {
                 List<Post> friendToppedPosts = friend.fetchIfNeeded().getList("toppedPosts");
                 if (friendToppedPosts != null) {
                     for (Post post : friendToppedPosts) {
-                        Log.d("This friend likes the post of: ", " : " + friend.getUsername()+"");
-                        nonRepeatedPosts.put(post.getObjectId(), post);
+                        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+                        query.whereEqualTo("objectId", post.getObjectId());
+                        query.getFirstInBackground(new GetCallback<Post>() {
+                            @Override
+                            public void done(Post object, ParseException e) {
+                                if (object == null) {
+                                    return;
+                                }
+                                if (e != null) {
+                                    Log.d(TAG, "Error getting liked posts of friends "+e);
+                                    return;
+                                }
+                                nonRepeatedPosts.put(object.getObjectId(), object);
+                                count++;
+                                if (count == friendToppedPosts.size()) {
+                                    for (Post post : nonRepeatedPosts.values()) {
+                                        post.setTypeOfRecommendation(2);
+                                    }
+                                    friendCount++;
+                                }
+                                if (friendCount == friends.size()) {
+                                    loadFriendsPosts(friendsIds);
+                                }
+                            }
+                        });
                     }
+                } else {
+                    friendCount++;
+                    if (friendCount == friends.size()) {
+                        loadFriendsPosts(friendsIds);
+                    }
+                    Log.d("True ", friendCount + " " +friends.size() + "");
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-        for (Post post : nonRepeatedPosts.values()) {
-            post.setTypeOfRecommendation(2);
-            allPosts.add(post);
-        }
     }
 
     /**
-     * Get the posts with specified query filtering
+     * Get the posts of userIds received using a query and a hashmap to avoid repeating posts
+     * @param friendsIds A list containing all the ids of the users to get their posts
      */
     private void loadFriendsPosts(List<String> friendsIds) {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_AUTHOR);
         if (!friendsIds.isEmpty()) {
             query.whereContainedIn(Post.KEY_AUTHOR, friendsIds);
+            query.whereNotEqualTo(Post.KEY_AUTHOR, ParseUser.getCurrentUser().getObjectId());
         }
         query.orderByDescending(Post.KEY_CREATED_AT);
         query.findInBackground(new FindCallback<Post>() {
@@ -162,15 +206,20 @@ public class FeedFragment extends Fragment {
                     Log.e(TAG, "Issue with getting friends posts", e);
                 }
                 if (receivedPosts != null) {
-                    int maxLength = receivedPosts.size();
+                    for (Post post : receivedPosts) {
+                        post.setTypeOfRecommendation(0);
+                        nonRepeatedPosts.put(post.getObjectId(), post);
+                    }
+                    ArrayList<Post> newList = nonRepeatedPosts.values().stream()
+                            .sorted(Comparator.comparing(Post::getCreatedAt).reversed())
+                            .collect(toCollection(ArrayList::new));
+                    int maxLength = newList.size() + nonRepeatedPosts.values().size();
                     if (maxLength > 50) {
-                        allPosts.addAll(receivedPosts.subList(0,50));
+                        allPosts.addAll(newList.subList(0,50));
                     } else {
-                        allPosts.addAll(receivedPosts);
+                        allPosts.addAll(newList);
                     }
                     adapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(getContext(), "There are no posts, that's weird..." , Toast.LENGTH_SHORT).show();
                 }
             }
         });

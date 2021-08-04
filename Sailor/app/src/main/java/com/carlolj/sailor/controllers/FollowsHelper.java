@@ -55,12 +55,6 @@ public class FollowsHelper {
                         break;
                 }
                 if (follows != null) {
-                    Optional<ParseUser> matchingObject = follows.stream().
-                            filter(p -> p.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())).
-                            findFirst();
-
-                    matchingObject.ifPresent(user -> user.setUsername("You"));
-
                     list.addAll(follows);
                     adapter.notifyDataSetChanged();
                 }
