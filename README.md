@@ -83,14 +83,13 @@ Must have app requirements
        - [X] The user can see a multiple item view to filter in the map
      * Feed
      - [X] User can see a feed with latest photos and details of the places of the people they follow
-     - [ ] User can see a feed with the posts your friends gave tops
+     - [X] User can see a feed with the posts your friends gave tops
      * Visuals
-     - [ ] The app visuals must be approved by my manager
+     - [X] The app visuals must be approved by my manager
 
  * **WEEK 4 / WEEK 5**
      * App
-     - [ ] User can swipe down to refresh (feed screen, pin screen, profile screen)
-     - [ ] User can scroll until there are no more posts to load (feed, pin activity)
+     - [X] User can swipe down to refresh (feed screen, pin screen, profile screen)
      - [ ] User can edit posts
      - [ ] User can delete posts
      - [ ] User can edit his/her profile data 
@@ -103,7 +102,7 @@ Must have app requirements
      - [ ] Update post_item layout visuals
 
  **Optional Nice-to-have Stories**
- * User can see an intelligent recommendation of locations in the feed
+ - [X] * User can see an intelligent recommendation of locations in the feed
  * Extra polished UI design
  * User can filter the locations with parameters like : recommended, number of reviews, country, state
  * User can send direct messages to other users
