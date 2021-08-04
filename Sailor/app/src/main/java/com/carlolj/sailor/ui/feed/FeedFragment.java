@@ -227,9 +227,9 @@ public class FeedFragment extends Fragment {
 
     /**
      * function to open the Feed detail fragment
-     * @param position Movie list position
+     * @param position Post list position
      */
-    public void openMovieDetailFragment(int position, View view, Post post) {
+    public void openPostDetailFragment(int position, View view, Post post) {
         if (getActivity() instanceof MainActivity) {
             DetailFragment detailFragment = new DetailFragment(post);
             Bundle bundle = new Bundle();

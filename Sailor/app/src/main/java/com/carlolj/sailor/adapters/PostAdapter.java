@@ -223,6 +223,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     }
 
     private void top(Post post, ImageView ivTops, TextView tvTops, Context context, LottieAnimationView topAnim) {
+        topAnim.playAnimation();
+        topAnim.setVisibility(View.VISIBLE);
         PostHelper.animationPlayListener(topAnim);
         PostHelper.TopPost(post, ivTops, tvTops, context);
     }
