@@ -75,7 +75,7 @@
             app:angle="90"
             android:layout_above="@+id/fabTopLocations"
             android:layout_alignLeft="@+id/fabTopLocations"
-            android:layout_marginLeft="7dp">	<!-- Specify rotate angle here -->
+            android:layout_marginLeft="7dp">
 
             <TextView
                 android:id="@+id/textView3"
@@ -111,7 +111,7 @@
             app:angle="90"
             android:layout_above="@+id/fabFriends"
             android:layout_alignLeft="@+id/fabFriends"
-            android:layout_marginLeft="7dp">	<!-- Specify rotate angle here -->
+            android:layout_marginLeft="7dp">
 
             <TextView
                 android:id="@+id/tvStaticFriends"
@@ -147,7 +147,7 @@
             app:angle="90"
             android:layout_above="@+id/fabDistance"
             android:layout_alignLeft="@+id/fabDistance"
-            android:layout_marginLeft="7dp">	<!-- Specify rotate angle here -->
+            android:layout_marginLeft="7dp">
 
             <TextView
                 android:id="@+id/tvStaticRadius"

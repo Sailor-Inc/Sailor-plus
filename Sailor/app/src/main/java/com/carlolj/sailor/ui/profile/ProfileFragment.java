@@ -28,6 +28,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.carlolj.sailor.BitmapScaler;
@@ -76,6 +77,7 @@ public class ProfileFragment extends Fragment {
     Button btnFollow;
     RecyclerView rvProfilePosts;
     TextView tvFollowers, tvFollowing;
+    SwipeRefreshLayout swipeContainer;
 
     protected ProfileAdapter adapter;
     protected List<Post> allPosts;
@@ -102,6 +104,21 @@ public class ProfileFragment extends Fragment {
         rvProfilePosts = binding.ivProfilePosts;
         tvFollowers = binding.tvFollowers;
         tvFollowing = binding.tvFollowing;
+
+        swipeContainer = binding.swipeContainer;
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                queryPosts();
+                followsUpdate(tvFollowers, tvFollowing, btnFollow, currentUser.getObjectId());
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         allPosts = new ArrayList<>();
         adapter = new ProfileAdapter(getContext(), allPosts, this);
@@ -348,6 +365,8 @@ public class ProfileFragment extends Fragment {
     }
 
     protected void queryPosts() {
+        allPosts.clear();
+        adapter.notifyDataSetChanged();
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_AUTHOR);
         query.whereEqualTo(Post.KEY_AUTHOR, currentUser);
@@ -358,10 +377,12 @@ public class ProfileFragment extends Fragment {
             public void done(List<Post> posts, ParseException e) {
                 if (e != null) {
                     Log.e(TAG, "Issue with getting posts", e);
+                    swipeContainer.setRefreshing(false);
                     return;
                 }
                 allPosts.addAll(posts);
                 adapter.notifyDataSetChanged();
+                swipeContainer.setRefreshing(false);
             }
         });
     }

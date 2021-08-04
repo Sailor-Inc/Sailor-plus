@@ -4,53 +4,72 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.explore.PinFragment"
-    android:paddingTop="20dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp">
+    tools:context=".ui.explore.PinFragment">
 
-    <LinearLayout
-        android:id="@+id/topLayout"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="@font/comfortaa"
-            android:maxLines="1"
-            android:text="Location"
-            android:textColor="@color/black"
-            android:textSize="32sp"
-            app:autoSizeMaxTextSize="32sp"
-            app:autoSizeMinTextSize="6sp"
-            app:autoSizeStepGranularity="2sp"
-            app:autoSizeTextType="uniform" />
-
-        <TextView
-            android:id="@+id/tvFilter"
+        android:layout_height="match_parent">
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="@font/roboto_bold"
-            android:hint="Select post type"
-            android:padding="12dp"
-            android:layout_marginLeft="20dp"
-            android:layout_gravity="center_vertical"
-            android:drawablePadding="16dp"
-            android:drawableEnd="@android:drawable/arrow_down_float"
-            android:background="@android:drawable/editbox_background"/>
-    </LinearLayout>
+            android:background="@color/white">
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways|snap">
+                <LinearLayout
+                    android:id="@+id/topLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvPosts"
-        android:layout_below="@+id/topLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
-    </androidx.recyclerview.widget.RecyclerView>
+                    <TextView
+                        android:id="@+id/tvTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/comfortaa"
+                        android:maxLines="1"
+                        android:text="Location"
+                        android:textColor="@color/black"
+                        android:textSize="32sp"
+                        app:autoSizeMaxTextSize="32sp"
+                        app:autoSizeMinTextSize="6sp"
+                        app:autoSizeStepGranularity="2sp"
+                        app:autoSizeTextType="uniform" />
 
+                    <TextView
+                        android:id="@+id/tvFilter"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/roboto_bold"
+                        android:hint="Select post type"
+                        android:padding="12dp"
+                        android:layout_gravity="center_vertical"
+                        android:drawablePadding="16dp"
+                        android:drawableEnd="@android:drawable/arrow_down_float"
+                        android:background="@android:drawable/editbox_background"/>
+                </LinearLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn"
+            android:layout_marginTop="10dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPosts"
+                android:layout_below="@+id/topLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp">
+            </androidx.recyclerview.widget.RecyclerView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </RelativeLayout>

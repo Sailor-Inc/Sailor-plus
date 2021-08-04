@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.transition.TransitionInflater;
 
 import com.carlolj.sailor.R;
@@ -47,6 +48,7 @@ public class FeedFragment extends Fragment {
     RecyclerView rvPosts;
     FeedAdapter adapter;
     TextView tvNoFriends;
+    SwipeRefreshLayout swipeContainer;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -71,6 +73,25 @@ public class FeedFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        swipeContainer = binding.swipeContainer;
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadPostsOfFollowing();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+    }
+
     private void loadPostsOf() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include("objectId");
@@ -91,6 +112,8 @@ public class FeedFragment extends Fragment {
     }
 
     private void loadPostsOfFollowing() {
+        allPosts.clear();
+        adapter.notifyDataSetChanged();
         ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
         query.whereEqualTo("userId", ParseUser.getCurrentUser().getObjectId());
         query.getFirstInBackground(new GetCallback<Follows>() {
@@ -98,7 +121,9 @@ public class FeedFragment extends Fragment {
             public void done(Follows object, ParseException e) {
                 if (e != null) {
                     Log.d(TAG, "error getting followers of current user account");
+                    swipeContainer.setRefreshing(false);
                 }
+                swipeContainer.setRefreshing(false);
                 if (object != null) {
                     List<ParseUser> friends = new ArrayList<>();
                     friends = object.getFollowing();

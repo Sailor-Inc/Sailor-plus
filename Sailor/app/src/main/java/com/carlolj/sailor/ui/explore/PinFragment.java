@@ -4,9 +4,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +29,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -49,6 +53,7 @@ public class PinFragment extends Fragment {
     FragmentPinBinding binding;
     String locationUniqueId, locationTitle;
     ParseQuery<Post> query;
+    SwipeRefreshLayout swipeContainer;
 
     boolean[] selectedPostType;
     ArrayList<Integer> postList = new ArrayList<>();
@@ -161,7 +166,27 @@ public class PinFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        swipeContainer = binding.swipeContainer;
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadPostsOf(locationUniqueId);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+    }
+
     private void loadPostsOf(String locationUniqueId) {
+        allPosts.clear();
+        adapter.notifyDataSetChanged();
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.whereContains("location", locationUniqueId);
         query.findInBackground(new FindCallback<Post>() {
@@ -184,8 +209,10 @@ public class PinFragment extends Fragment {
                         allPosts.addAll(receivedPosts);
                     }
                     adapter.notifyDataSetChanged();
+                    swipeContainer.setRefreshing(false);
                 } else {
                     Toast.makeText(getContext(), "There are no posts, that's weird..." , Toast.LENGTH_SHORT).show();
+                    swipeContainer.setRefreshing(false);
                 }
             }
         });
