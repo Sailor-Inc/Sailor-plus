@@ -1,6 +1,7 @@
 package com.carlolj.sailor.adapters;
 
 import android.content.Context;
+import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -27,6 +30,7 @@ import com.carlolj.sailor.ui.profile.ProfileFragment;
 import com.parse.ParseException;
 
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -94,6 +98,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 
         ImageView ivProfilePicture, ivPostImage, ivTops;
         TextView tvTops, tvUsername, tvDate, tvCaption, tvCategory;
+        LottieAnimationView topAnimation;
         int i = 0;
 
         /**
@@ -110,6 +115,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             ivTops = itemView.findViewById(R.id.ivTops);
             tvCaption = itemView.findViewById(R.id.tvCaption);
             tvCategory = itemView.findViewById(R.id.tvCategory);
+            topAnimation = itemView.findViewById(R.id.topAnimation);
 
             itemView.setOnClickListener(this);
         }
@@ -153,7 +159,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
             ivTops.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PostHelper.TopPost(post, ivTops, tvTops, context);
+                    top(post, ivTops, tvTops, context, topAnimation);
                 }
             });
 
@@ -178,7 +184,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
                     if (i == 1) {
                         handler.postDelayed(runn, 200);
                     } else if (i == 2) {
-                        PostHelper.TopPost(post, ivTops, tvTops, context);
+                        top(post, ivTops, tvTops, context, topAnimation);
                     }
                 }
             });
@@ -214,5 +220,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
     public void clear(){
         posts.clear();
         notifyDataSetChanged();
+    }
+
+    private void top(Post post, ImageView ivTops, TextView tvTops, Context context, LottieAnimationView topAnim) {
+        PostHelper.animationPlayListener(topAnim);
+        PostHelper.TopPost(post, ivTops, tvTops, context);
     }
 }

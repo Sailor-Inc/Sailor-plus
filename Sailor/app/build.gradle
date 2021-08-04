@@ -104,4 +104,7 @@ dependencies {
 
     //Allow rotation
     implementation 'rongi.rotate-layout:rotate-layout:3.0.0'
+
+    //Animations
+    implementation "com.airbnb.android:lottie:4.0.0"
 }

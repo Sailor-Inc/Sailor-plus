@@ -72,7 +72,7 @@
             android:id="@+id/rlTopLocations"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:angle="90"
+            app:angle="50"
             android:layout_above="@+id/fabTopLocations"
             android:layout_alignLeft="@+id/fabTopLocations"
             android:layout_marginLeft="7dp">
@@ -108,7 +108,7 @@
             android:id="@+id/rlFriends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:angle="90"
+            app:angle="50"
             android:layout_above="@+id/fabFriends"
             android:layout_alignLeft="@+id/fabFriends"
             android:layout_marginLeft="7dp">
@@ -144,7 +144,7 @@
             android:id="@+id/rlDistance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:angle="90"
+            app:angle="50"
             android:layout_above="@+id/fabDistance"
             android:layout_alignLeft="@+id/fabDistance"
             android:layout_marginLeft="7dp">

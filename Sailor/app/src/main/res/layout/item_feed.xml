@@ -32,13 +32,28 @@
                 android:textSize="16sp"
                 android:fontFamily="@font/roboto_bold" />
 
-            <ImageView
-                android:id="@+id/ivPostImage"
+            <RelativeLayout
+                android:id="@+id/rlPost"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_below="@+id/ivProfilePicture"
-                android:scaleType="centerCrop"
-                android:layout_marginTop="20dp" />
+                android:layout_below="@+id/ivProfilePicture">
+
+                <ImageView
+                    android:id="@+id/ivPostImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:layout_marginTop="20dp" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/topAnimation"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:lottie_rawRes="@raw/top_2"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tvCategory"
@@ -92,7 +107,7 @@
                 android:fontFamily="@font/roboto_bold"
                 android:text="16h ago"
                 android:layout_marginTop="10dp"
-                android:layout_below="@id/ivPostImage"
+                android:layout_below="@id/rlPost"
                 android:layout_centerHorizontal="true"/>
 
             <TextView

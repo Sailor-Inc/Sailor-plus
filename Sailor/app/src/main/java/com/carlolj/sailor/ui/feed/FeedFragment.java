@@ -92,25 +92,6 @@ public class FeedFragment extends Fragment {
                 android.R.color.holo_red_light);
     }
 
-    private void loadPostsOf() {
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        query.include("objectId");
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> receivedPosts, ParseException e) {
-                if (e != null) {
-                    Log.e("PinActivity", "Issue with getting locations", e);
-                }
-                if (receivedPosts != null) {
-                    allPosts.addAll(receivedPosts);
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(getContext(), "There are no posts, that's weird..." , Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
     private void loadPostsOfFollowing() {
         allPosts.clear();
         adapter.notifyDataSetChanged();

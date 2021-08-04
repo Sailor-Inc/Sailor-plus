@@ -1,11 +1,14 @@
 package com.carlolj.sailor.controllers;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.models.Location;
 import com.carlolj.sailor.models.Post;
@@ -187,6 +190,31 @@ public class PostHelper {
                         });
                     }
                 });
+            }
+        });
+    }
+
+    public static void animationPlayListener(LottieAnimationView lottieAnimationView) {
+        lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                Log.e("Animation:","start");
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Log.e("Animation:","end");
+                lottieAnimationView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                Log.e("Animation:","cancel");
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                Log.e("Animation:","repeat");
             }
         });
     }
