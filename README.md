@@ -92,14 +92,21 @@ Must have app requirements
      - [X] User can swipe down to refresh (feed screen, pin screen, profile screen)
      - [ ] User can edit posts
      - [ ] User can delete posts
-     - [ ] User can edit his/her profile data 
+     - [ ] User can edit his/her profile data
      - [ ] User can filter by Country
      - [ ] User can filter by State
      - [ ] App has color scheme
      * Visuals
-     - [ ] Update item_feed layout visuals 
-     - [ ] Update pin activity layout visuals
-     - [ ] Update post_item layout visuals
+     - [X] Update item_feed layout visuals
+     - [X] Update pin activity layout visuals
+     - [X] Update post_item layout visuals
+     - [X] Animations on load + Dialogs
+     * Bugs
+     - [X] Feed logic bugs and logic
+     - [X] Explore bug (Location not working correctly)
+     - [X] Following/Follower bugs
+     - [X] Filtering posts inside location bug
+
 
  **Optional Nice-to-have Stories**
  - [X] * User can see an intelligent recommendation of locations in the feed
