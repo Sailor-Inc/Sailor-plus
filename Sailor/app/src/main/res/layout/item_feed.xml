@@ -63,19 +63,23 @@
                 android:layout_toRightOf="@id/tvUsername"
                 android:layout_marginLeft="50dp"
                 android:textColor="@color/black"
-                android:textSize="8sp"
+                android:textSize="12sp"
                 android:fontFamily="@font/roboto_bold" />
 
             <TextView
                 android:id="@+id/tvCaption"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:maxLines="3"
+                android:ellipsize="end"
                 android:layout_height="wrap_content"
                 android:text="@string/caption"
-                android:layout_toEndOf="@id/ivTops"
+                android:layout_toEndOf="@id/ivProfilePicture"
                 android:layout_marginTop="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:layout_below="@+id/tvTops"
                 android:textColor="@color/black"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 android:fontFamily="@font/roboto" />
 
             <ImageView
@@ -106,6 +110,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_bold"
                 android:text="16h ago"
+                android:textColor="@color/black"
                 android:layout_marginTop="10dp"
                 android:layout_below="@id/rlPost"
                 android:layout_centerHorizontal="true"/>
@@ -117,9 +122,10 @@
                 android:layout_height="wrap_content"
                 android:text="-"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
                 android:layout_below="@id/tvDate"
                 android:textColor="@color/black"
-                android:textSize="8sp"
+                android:textSize="13sp"
                 android:fontFamily="@font/roboto_bold" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
