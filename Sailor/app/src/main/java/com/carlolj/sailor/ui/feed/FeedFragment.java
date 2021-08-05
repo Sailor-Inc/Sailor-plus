@@ -53,7 +53,6 @@ public class FeedFragment extends Fragment {
 
     RecyclerView rvPosts;
     FeedAdapter adapter;
-    TextView tvNoFriends;
     SwipeRefreshLayout swipeContainer;
     HashMap<String, Post> nonRepeatedPosts = new HashMap<String, Post>();
     int count = 0, friendCount = 0;
@@ -73,7 +72,6 @@ public class FeedFragment extends Fragment {
         adapter = new FeedAdapter(getContext(), allPosts, this);
 
         loadingAnimation = binding.loadingAnimation;
-        tvNoFriends = binding.tvNoFriends;
         rvPosts = binding.rvPosts;
 
         rvPosts.setAdapter(adapter);
@@ -129,14 +127,16 @@ public class FeedFragment extends Fragment {
                     List<ParseUser> friends = new ArrayList<>();
                     friends = object.getFollowing();
                     if (friends != null && friends.size()>0) {
-                        tvNoFriends.setVisibility(View.GONE);
                         List<String> friendsIds = new ArrayList<>();
                         for (ParseUser friend : friends) {
                             friendsIds.add(friend.getObjectId());
                         }
                         loadPostsToppedByFriends(friends, friendsIds);
                     } else {
-                        tvNoFriends.setVisibility(View.VISIBLE);
+                        loadingAnimation.cancelAnimation();
+                        loadingAnimation.setVisibility(View.GONE);
+                        List<String> friendsIds = new ArrayList<>();
+                        loadFriendsAndOwnPosts(friendsIds);
                     }
                 }
             }
@@ -175,7 +175,7 @@ public class FeedFragment extends Fragment {
                                     friendCount++;
                                 }
                                 if (friendCount == friends.size()) {
-                                    loadFriendsPosts(friendsIds);
+                                    loadFriendsAndOwnPosts(friendsIds);
                                 }
                             }
                         });
@@ -183,7 +183,7 @@ public class FeedFragment extends Fragment {
                 } else {
                     friendCount++;
                     if (friendCount == friends.size()) {
-                        loadFriendsPosts(friendsIds);
+                        loadFriendsAndOwnPosts(friendsIds);
                     }
                     Log.d("True ", friendCount + " " +friends.size() + "");
                 }
@@ -197,12 +197,12 @@ public class FeedFragment extends Fragment {
      * Get the posts of userIds received using a query and a hashmap to avoid repeating posts
      * @param friendsIds A list containing all the ids of the users to get their posts
      */
-    private void loadFriendsPosts(List<String> friendsIds) {
+    private void loadFriendsAndOwnPosts(List<String> friendsIds) {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_AUTHOR);
+        friendsIds.add(ParseUser.getCurrentUser().getObjectId());
         if (!friendsIds.isEmpty()) {
             query.whereContainedIn(Post.KEY_AUTHOR, friendsIds);
-            query.whereNotEqualTo(Post.KEY_AUTHOR, ParseUser.getCurrentUser().getObjectId());
         }
         query.orderByDescending(Post.KEY_CREATED_AT);
         query.findInBackground(new FindCallback<Post>() {
@@ -215,7 +215,11 @@ public class FeedFragment extends Fragment {
                 }
                 if (receivedPosts != null) {
                     for (Post post : receivedPosts) {
-                        post.setTypeOfRecommendation(0);
+                        if (post.getAuthor().equals(ParseUser.getCurrentUser())) {
+                            post.setTypeOfRecommendation(3);
+                        } else {
+                            post.setTypeOfRecommendation(0);
+                        }
                         nonRepeatedPosts.put(post.getObjectId(), post);
                     }
                     ArrayList<Post> newList = nonRepeatedPosts.values().stream()
@@ -233,20 +237,5 @@ public class FeedFragment extends Fragment {
                 }
             }
         });
-    }
-
-    /**
-     * function to open the Feed detail fragment
-     * @param position Post list position
-     */
-    public void openPostDetailFragment(int position, View view, Post post) {
-        if (getActivity() instanceof MainActivity) {
-            DetailFragment detailFragment = new DetailFragment(post);
-            Bundle bundle = new Bundle();
-            bundle.putString("transitionName", "transition" + position);
-
-            detailFragment.setArguments(bundle);
-            ((MainActivity) getActivity()).showFragmentWithTransition(this, detailFragment, view, "transition" + position);
-        }
     }
 }

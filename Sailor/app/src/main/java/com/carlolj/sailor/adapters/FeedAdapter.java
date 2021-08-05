@@ -40,7 +40,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private FeedFragment fragment;
     public static final int KEY_FRIEND_POST = 0;
     public static final int KEY_RECOMMENDED_POST = 2;
-
+    public static final int KEY_SELF_POST = 3;
 
     public FeedAdapter(Context context, List<Post> posts, FeedFragment fragment) {
         this.context = context;
@@ -115,9 +115,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                     tvRecommendation.setVisibility(View.VISIBLE);
                     tvRecommendation.setText("One of your friends posted this");
                     break;
-            }
-            if (post.getTypeOfRecommendation() == 2) {
-
+                case KEY_SELF_POST:
+                    tvRecommendation.setVisibility(View.VISIBLE);
+                    tvRecommendation.setText("You posted this");
+                    break;
             }
 
             ivProfilePicture.setOnClickListener(new View.OnClickListener() {

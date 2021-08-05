@@ -486,6 +486,7 @@ public class ExploreFragment extends Fragment {
             public void done(Follows object, ParseException e) {
                 if (e != null) {
                     Log.e(TAG, "Issue with getting follows object", e);
+                    AlertDialogHelper.alertStopSpin(pDialog);
                     return;
                 }
                 List<ParseUser> friends = object.getFollowing();
@@ -513,6 +514,11 @@ public class ExploreFragment extends Fragment {
                     } catch (ParseException parseException) {
                         parseException.printStackTrace();
                     }
+                } else {
+                    AlertDialogHelper.alertStopSpin(pDialog);
+                    AlertDialogHelper.alertOnlyTitle(getContext(),
+                            "Sorry, you don't follow anyone :(",
+                            AlertDialogHelper.NORMAL_TYPE);
                 }
             }
         });
