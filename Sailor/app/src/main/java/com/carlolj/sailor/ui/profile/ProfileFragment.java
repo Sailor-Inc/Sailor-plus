@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.carlolj.sailor.BitmapScaler;
 import com.carlolj.sailor.R;
@@ -78,6 +79,7 @@ public class ProfileFragment extends Fragment {
     RecyclerView rvProfilePosts;
     TextView tvFollowers, tvFollowing;
     SwipeRefreshLayout swipeContainer;
+    LottieAnimationView loadingAnimation;
 
     protected ProfileAdapter adapter;
     protected List<Post> allPosts;
@@ -104,6 +106,7 @@ public class ProfileFragment extends Fragment {
         rvProfilePosts = binding.ivProfilePosts;
         tvFollowers = binding.tvFollowers;
         tvFollowing = binding.tvFollowing;
+        loadingAnimation = binding.loadingAnimation;
 
         swipeContainer = binding.swipeContainer;
         // Setup refresh listener which triggers new data loading
@@ -365,6 +368,8 @@ public class ProfileFragment extends Fragment {
     }
 
     protected void queryPosts() {
+        loadingAnimation.setVisibility(View.VISIBLE);
+        loadingAnimation.playAnimation();
         allPosts.clear();
         adapter.notifyDataSetChanged();
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
@@ -376,10 +381,14 @@ public class ProfileFragment extends Fragment {
             @Override
             public void done(List<Post> posts, ParseException e) {
                 if (e != null) {
+                    loadingAnimation.cancelAnimation();
+                    loadingAnimation.setVisibility(View.GONE);
                     Log.e(TAG, "Issue with getting posts", e);
                     swipeContainer.setRefreshing(false);
                     return;
                 }
+                loadingAnimation.cancelAnimation();
+                loadingAnimation.setVisibility(View.GONE);
                 allPosts.addAll(posts);
                 adapter.notifyDataSetChanged();
                 swipeContainer.setRefreshing(false);

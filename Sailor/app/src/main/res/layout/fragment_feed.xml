@@ -59,7 +59,17 @@
                     android:textColor="@color/black"
                     android:layout_marginLeft="10dp"
                     android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
                     android:visibility="gone"/>
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/loadingAnimation"
+                    android:visibility="gone"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    app:lottie_rawRes="@raw/loading"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"/>
             </RelativeLayout>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

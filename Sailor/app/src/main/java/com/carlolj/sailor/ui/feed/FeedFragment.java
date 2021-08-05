@@ -18,10 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.transition.TransitionInflater;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.adapters.FeedAdapter;
 import com.carlolj.sailor.adapters.PostAdapter;
+import com.carlolj.sailor.controllers.PostHelper;
 import com.carlolj.sailor.databinding.FragmentFeedBinding;
 import com.carlolj.sailor.models.Follows;
 import com.carlolj.sailor.models.Post;
@@ -55,6 +57,7 @@ public class FeedFragment extends Fragment {
     SwipeRefreshLayout swipeContainer;
     HashMap<String, Post> nonRepeatedPosts = new HashMap<String, Post>();
     int count = 0, friendCount = 0;
+    LottieAnimationView loadingAnimation;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -69,6 +72,7 @@ public class FeedFragment extends Fragment {
         allPosts = new ArrayList<>();
         adapter = new FeedAdapter(getContext(), allPosts, this);
 
+        loadingAnimation = binding.loadingAnimation;
         tvNoFriends = binding.tvNoFriends;
         rvPosts = binding.rvPosts;
 
@@ -104,6 +108,8 @@ public class FeedFragment extends Fragment {
      * all of the current friends user ids, and then searches foe each of their toppedPosts
      */
     private void loadPostsOfFollowing() {
+        loadingAnimation.setVisibility(View.VISIBLE);
+        loadingAnimation.playAnimation();
         allPosts.clear();
         adapter.notifyDataSetChanged();
         count = 0;
@@ -203,6 +209,8 @@ public class FeedFragment extends Fragment {
             @Override
             public void done(List<Post> receivedPosts, ParseException e) {
                 if (e != null) {
+                    loadingAnimation.cancelAnimation();
+                    loadingAnimation.setVisibility(View.GONE);
                     Log.e(TAG, "Issue with getting friends posts", e);
                 }
                 if (receivedPosts != null) {
@@ -219,6 +227,8 @@ public class FeedFragment extends Fragment {
                     } else {
                         allPosts.addAll(newList);
                     }
+                    loadingAnimation.cancelAnimation();
+                    loadingAnimation.setVisibility(View.GONE);
                     adapter.notifyDataSetChanged();
                 }
             }
