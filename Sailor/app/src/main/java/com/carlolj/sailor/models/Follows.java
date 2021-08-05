@@ -93,25 +93,23 @@ public class Follows extends ParseObject {
 
     public void removeFollower(ParseUser user){
         List<ParseUser> list = getList(KEY_FOLLOWERS);
-        if (list == null)
+        if (list == null) {
             list = new ArrayList<>();
-        for (ParseUser parseUser : list) {
-            if (parseUser.hasSameId(user)) {
-                list.remove(parseUser);
-                setFollowers(list);
-            }
+        }
+        if (list.contains(user)) {
+            list.remove(user);
+            setFollowers(list);
         }
     }
 
     public void removeFollowing(ParseUser user){
         List<ParseUser> list = getList(KEY_FOLLOWING);
-        if (list == null)
+        if (list == null) {
             list = new ArrayList<>();
-        for (ParseUser parseUser : list) {
-            if (parseUser.hasSameId(user)) {
-                list.remove(parseUser);
-                setFollowing(list);
-            }
+        }
+        if (list.contains(user)) {
+            list.remove(user);
+            setFollowing(list);
         }
     }
 }

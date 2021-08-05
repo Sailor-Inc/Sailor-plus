@@ -1,7 +1,6 @@
 package com.carlolj.sailor.ui.explore;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,19 +19,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.CreateActivity;
-import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.controllers.AlertDialogHelper;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
 import com.carlolj.sailor.models.Follows;
 import com.carlolj.sailor.models.Location;
 import com.github.rongi.rotate_layout.layout.RotateLayout;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -47,14 +42,12 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.SphericalUtil;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -67,8 +60,6 @@ import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
-
 public class ExploreFragment extends Fragment {
 
     public static final String TAG = "ExploreFragment";
@@ -76,7 +67,7 @@ public class ExploreFragment extends Fragment {
     private List<Location> locations;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
-    boolean isPermissionGranted, isOpen, isFiltering = false;
+    boolean isOpen, isFiltering = false;
     private FusedLocationProviderClient mLocationClient;
 
     RotateLayout rlTopLocations, rlDistance, rlFriends;
@@ -273,9 +264,7 @@ public class ExploreFragment extends Fragment {
                 }
             }
         };
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (locationCheckPermission()) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
             return;
         }
@@ -286,9 +275,7 @@ public class ExploreFragment extends Fragment {
      * Call this method to update the current location
      */
     private void getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (locationCheckPermission()) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         }
         mLocationClient = new FusedLocationProviderClient(getActivity());
@@ -347,17 +334,16 @@ public class ExploreFragment extends Fragment {
                 float zoom = 10;
                 if (radius >= 2000) {
                     zoom = 3;
+                    if (radius >= 4000) {
+                        zoom = 1;
+                    }
                 } else {
                     float calculation = 0;
-                    if (radius >= 5000) {
-                        zoom = 1;
-                    } else {
-                        calculation = radius/25;
-                        if (calculation >= 4) {
-                            calculation = 3+radius/200;
-                            if (calculation >= 7) {
-                                calculation = (float) (5 + radius/800);
-                            }
+                    calculation = radius/25;
+                    if (calculation >= 4) {
+                        calculation = 3+radius/200;
+                        if (calculation >= 7) {
+                            calculation = (float) (5 + radius/800);
                         }
                     }
                     zoom = zoom - calculation;
@@ -382,13 +368,11 @@ public class ExploreFragment extends Fragment {
 
                 getRadiusLocations(latLng, radius);
             }
-        })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog dialog = builder.create();
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
         builder.show();
     }
 
@@ -473,6 +457,10 @@ public class ExploreFragment extends Fragment {
         });
     }
 
+    /**
+     * Run this method to get the friends visitedLocations, if the user doesn't have friends
+     * it will show a Dialog saying that the user is not following anyone
+     */
     private void getFriendsLocations() {
         final SweetAlertDialog pDialog = AlertDialogHelper.alertStartSpin(getContext());
         map.clear();
@@ -524,6 +512,11 @@ public class ExploreFragment extends Fragment {
         });
     }
 
+    /**
+     * Run this method to ask the user to enter a radius value and filter locations by that radius
+     * @param latLngUser the current LatLang object of the user location
+     * @param radius the radius to search for locations
+     */
     private void getRadiusLocations(LatLng latLngUser, int radius) {
         if (locations != null) {
             locations.clear();
@@ -561,6 +554,13 @@ public class ExploreFragment extends Fragment {
         });
     }
 
+    /**
+     * Run this method to check between two LatLng objects in a certain radius
+     * @param latLngUser the current LatLang object of the user location
+     * @param locationLatLng the current LatLang object of the selected location
+     * @param radius integer containing the radius to compare
+     * @return
+     */
     private boolean isInRadius(LatLng latLngUser, LatLng locationLatLng, int radius) {
         if (latLngUser != null && locationLatLng != null) {
             int distance = (int) SphericalUtil.computeDistanceBetween(latLngUser,locationLatLng);
@@ -570,9 +570,14 @@ public class ExploreFragment extends Fragment {
         return false;
     }
 
+    /**
+     * Check if the app has the location permissions
+     * @return
+     */
     private boolean locationCheckPermission() {
-        if (ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return true;
         }
         return false;
