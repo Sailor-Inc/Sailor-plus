@@ -219,26 +219,11 @@ public class PinFragment extends Fragment {
     }
 
     /**
-     * function to open the Feed detail fragment
-     * @param position Movie list position
-     */
-    public void openMovieDetailFragment(int position, View view, Post post) {
-        if (getActivity() instanceof MainActivity) {
-            DetailFragment detailFragment = new DetailFragment(post);
-            Bundle bundle = new Bundle();
-            bundle.putString("transitionName", "transition" + position);
-
-            detailFragment.setArguments(bundle);
-            ((MainActivity) getActivity()).showFragmentWithTransition(this, detailFragment, view, "transition" + position);
-        }
-    }
-
-    /**
      * Set up the query with all the data inside the selected post types
      */
     private void setupQueryItems() {
         query = ParseQuery.getQuery(Post.class);
-        query.include(Post.KEY_AUTHOR);
+        query.whereContains("location", locationUniqueId);
         if(!listSelectedPostCategories.isEmpty())
             query.whereContainedIn(Post.KEY_POST_TYPE, listSelectedPostCategories);
     }
