@@ -173,6 +173,7 @@ public class FeedFragment extends Fragment {
                                         post.setTypeOfRecommendation(2);
                                     }
                                     friendCount++;
+                                    count = 0;
                                 }
                                 if (friendCount == friends.size()) {
                                     loadFriendsAndOwnPosts(friendsIds);
