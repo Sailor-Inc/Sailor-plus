@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,12 +22,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.CreateActivity;
 import com.carlolj.sailor.controllers.AlertDialogHelper;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
 import com.carlolj.sailor.models.Follows;
 import com.carlolj.sailor.models.Location;
+import com.carlolj.sailor.models.Post;
 import com.github.rongi.rotate_layout.layout.RotateLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -53,6 +56,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +73,8 @@ public class ExploreFragment extends Fragment {
     private SupportMapFragment mapFragment;
     boolean isOpen, isFiltering = false;
     private FusedLocationProviderClient mLocationClient;
+    private FrameLayout infoContainer;
+    private LocationDetailsFragment locationDetailsFragment;
 
     RotateLayout rlTopLocations, rlDistance, rlFriends;
     FloatingActionButton fabAdd, fabMore, fabFilter, fabFriends, fabTopLocations, fabDistance;
@@ -127,6 +133,7 @@ public class ExploreFragment extends Fragment {
         rlTopLocations = binding.rlTopLocations;
         rlDistance = binding.rlDistance;
         rlFriends = binding.rlFriends;
+        infoContainer = binding.infoContainer;
 
         fabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim);
         fabClose = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim);
@@ -406,18 +413,11 @@ public class ExploreFragment extends Fragment {
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
+                    map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                     String locationUniqueId = marker.getSnippet();
                     String locationTitle = marker.getTitle();
 
-                    Fragment fragment = PinFragment.newInstance(locationUniqueId, locationTitle);
-
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.flContainer, fragment)
-                            .addToBackStack(null)
-                            .commit();
-
-                    Log.d("ExploreFragment ", locationUniqueId);
+                    openLocationDetailsFromUniqueId(locationUniqueId);
                     return false;
                 }
             });
@@ -585,5 +585,46 @@ public class ExploreFragment extends Fragment {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Open a new Info fragment with the data of the selected location
+     */
+    private void openLocationDetailsFromUniqueId(String locationUniqueId) {
+        infoContainer.setVisibility(View.VISIBLE);
+        ParseQuery<Location> query  =ParseQuery.getQuery(Location.class);
+        query.whereEqualTo("objectId", locationUniqueId);
+        query.getFirstInBackground(new GetCallback<Location>() {
+            @Override
+            public void done(Location location, ParseException e) {
+                if (e != null) {
+                    return;
+                }
+                if (location != null) {
+                    ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+                    query.include("location");
+                    query.whereEqualTo("location", location);
+                    query.getFirstInBackground(new GetCallback<Post>() {
+                        @Override
+                        public void done(Post object, ParseException e) {
+                            if (object == null) {
+                                return;
+                            }
+                            if (e != null) {
+                                return;
+                            }
+                            String imgUrl = object.getLocationImage().getUrl();
+                            locationDetailsFragment = new LocationDetailsFragment(location, imgUrl);
+
+                            getChildFragmentManager()
+                                    .beginTransaction()
+                                    .setCustomAnimations(R.anim.bottom_up_fragment, R.anim.bottom_down_fragment)
+                                    .replace(R.id.infoContainer, locationDetailsFragment)
+                                    .commit();
+                        }
+                    });
+                }
+            }
+        });
     }
 }

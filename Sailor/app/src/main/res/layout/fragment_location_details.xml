@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.explore.LocationDetailsFragment"
+    android:padding="10dp"
+    android:layout_marginBottom="20dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="18dp">
+
+        <ImageView
+            android:id="@+id/ivLocationImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:src="@tools:sample/backgrounds/scenic"
+            android:scaleType="centerCrop"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textColor="@color/white"
+                android:fontFamily="@font/roboto_bold"
+                android:id="@+id/tvLocationName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Location name" />
+
+            <TextView
+                android:layout_below="@id/tvLocationName"
+                android:id="@+id/tvLocationCountry"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/roboto_bold"
+                android:textColor="@color/white"
+                android:text="Country name"
+                android:drawableStart="@drawable/ic_location3"
+                android:drawableTint="@color/white"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:padding="20dp"
+        android:elevation="20dp">
+
+        <ImageView
+            android:id="@+id/ivTop"
+            android:rotation="-90"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/triangle"
+            android:backgroundTint="@color/white"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/tvTops"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1123"
+            android:textColor="@color/white"
+            android:layout_below="@+id/ivTop"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btnVisit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:backgroundTint="@color/green_light"
+        android:text="VISIT LOCATION"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <ImageView
+        android:id="@+id/ivBack"
+        android:text="X"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:backgroundTint="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/ic_back"
+        android:elevation="20dp"
+        />
+</RelativeLayout>

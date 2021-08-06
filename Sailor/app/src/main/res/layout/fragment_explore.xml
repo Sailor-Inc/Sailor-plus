@@ -160,5 +160,15 @@
                 android:padding="5dp"
                 android:textSize="9sp"/>
         </com.github.rongi.rotate_layout.layout.RotateLayout>
+
+        <FrameLayout
+            android:id="@+id/infoContainer"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="90dp"/>
     </RelativeLayout>
 </RelativeLayout>
