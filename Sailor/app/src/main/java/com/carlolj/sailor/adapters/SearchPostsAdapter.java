@@ -1,6 +1,7 @@
 package com.carlolj.sailor.adapters;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.carlolj.sailor.R;
+import com.carlolj.sailor.controllers.DetailsHelper;
 import com.carlolj.sailor.models.Location;
 import com.carlolj.sailor.models.Post;
 import com.carlolj.sailor.ui.search.SearchFragment;
@@ -45,6 +47,11 @@ public class SearchPostsAdapter extends RecyclerView.Adapter<SearchPostsAdapter.
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
         Post post = allPosts.get(position);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.ivPostImage.setTransitionName("transition" + position);
+        }
+
         try {
             holder.bind(post);
         } catch (ParseException e) {
@@ -80,6 +87,13 @@ public class SearchPostsAdapter extends RecyclerView.Adapter<SearchPostsAdapter.
             tvUsername.setText(post.getAuthor().fetchIfNeeded().getUsername());
             tvLocation.setText(post.getLocation().fetchIfNeeded().getString("name"));
             tvTops.setText(Integer.toString(post.getTopsNumber()));
+
+            ivPostImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DetailsHelper.openPostDetailFragment(getAdapterPosition(), v.findViewById(R.id.ivPostImage), post, fragment);
+                }
+            });
         }
     }
 }

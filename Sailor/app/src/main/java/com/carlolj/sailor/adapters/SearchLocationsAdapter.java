@@ -9,12 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.carlolj.sailor.R;
+import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.models.Location;
 import com.carlolj.sailor.models.Post;
+import com.carlolj.sailor.ui.explore.PinFragment;
 import com.carlolj.sailor.ui.search.SearchFragment;
 import com.parse.GetCallback;
 import com.parse.Parse;
@@ -73,11 +76,32 @@ public class SearchLocationsAdapter extends RecyclerView.Adapter<SearchLocations
             tvLocation = itemView.findViewById(R.id.tvLocation);
             tvLocationCountry = itemView.findViewById(R.id.tvLocationCountry);
             tvTops = itemView.findViewById(R.id.tvTops);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String locationUniqueId = "";
+                    String locationTitle = "";
+
+                    try {
+                        locationUniqueId = allLocations.get(getAdapterPosition()).getObjectId();
+                        locationTitle = (String) allLocations.get(getAdapterPosition()).fetchIfNeeded().get("name");
+                        Fragment fragment = PinFragment.newInstance(locationUniqueId, locationTitle);
+                        ((MainActivity) context).getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.flContainer, fragment)
+                                .commit();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
 
         public void bind(Location location) throws ParseException {
             tvLocation.setText(location.getName());
             tvTops.setText(Integer.toString(location.getTopsNumber()));
+            tvLocationCountry.setText(location.getCountry());
             loadImage(location, locationImage);
         }
     }

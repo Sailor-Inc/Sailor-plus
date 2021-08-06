@@ -24,6 +24,32 @@
                 android:scaleType="centerCrop"/>
 
             <RelativeLayout
+                android:id="@+id/rlUser"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:layout_alignParentTop="true">
+
+                <ImageView
+                    android:id="@+id/ivProfilePicture"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
+
+                <TextView
+                    android:id="@+id/tvUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_toRightOf="@id/ivProfilePicture"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/roboto_bold"
+                    android:maxLines="1"
+                    android:text="Username"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -32,34 +58,10 @@
                 <RelativeLayout
                     android:id="@+id/rlBottom"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <RelativeLayout
-                        android:id="@+id/rlUser"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <ImageView
-                            android:id="@+id/ivProfilePicture"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"/>
-
-                        <TextView
-                            android:layout_toRightOf="@id/ivProfilePicture"
-                            android:id="@+id/tvUsername"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/roboto_bold"
-                            android:maxLines="1"
-                            android:text="Username"
-                            android:textColor="@color/white"
-                            android:textSize="16sp" />
-                    </RelativeLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true">
 
                     <TextView
-                        android:layout_below="@id/rlUser"
                         android:id="@+id/tvLocation"
                         android:layout_marginTop="5dp"
                         android:layout_width="wrap_content"

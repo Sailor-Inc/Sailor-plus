@@ -131,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
         }
         fragmentManager.beginTransaction()
                 .replace(R.id.flContainer, newFragment)
-                .addToBackStack(null)
                 .addSharedElement(sharedView, sharedElementName)
                 .commit();
     }

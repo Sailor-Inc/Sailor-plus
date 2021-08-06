@@ -18,6 +18,9 @@ public class Location extends ParseObject {
     public static final String KEY_LAT = "latitude";
     public static final String KEY_LONG = "longitude";
     public static final String KEY_TOPS = "topsNumber";
+    public static final String KEY_COUNTRY = "country";
+    public static final String KEY_STATE = "state";
+
 
     //Getter and setters for google maps id
     public String getMapsId() {
@@ -88,4 +91,23 @@ public class Location extends ParseObject {
     public int getTopsNumber() throws ParseException {
         return fetchIfNeeded().getInt(KEY_TOPS);
     }
+
+    //Getter and setters for country
+    public String getCountry() {
+        return getString(KEY_COUNTRY);
+    }
+
+    public void setCountry(String country) {
+        put(KEY_COUNTRY, country);
+    }
+
+    //Getter and setters for country
+    public String getState() {
+        return getString(KEY_STATE);
+    }
+
+    public void setState(String state) {
+        put(KEY_STATE, state);
+    }
+
 }

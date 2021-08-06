@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.carlolj.sailor.BitmapScaler;
 import com.carlolj.sailor.BuildConfig;
 import com.carlolj.sailor.R;
@@ -36,6 +37,7 @@ import com.carlolj.sailor.models.Location;
 import com.carlolj.sailor.models.Post;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AddressComponent;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
@@ -58,6 +60,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -76,10 +79,11 @@ public class CreateActivity extends AppCompatActivity {
     ActivityCreateBinding binding;
     EditText etGooglePlacesSearch, etCaption;
     ImageView ivPostImage;
-    Button btnNext;
+    Button btnNext, btnPostImage;
     String id;
     AutoCompleteTextView autoCompleteTextView;
     double latitude = 0,longitude = 0;
+    String country, state;
 
     @Override
     protected void onResume() {
@@ -106,6 +110,7 @@ public class CreateActivity extends AppCompatActivity {
         btnNext = binding.btnNext;
         etCaption = binding.etCaption;
         autoCompleteTextView = binding.autoCompleteTextView;
+        btnPostImage= binding.btnPostImage;
 
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,7 +132,7 @@ public class CreateActivity extends AppCompatActivity {
         //Initialize google places
         Places.initialize(getApplicationContext(), BuildConfig.GMAPS_KEY);
         //Set on click listener in our post image
-        ivPostImage.setOnClickListener(new View.OnClickListener() {
+        btnPostImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 chooseProfilePicture();
@@ -141,7 +146,7 @@ public class CreateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Initialize place field list
                 List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS
-                        ,Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ID);
+                        ,Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ID, Place.Field.ADDRESS_COMPONENTS);
                 //Create intent
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY
                         ,fieldList).build(CreateActivity.this);
@@ -259,7 +264,21 @@ public class CreateActivity extends AppCompatActivity {
                     id = place.getId();
                     latitude = place.getLatLng().latitude;
                     longitude = place.getLatLng().longitude;
-
+                    if (place.getAddressComponents() != null) {
+                        List<AddressComponent> addressComponents = place.getAddressComponents().asList();
+                        if (addressComponents != null) {
+                            for (int i = 0; i < addressComponents.size(); i++) {
+                                Log.d("Probando", addressComponents.get(i).getTypes().get(0)+"");
+                                if (addressComponents.get(i).getTypes().get(0).equals("country")) {
+                                    country = addressComponents.get(i).getName();
+                                    break;
+                                }
+                                if(addressComponents.get(i).getTypes().get(0).equals("administrative_area_level_1")) {
+                                    state = addressComponents.get(i).getName();
+                                }
+                            }
+                        }
+                    }
                     etGooglePlacesSearch.setText(place.getName());
                 } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                     //When there is an error
@@ -404,15 +423,17 @@ public class CreateActivity extends AppCompatActivity {
                     AlertDialogHelper.alertTitleAndDescription(
                             CreateActivity.this,
                             "Oops...",
-                            "Post image wasn't updated",
+                            "Post image wasn't updated" +e,
                             AlertDialogHelper.ERROR_TYPE);
                     return;
                 }
             }
         });
-
-        ivPostImage.setBackground(null);
-        Glide.with(getApplicationContext()).load(byteArray).circleCrop().into(ivPostImage);
+        btnPostImage.setVisibility(View.GONE);
+        Glide.with(getApplicationContext()).load(byteArray).
+                transform(new RoundedCorners(10)).
+                centerCrop().
+                into(ivPostImage);
     }
 
     /**
@@ -424,6 +445,16 @@ public class CreateActivity extends AppCompatActivity {
         List emptyList = new ArrayList();
         location.setLatitude(latitude);
         location.setLongitude(longitude);
+        if (country != null) {
+            location.setCountry(country);
+        } else {
+            location.setCountry("-");
+        }
+        if (state != null) {
+            location.setState(state);
+        } else {
+            location.setState("-");
+        }
         location.setName(etGooglePlacesSearch.getText().toString());
         location.setMapsId(id);
         location.setLocationPostBy(emptyList);

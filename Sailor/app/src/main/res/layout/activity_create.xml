@@ -31,24 +31,8 @@
             android:textSize="34sp" />
     </LinearLayout>
 
-    <androidx.cardview.widget.CardView
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/cvMap"
-        android:layout_below="@+id/tvTitle"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        app:cardElevation="5dp">
-
-        <fragment
-            android:id="@+id/googleMap"
-            android:layout_below="@+id/tvTitle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            class="com.google.android.gms.maps.SupportMapFragment"/>
-    </androidx.cardview.widget.CardView>
-
     <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -84,14 +68,28 @@
         android:text="Select/Take a photo of your location"
         android:textSize="18sp"/>
 
-    <ImageView
-        android:id="@+id/ivPostImage"
-        android:layout_marginTop="10dp"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:background="@drawable/ic_new"
-        android:scaleType="fitCenter"
-        android:layout_gravity="center_horizontal"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
+
+        <ImageView
+            android:visibility="visible"
+            android:id="@+id/ivPostImage"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter" />
+
+        <Button
+            android:id="@+id/btnPostImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/gray_button_background"
+            android:text="+"
+            android:textSize="30sp"/>
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/etCaption"

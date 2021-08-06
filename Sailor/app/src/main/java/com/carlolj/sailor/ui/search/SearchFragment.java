@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -44,6 +45,8 @@ public class SearchFragment extends Fragment {
     protected SearchLocationsAdapter locationsAdapter;
     protected List<Location> allLocations;
     protected List<Post> allPosts;
+    protected Button btnAll, btnTop10;
+    boolean selectedAll = false, selectedTop10 = true;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -69,6 +72,8 @@ public class SearchFragment extends Fragment {
 
         rvPosts = binding.rvPosts;
         rvLocations = binding.rvLocations;
+        btnAll = binding.btnAll;
+        btnTop10 = binding.btnTop10;
 
         allPosts = new ArrayList<>();
         allLocations = new ArrayList<>();
@@ -88,8 +93,70 @@ public class SearchFragment extends Fragment {
         rvLocations.setLayoutManager(layoutManager);
         rvPosts.setLayoutManager(layoutManager2);
 
+        btnTop10.setAlpha((float) .1);
+        btnTop10.setScaleX((float) .8);
+        btnTop10.setScaleY((float) .8);
+        btnTop10.setClickable(false);
+        btnAll.setClickable(true);
         getTopLocations();
+
+        btnTop10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnAll.setAlpha((float) 1);
+                btnAll.setClickable(true);
+                btnAll.setScaleX((float) 1);
+                btnAll.setScaleY((float) 1);
+                btnTop10.setAlpha((float) .1);
+                btnTop10.setScaleX((float) .8);
+                btnTop10.setScaleY((float) .8);
+                btnTop10.setClickable(false);
+                btnAll.setClickable(true);
+                getTopLocations();
+            }
+        });
+        btnAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnTop10.setAlpha((float) 1);
+                btnTop10.setClickable(true);
+                btnTop10.setScaleX((float) 1);
+                btnTop10.setScaleY((float) 1);
+                btnAll.setAlpha((float) .1);
+                btnAll.setScaleX((float) .8);
+                btnAll.setScaleY((float) .8);
+                btnAll.setClickable(false);
+                btnTop10.setClickable(true);
+                getAllLocations();
+            }
+        });
         getTopPosts();
+    }
+
+    private void getAllLocations() {
+        final SweetAlertDialog pDialog = AlertDialogHelper.alertStartSpin(getContext());
+        if (allLocations != null) {
+            allLocations.clear();
+        }
+        ParseQuery<Location> query = ParseQuery.getQuery(Location.class);
+        query.include(Location.KEY_GMAPS_ID);
+        query.orderByDescending("topsNumber");
+        query.findInBackground(new FindCallback<Location>() {
+            @Override
+            public void done(List<Location> receivedLocations, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting locations", e);
+                    return;
+                }
+                if (receivedLocations != null) {
+                    allLocations.addAll(receivedLocations);
+                    locationsAdapter.notifyDataSetChanged();
+                    AlertDialogHelper.alertStopSpin(pDialog);
+                } else {
+                    Toast.makeText(getContext(), "There are no locations! be the first one to add a pin!" , Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void getTopLocations() {
