@@ -52,6 +52,8 @@ public class SearchLocationsAdapter extends RecyclerView.Adapter<SearchLocations
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
         Location location = allLocations.get(position);
+        position = position+1;
+        holder.tvNumber.setText("#" + position);
         try {
             holder.bind(location);
         } catch (ParseException e) {
@@ -67,7 +69,7 @@ public class SearchLocationsAdapter extends RecyclerView.Adapter<SearchLocations
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView locationImage;
-        TextView tvLocation, tvLocationCountry, tvTops;
+        TextView tvLocation, tvLocationCountry, tvTops, tvNumber;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -76,6 +78,7 @@ public class SearchLocationsAdapter extends RecyclerView.Adapter<SearchLocations
             tvLocation = itemView.findViewById(R.id.tvLocation);
             tvLocationCountry = itemView.findViewById(R.id.tvLocationCountry);
             tvTops = itemView.findViewById(R.id.tvTops);
+            tvNumber = itemView.findViewById(R.id.tvNumber);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
