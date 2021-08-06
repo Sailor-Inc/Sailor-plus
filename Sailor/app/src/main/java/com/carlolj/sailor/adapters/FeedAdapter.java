@@ -1,10 +1,8 @@
 package com.carlolj.sailor.adapters;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

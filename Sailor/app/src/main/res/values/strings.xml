@@ -29,4 +29,5 @@
     <string name="category">Category: </string>
     <string name="caption">caption caption caption caption</string>
     <string name="no_friends">Follow some people to see the latest posts!</string>
+    <string name="text_search">Search</string>
 </resources>

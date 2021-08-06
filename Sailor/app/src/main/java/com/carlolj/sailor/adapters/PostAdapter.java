@@ -1,7 +1,6 @@
 package com.carlolj.sailor.adapters;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -30,7 +28,6 @@ import com.carlolj.sailor.ui.profile.ProfileFragment;
 import com.parse.ParseException;
 
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
 
 import java.util.List;
 

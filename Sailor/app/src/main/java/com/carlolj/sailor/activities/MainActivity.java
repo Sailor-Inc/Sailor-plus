@@ -18,6 +18,7 @@ import com.carlolj.sailor.controllers.PushNotifications;
 import com.carlolj.sailor.ui.feed.FeedFragment;
 import com.carlolj.sailor.ui.explore.ExploreFragment;
 import com.carlolj.sailor.ui.profile.ProfileFragment;
+import com.carlolj.sailor.ui.search.SearchFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     final Fragment feed = new FeedFragment();
     final Fragment explore = new ExploreFragment();
+    final Fragment search = new SearchFragment();
     final Fragment profile = new ProfileFragment(ParseUser.getCurrentUser());
 
     private ActivityMainBinding binding;
@@ -77,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 fragment = feed;
                             }
+                            break;
+                        case R.id.action_search:
+                            fragment = search;
                             break;
                         default:
                             fragment = profile;

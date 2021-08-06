@@ -8,6 +8,12 @@
         android:title="@string/text_home"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_search"
+        android:enabled="true"
+        android:icon="@drawable/ic_search1"
+        android:title="@string/text_search"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_compose"
         android:enabled="true"
         android:icon="@drawable/ic_new"

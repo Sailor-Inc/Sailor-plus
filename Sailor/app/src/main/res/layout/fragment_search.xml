@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.search.SearchFragment"
+    android:paddingStart="12dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="12dp">
+
+    <TextView
+        android:id="@+id/tvMake"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Make your trip"
+        android:fontFamily="@font/roboto_bold"
+        android:textSize="30sp"/>
+
+    <TextView
+        android:id="@+id/tvMemorable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvMake"
+        android:text="memorable"
+        android:fontFamily="@font/roboto_bold"
+        android:textSize="30sp"
+        android:textColor="@color/green_light_2"/>
+
+    <TextView
+        android:id="@+id/tvMust"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvMemorable"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="Must visit locations"
+        android:gravity="center_horizontal"
+        android:textColor="@color/green_normal"
+        android:textSize="15sp" />
+
+    <RelativeLayout
+        android:id="@+id/buttons_container"
+        android:layout_below="@id/tvMust"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp">
+
+        <Button
+            android:id="@+id/btnAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/green_light"
+            android:text="All" />
+
+        <Button
+            android:layout_toRightOf="@+id/btnAll"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/btnTop10"
+            android:backgroundTint="@color/green_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Top 10" />
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvLocations"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/buttons_container"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"/>
+
+    <TextView
+        android:id="@+id/tvPosts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rvLocations"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="Top 10 posts of all time"
+        android:textSize="25sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="15dp"
+        android:id="@+id/rvPosts"
+        android:layout_below="@id/tvPosts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="5dp"/>
+</RelativeLayout>

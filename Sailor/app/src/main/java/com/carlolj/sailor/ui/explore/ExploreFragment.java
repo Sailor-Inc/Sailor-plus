@@ -444,6 +444,7 @@ public class ExploreFragment extends Fragment {
             public void done(List<Location> receivedLocations, ParseException e) {
                 if (e != null) {
                     Log.e(TAG, "Issue with getting locations", e);
+                    return;
                 }
                 if (receivedLocations != null) {
                     locations = new ArrayList<>();

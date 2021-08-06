@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvLocation"
+        android:layout_width="230dp"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="17dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/ivPostImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:srcCompat="@color/green_light_2"
+                android:scaleType="centerCrop"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:padding="25dp">
+
+                <RelativeLayout
+                    android:id="@+id/rlBottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:id="@+id/rlUser"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/ivProfilePicture"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"/>
+
+                        <TextView
+                            android:layout_toRightOf="@id/ivProfilePicture"
+                            android:id="@+id/tvUsername"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/roboto_bold"
+                            android:maxLines="1"
+                            android:text="Username"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_below="@id/rlUser"
+                        android:id="@+id/tvLocation"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textColor="@color/white"
+                        android:text="Country name"
+                        android:drawableStart="@drawable/ic_location3"
+                        android:drawableTint="@color/white"/>
+                </RelativeLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="20dp"
+                android:padding="20dp">
+
+                <ImageView
+                    android:id="@+id/ivTop"
+                    android:rotation="-90"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:background="@drawable/triangle"
+                    android:backgroundTint="@color/white"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:id="@+id/tvTops"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1123"
+                    android:textSize="10sp"
+                    android:textColor="@color/white"
+                    android:layout_below="@+id/ivTop"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
