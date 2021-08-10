@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.CreateActivity;
+import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.controllers.AlertDialogHelper;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
 import com.carlolj.sailor.models.Follows;
@@ -50,7 +52,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.SphericalUtil;
 import com.parse.FindCallback;
+import com.parse.FunctionCallback;
 import com.parse.GetCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -61,6 +65,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -79,6 +84,7 @@ public class ExploreFragment extends Fragment {
     RotateLayout rlTopLocations, rlDistance, rlFriends;
     FloatingActionButton fabAdd, fabMore, fabFilter, fabFriends, fabTopLocations, fabDistance;
     Animation fabOpen, fabClose, fabClockwise, fabAntiClockwise, fabOpen2, fabClose2, fabClockwise2, fabAntiClockwise2;
+    Button btnCloud;
 
     private FragmentExploreBinding binding;
 
@@ -134,6 +140,7 @@ public class ExploreFragment extends Fragment {
         rlDistance = binding.rlDistance;
         rlFriends = binding.rlFriends;
         infoContainer = binding.infoContainer;
+        btnCloud = binding.btnCloud;
 
         fabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim);
         fabClose = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim);
@@ -146,7 +153,21 @@ public class ExploreFragment extends Fragment {
 
         startLocationClient();
         mLocationClient = new FusedLocationProviderClient(getActivity());
-
+        btnCloud.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, String> parameters = new HashMap<String, String>();
+                ParseCloud.callFunctionInBackground("test", parameters, new FunctionCallback<Map<String, Object>>() {
+                    @Override
+                    public void done(Map<String, Object> mapObject, ParseException e) {
+                        if (e != null) {
+                            Log.d("Error", e+"");
+                        }
+                        Log.d("Hi mark", mapObject+"");
+                    }
+                });
+            }
+        });
         fabMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
