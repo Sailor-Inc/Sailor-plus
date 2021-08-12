@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -20,13 +22,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
 import com.carlolj.sailor.R;
 import com.carlolj.sailor.activities.CreateActivity;
-import com.carlolj.sailor.activities.MainActivity;
 import com.carlolj.sailor.controllers.AlertDialogHelper;
 import com.carlolj.sailor.databinding.FragmentExploreBinding;
 import com.carlolj.sailor.models.Follows;
@@ -60,7 +62,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +74,8 @@ public class ExploreFragment extends Fragment {
 
     public static final String TAG = "ExploreFragment";
     public static final int LOCATION_REQUEST_CODE = 1;
+    private static final int KEY_TOP = 1;
+    private static final int KEY_ALL = 0;
     private List<Location> locations;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
@@ -80,9 +83,12 @@ public class ExploreFragment extends Fragment {
     private FusedLocationProviderClient mLocationClient;
     private FrameLayout infoContainer;
     private LocationDetailsFragment locationDetailsFragment;
+    private String[] postTypes;
+    Toolbar toolbar;
+    SearchView searchView;
 
-    RotateLayout rlTopLocations, rlDistance, rlFriends;
-    FloatingActionButton fabAdd, fabMore, fabFilter, fabFriends, fabTopLocations, fabDistance;
+    RotateLayout rlTopLocations, rlDistance, rlFriends, rlAll;
+    FloatingActionButton fabAdd, fabMore, fabFilter, fabFriends, fabTopLocations, fabDistance, fabAll;
     Animation fabOpen, fabClose, fabClockwise, fabAntiClockwise, fabOpen2, fabClose2, fabClockwise2, fabAntiClockwise2;
     Button btnCloud;
 
@@ -111,6 +117,7 @@ public class ExploreFragment extends Fragment {
                 public void onMapReady(@NonNull @NotNull GoogleMap googleMap) {
                     googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
                     map = googleMap;
+                    getLocations(KEY_ALL);
                 }
             });
         } else {
@@ -136,11 +143,77 @@ public class ExploreFragment extends Fragment {
         fabDistance = binding.fabDistance;
         fabFriends = binding.fabFriends;
         fabTopLocations = binding.fabTopLocations;
+        fabAll = binding.fabAll;
         rlTopLocations = binding.rlTopLocations;
         rlDistance = binding.rlDistance;
         rlFriends = binding.rlFriends;
+        rlAll = binding.rlAll;
         infoContainer = binding.infoContainer;
         btnCloud = binding.btnCloud;
+        toolbar = binding.toolbar;
+
+        toolbar.inflateMenu(R.menu.menu_top);
+        toolbar.setTitle("Explore");
+        Menu menu = toolbar.getMenu();
+        MenuItem menuItem = menu.findItem(R.id.search_icon);
+        searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint("Search by country, state, place name!");
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (locations != null) {
+                    List<Location> filteredLocations = new ArrayList<>();
+                    for (Location location : locations) {
+                        try {
+                            if(checkLocationData(query, location, filteredLocations)) {
+                                AlertDialogHelper.alertOnlyTitle(
+                                        getContext(),
+                                        filteredLocations.size() + " location(s) found!",
+                                        AlertDialogHelper.SUCCESS_TYPE);
+                                loadMap(filteredLocations);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (filteredLocations == null) {
+                        AlertDialogHelper.alertOnlyTitle(
+                                getContext(),
+                                "No locations found!",
+                                AlertDialogHelper.ERROR_TYPE);
+                    }
+                } else {
+                    AlertDialogHelper.alertOnlyTitle(
+                            getContext(),
+                            "Sorry there are no locations in the map!",
+                            AlertDialogHelper.ERROR_TYPE);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (locations != null) {
+                    List<Location> filteredLocations = new ArrayList<>();
+                    for (Location location : locations) {
+                        try {
+                            if(checkLocationData(newText, location, filteredLocations)) {
+                                loadMap(filteredLocations);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    AlertDialogHelper.alertOnlyTitle(
+                            getContext(),
+                            "Sorry there are no locations in the map!",
+                            AlertDialogHelper.ERROR_TYPE);
+                }
+                return true;
+            }
+        });
 
         fabOpen = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim);
         fabClose = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim);
@@ -166,6 +239,15 @@ public class ExploreFragment extends Fragment {
                         Log.d("Hi mark", mapObject+"");
                     }
                 });
+                ParseCloud.callFunctionInBackground("hello", parameters, new FunctionCallback<String>() {
+                    @Override
+                    public void done(String object, ParseException e) {
+                        if (e != null) {
+                            return;
+                        }
+                        Log.d("[][]", object);
+                    }
+                });
             }
         });
         fabMore.setOnClickListener(new View.OnClickListener() {
@@ -176,14 +258,17 @@ public class ExploreFragment extends Fragment {
                         fabFilter.startAnimation(fabAntiClockwise2);
                         fabFriends.startAnimation(fabClose2);
                         fabTopLocations.startAnimation(fabClose2);
+                        fabAll.startAnimation(fabClose2);
                         fabDistance.startAnimation(fabClose2);
                         rlDistance.startAnimation(fabClose2);
                         rlFriends.startAnimation(fabClose2);
                         rlTopLocations.startAnimation(fabClose2);
+                        rlAll.startAnimation(fabClose2);
 
                         fabFriends.setClickable(false);
                         fabTopLocations.setClickable(false);
                         fabDistance.setClickable(false);
+                        fabAll.setClickable(false);
 
                         isFiltering = false;
                     }
@@ -213,14 +298,17 @@ public class ExploreFragment extends Fragment {
                     fabFilter.startAnimation(fabClockwise2);
                     fabFriends.startAnimation(fabOpen2);
                     fabTopLocations.startAnimation(fabOpen2);
+                    fabAll.startAnimation(fabOpen2);
                     fabDistance.startAnimation(fabOpen2);
                     rlDistance.startAnimation(fabOpen2);
                     rlFriends.startAnimation(fabOpen2);
                     rlTopLocations.startAnimation(fabOpen2);
+                    rlAll.startAnimation(fabOpen2);
 
                     fabFriends.setClickable(true);
                     fabTopLocations.setClickable(true);
                     fabDistance.setClickable(true);
+                    fabAll.setClickable(true);
 
                     isFiltering = true;
                 } else {
@@ -228,14 +316,17 @@ public class ExploreFragment extends Fragment {
                         fabFilter.startAnimation(fabAntiClockwise2);
                         fabFriends.startAnimation(fabClose2);
                         fabTopLocations.startAnimation(fabClose2);
+                        fabAll.startAnimation(fabClose2);
                         fabDistance.startAnimation(fabClose2);
                         rlDistance.startAnimation(fabClose2);
                         rlFriends.startAnimation(fabClose2);
                         rlTopLocations.startAnimation(fabClose2);
+                        rlAll.startAnimation(fabClose2);
 
                         fabFriends.setClickable(false);
                         fabTopLocations.setClickable(false);
                         fabDistance.setClickable(false);
+                        fabAll.setClickable(false);
 
                         isFiltering = false;
                     }
@@ -254,7 +345,7 @@ public class ExploreFragment extends Fragment {
         fabTopLocations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getTopLocations();
+                getLocations(KEY_TOP);
             }
         });
 
@@ -262,6 +353,13 @@ public class ExploreFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getFriendsLocations();
+            }
+        });
+
+        fabAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getLocations(KEY_ALL);
             }
         });
 
@@ -275,6 +373,15 @@ public class ExploreFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private boolean checkLocationData(String query, Location location, List<Location> filteredLocations) throws ParseException {
+        if (location.getState().toLowerCase().contains(query) ||
+                location.getCountry().toLowerCase().contains(query) || location.getName().toLowerCase().contains(query)){
+            filteredLocations.add(location);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -420,14 +527,15 @@ public class ExploreFragment extends Fragment {
      * This method will load all the marker positions and set on click listeners to each marker in the map to open a new fragment to see
      * a certain place posts
      */
-    protected void loadMap() throws ParseException {
+    protected void loadMap(List<Location> locationList) throws ParseException {
         if (map != null) {
-            for (int i = 0; i < locations.size(); i++){
-                LatLng markerPosition = new LatLng(locations.get(i).getLatitude(), locations.get(i).getLongitude());
-                String locationUniqueId = locations.get(i).getObjectId();
+            map.clear();
+            for (int i = 0; i < locationList.size(); i++){
+                LatLng markerPosition = new LatLng(locationList.get(i).getLatitude(), locationList.get(i).getLongitude());
+                String locationUniqueId = locationList.get(i).getObjectId();
                 map.addMarker(new MarkerOptions()
                         .position(markerPosition)
-                        .title(locations.get(i).getName())
+                        .title(locationList.get(i).getName())
                         .snippet(locationUniqueId));
             }
             map.getMinZoomLevel();
@@ -447,19 +555,25 @@ public class ExploreFragment extends Fragment {
         }
     }
 
+
     /**
      * This method returns the top 20 most top-ed locations registered in the Sailor+ database
      */
-    private void getTopLocations() {
+    private void getLocations(int code) {
         final SweetAlertDialog pDialog = AlertDialogHelper.alertStartSpin(getContext());
         map.clear();
         if (locations != null) {
             locations.clear();
         }
         ParseQuery<Location> query = ParseQuery.getQuery(Location.class);
+        query.include(Location.KEY_STATE);
+        query.include(Location.KEY_COUNTRY);
+        query.include(Location.KEY_NAME);
         query.include(Location.KEY_GMAPS_ID);
         query.orderByDescending("topsNumber");
-        query.setLimit(20);
+        if (code == KEY_TOP) {
+            query.setLimit(20);
+        }
         query.findInBackground(new FindCallback<Location>() {
             @Override
             public void done(List<Location> receivedLocations, ParseException e) {
@@ -471,7 +585,7 @@ public class ExploreFragment extends Fragment {
                     locations = new ArrayList<>();
                     locations.addAll(receivedLocations);
                     try {
-                        loadMap();
+                        loadMap(locations);
                         AlertDialogHelper.alertStopSpin(pDialog);
                     } catch (ParseException parseException) {
                         parseException.printStackTrace();
@@ -494,6 +608,9 @@ public class ExploreFragment extends Fragment {
             locations.clear();
         }
         ParseQuery<Follows> query = ParseQuery.getQuery(Follows.class);
+        query.include(Location.KEY_STATE);
+        query.include(Location.KEY_COUNTRY);
+        query.include(Location.KEY_NAME);
         query.whereEqualTo(Follows.KEY_USER_ID, ParseUser.getCurrentUser().getObjectId());
         query.getFirstInBackground(new GetCallback<Follows>() {
             @Override
@@ -523,7 +640,7 @@ public class ExploreFragment extends Fragment {
                     Log.d("Showing friends locations" , keyList+"");
                     locations.addAll(keyList);
                     try {
-                        loadMap();
+                        loadMap(locations);
                         AlertDialogHelper.alertStopSpin(pDialog);
                     } catch (ParseException parseException) {
                         parseException.printStackTrace();
@@ -549,6 +666,9 @@ public class ExploreFragment extends Fragment {
         }
         ParseQuery<Location> query = ParseQuery.getQuery(Location.class);
         query.include(Location.KEY_GMAPS_ID);
+        query.include(Location.KEY_STATE);
+        query.include(Location.KEY_COUNTRY);
+        query.include(Location.KEY_NAME);
         query.findInBackground(new FindCallback<Location>() {
             @Override
             public void done(List<Location> receivedLocations, ParseException e) {
@@ -569,7 +689,7 @@ public class ExploreFragment extends Fragment {
                         }
                     }
                     try {
-                        loadMap();
+                        loadMap(locations);
                     } catch (ParseException parseException) {
                         parseException.printStackTrace();
                     }
@@ -614,6 +734,9 @@ public class ExploreFragment extends Fragment {
     private void openLocationDetailsFromUniqueId(String locationUniqueId) {
         infoContainer.setVisibility(View.VISIBLE);
         ParseQuery<Location> query  =ParseQuery.getQuery(Location.class);
+        query.include(Location.KEY_STATE);
+        query.include(Location.KEY_COUNTRY);
+        query.include(Location.KEY_NAME);
         query.whereEqualTo("objectId", locationUniqueId);
         query.getFirstInBackground(new GetCallback<Location>() {
             @Override

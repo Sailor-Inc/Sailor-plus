@@ -26,5 +26,5 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         app:labelVisibilityMode="selected"
-        style="@style/BottomNavigation"/>
+        style="@style/BottomNavigation" />
 </RelativeLayout>

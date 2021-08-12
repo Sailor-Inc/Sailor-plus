@@ -6,7 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".ui.explore.ExploreFragment">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_scrollFlags="scroll|enterAlways"
+        android:elevation="20dp"
+        app:titleTextColor="@color/black" />
+
     <RelativeLayout
+        android:layout_below="@id/toolbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/mapContainer">
@@ -161,6 +172,42 @@
                 android:textSize="9sp"/>
         </com.github.rongi.rotate_layout.layout.RotateLayout>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAll"
+            android:layout_toRightOf="@+id/fabDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_alignTop="@+id/fabFilter"
+            android:backgroundTint="@color/cardview_light_background"
+            android:contentDescription="@string/create"
+            android:src="@drawable/ic_all"
+            android:translationZ="12dp"
+            app:fabSize="mini"
+            android:visibility="invisible"/>
+
+        <com.github.rongi.rotate_layout.layout.RotateLayout
+            android:visibility="invisible"
+            android:id="@+id/rlAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:angle="50"
+            android:layout_above="@+id/fabDistance"
+            android:layout_alignLeft="@+id/fabAll"
+            android:layout_marginLeft="7dp">
+
+            <TextView
+                android:id="@+id/tvStaticAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select all locations"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white"
+                android:padding="5dp"
+                android:textSize="9sp"/>
+        </com.github.rongi.rotate_layout.layout.RotateLayout>
+
         <FrameLayout
             android:id="@+id/infoContainer"
             android:layout_width="match_parent"
@@ -173,6 +220,8 @@
 
         <Button
             android:id="@+id/btnCloud"
+            android:clickable="false"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
