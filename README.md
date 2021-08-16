@@ -90,10 +90,8 @@ Must have app requirements
  * **WEEK 4 / WEEK 5**
      * App
      - [X] User can swipe down to refresh (feed screen, pin screen, profile screen)
-     - [ ] User can edit posts
-     - [ ] User can edit his/her profile data
-     - [ ] User can filter by Country
-     - [ ] User can filter by State
+     - [X] User can filter by Country
+     - [X] User can filter by State
      * Visuals
      - [X] Update item_feed layout visuals
      - [X] Update pin activity layout visuals
@@ -105,6 +103,7 @@ Must have app requirements
      - [X] Following/Follower bugs
      - [X] Filtering posts inside location bug
 
+    <img src="wireframes/sprint3.gif" width=300>
 
  **Optional Nice-to-have Stories**
  - [X] * User can see an intelligent recommendation of locations in the feed
